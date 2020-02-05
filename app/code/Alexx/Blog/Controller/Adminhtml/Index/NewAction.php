@@ -2,16 +2,19 @@
 
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
+use Magento\Framework\App\Action\HttpGetActionInterface;
+
 /**
- * Class NewAction Admin Controller
+ * Admin blog new Controller that displays page with form for new blogs post
  */
-class NewAction extends Edit
+class NewAction extends Edit implements HttpGetActionInterface
 {
     /**
-     * Create new product page
+     * @inheritDoc
      */
     public function execute()
     {
         $this->_forward('edit');
+        return $this->getResponse();
     }
 }

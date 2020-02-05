@@ -2,38 +2,43 @@
 
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
-use Magento\Framework\App\Action\Action;
+use Magento\Backend\App\Action;
 use Alexx\Blog\Model\BlogPostsFactory;
-use Magento\Framework\App\Action\Context as ActionContext;
-use Magento\Framework\View\Result\PageFactory;
+use Magento\Backend\App\Action\Context as ActionContext;
+use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Registry;
 
 /**
- * Class Edit Admin Controller
+ * Admin blog edit Controller that displays page with form for edit blogs post
  */
-class Edit extends Action
+class Edit extends Action implements HttpGetActionInterface
 {
-    use \Alexx\Blog\Controller\Adminhtml\UseFunctions;
-
     private $_postsFactory;
+    private $_coreRegistry;
 
     /**
      * Constructor
      *
      * @param ActionContext $context
+     * @param Registry $coreRegistry
      * @param BlogPostsFactory $postsFactory
+     *
+     * @return void
      */
     public function __construct(
         ActionContext $context,
+        Registry $coreRegistry,
         BlogPostsFactory $postsFactory
     ) {
         parent::__construct($context);
         $this->_postsFactory = $postsFactory;
+        $this->_coreRegistry = $coreRegistry;
     }
 
     /**
-     * Main logic method
+     * @inheritDoc
      */
-
     public function execute()
     {
         $postId = $this->getRequest()->getParam('id');
@@ -49,15 +54,13 @@ class Edit extends Action
         }
 
         // Restore previously entered form data from session
-        $data = $this->getCurrentSession()->getFormData(true);
+        $data = $this->_getSession()->getFormData(true);
+
         if (!empty($data)) {
             $model->setData($data);
         }
 
-        $this->getCurrentRegistry()->register('blognews', $model);
-
-        /** @var Magento\Backend\Model\View\Result\Page $resultPage */
-        $resultPage = $this->getClassFromObjectManager(PageFactory::class)->create();
-        return $resultPage;
+        $this->_coreRegistry->register('blognews', $model);
+        return $this->resultFactory->create(ResultFactory::TYPE_PAGE);
     }
 }

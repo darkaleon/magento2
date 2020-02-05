@@ -6,11 +6,12 @@ use Alexx\Blog\Model\BlogPostsFactory;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Registry;
 
 /**
- * CategoryList  Block  Template
+ *  Block which injects to catalog_product_view
+ *
+ *  Displays blogs posts list
  */
 class BlogList extends Template
 {
@@ -26,19 +27,19 @@ class BlogList extends Template
      * @param Context $context
      * @param BlogPostsFactory $blogsFactory
      * @param ScopeConfigInterface $scopeConfig
+     * @param Registry $coreRegistry
      * @param array $data
+     *
+     * @return void
      * */
     public function __construct(
         Context $context,
         BlogPostsFactory $blogsFactory,
         ScopeConfigInterface $scopeConfig,
+        Registry $coreRegistry,
         array $data = []
     ) {
-        $objectManager = ObjectManager::getInstance();
-        //get current product
-        $product = $objectManager->get(Registry::class)->registry('current_product');
-
-        $this->_currentProduct = $product;
+        $this->_currentProduct = $coreRegistry->registry('current_product');
         $this->_scopeConfig = $scopeConfig;
         $this->_blogsFactory = $blogsFactory;
         parent::__construct($context, $data);
@@ -46,18 +47,12 @@ class BlogList extends Template
 
     /**
      * Get Product Type Id
+     *
+     * @return string
      * */
     public function getCurrentProductTypeId()
     {
         return $this->_currentProduct->getTypeId();
-    }
-
-    /**
-     * Get Product Id
-     * */
-    public function getCurrentProductId()
-    {
-        return $this->_currentProduct->getId();
     }
 
     /**
@@ -82,6 +77,8 @@ class BlogList extends Template
 
     /**
      * Gets latest blog posts
+     *
+     * @return \Magento\Framework\Data\Collection
      * */
     public function getPosts()
     {

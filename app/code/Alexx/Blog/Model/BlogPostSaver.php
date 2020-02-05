@@ -21,13 +21,14 @@ class BlogPostSaver
      * Loads form data from form to model
      *
      * @param string $postDataField
+     *
+     * @return bool
      **/
     public function loadFormData($postDataField)
     {
         $this->formData = $this->currentAction->getRequest()->getParam($postDataField);
-        $postId = array_key_exists($this->model::TBL_ENTITY, $this->formData) ?
-            $this->formData[$this->model::TBL_ENTITY] :
-            null;
+        $postId = $this->formData[$this->model::BLOG_ID] ?? null;
+
         if ($postId) {
             $this->model->load($postId);
             if (empty($this->model->getData())) {
@@ -41,6 +42,8 @@ class BlogPostSaver
      * Uploads  image posted by form
      *
      * @param string $pictureDataField
+     *
+     * @return void
      **/
     public function loadPictureData($pictureDataField)
     {
@@ -61,6 +64,8 @@ class BlogPostSaver
      *
      * @param \Magento\Framework\App\Action\Action $currentAction
      * @param \Magento\Framework\Model\AbstractModel $modelFactory
+     *
+     * @return $this
      **/
     public function create($currentAction, $modelFactory)
     {
@@ -73,6 +78,8 @@ class BlogPostSaver
      * Gets data from currently posted form
      *
      * @param string $field
+     *
+     * @return array
      **/
     public function getFormData($field = null)
     {
@@ -89,6 +96,8 @@ class BlogPostSaver
 
     /**
      * Saves model data to db
+     *
+     * @return void|bool
      **/
     public function save()
     {

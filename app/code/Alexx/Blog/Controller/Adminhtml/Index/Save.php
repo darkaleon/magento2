@@ -3,32 +3,37 @@
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
 use Alexx\Blog\Model\BlogPostsFactory;
-use Magento\Framework\App\Action\Context as ActionContext;
-use Magento\Framework\App\Action\Action;
+use Magento\Backend\App\Action\Context as ActionContext;
+use Magento\Backend\App\Action;
 use Alexx\Blog\Model\BlogPostSaver;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 
 /**
- * Class Save Admin Controller
+ * Admin blog save Controller that perform saving data posted from the form to database
  */
-class Save extends Action
+class Save extends Action implements HttpPostActionInterface
 {
-    use \Alexx\Blog\Controller\Adminhtml\UseFunctions;
-
     private $_postsFactory;
+    private $_blogPostSaver;
 
     /**
      * Constructor
      *
      * @param ActionContext $context
      * @param BlogPostsFactory $postsFactory
+     * @param BlogPostSaver $blogPostSaver
+     *
+     * @return void
      * */
     public function __construct(
         ActionContext $context,
-        BlogPostsFactory $postsFactory
+        BlogPostsFactory $postsFactory,
+        BlogPostSaver $blogPostSaver
     ) {
         parent::__construct($context);
 
         $this->_postsFactory = $postsFactory;
+        $this->_blogPostSaver = $blogPostSaver;
     }
 
     /**
@@ -37,6 +42,8 @@ class Save extends Action
      * @param string $message
      * @param string $path
      * @param array $arguments
+     *
+     * @return void
      */
     public function redirectError($message, $path, $arguments = [])
     {
@@ -48,6 +55,8 @@ class Save extends Action
      * Redirect with success message
      *
      * @param string $result
+     *
+     * @return void
      */
     public function redirectSuccess($result)
     {
@@ -63,38 +72,39 @@ class Save extends Action
     }
 
     /**
-     * Main logic method
+     * @inheritDoc
      */
     public function execute()
     {
         if ($this->getRequest()->getPost()) {
-            $postModel = $this->getClassFromObjectManager(BlogPostSaver::class)->create($this, $this->_postsFactory);
+            $postModel = $this->_blogPostSaver->create($this, $this->_postsFactory);
 
             if (!$postModel->loadFormData('blog_data')) {
                 $this->redirectError(__('This post no longer exists.'), '*/*/');
-                return;
+                return $this->getResponse();
             }
 
             try {
                 $postModel->loadPictureData('blog_picture');
             } catch (\Exception $e) {
                 $this->redirectError($e->getMessage(), '*/*/edit', ['id' => $postModel->getFormData('entity_id')]);
-                return;
+                return $this->getResponse();
             }
 
             try {
                 $modelId = $postModel->save();
                 if ($modelId) {
                     $this->redirectSuccess($modelId);
-                    return;
+                    return $this->getResponse();
                 }
             } catch (\Exception $e) {
                 $this->redirectError($e->getMessage(), '*/*/edit', ['id' => $postModel->getFormData('entity_id')]);
-                return;
+                return $this->getResponse();
             }
 
-            $this->getCurrentSession()->setFormData($postModel->getFormData());
+            $this->_getSession()->setFormData($postModel->getFormData());
             $this->_redirect('*/*/edit', ['id' => $this->getRequest()->getPost()['entity_id']]);
         }
+        return $this->getResponse();
     }
 }

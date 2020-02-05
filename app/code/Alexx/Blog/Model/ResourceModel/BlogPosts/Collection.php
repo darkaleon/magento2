@@ -12,7 +12,7 @@ use Alexx\Blog\Model\ResourceModel\BlogPosts as BlogPostsResourceModel;
 class Collection extends AbstractCollection
 {
     /**
-     * Constructor
+     * @inheritDoc
      */
     protected function _construct()
     {

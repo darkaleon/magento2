@@ -18,15 +18,17 @@ class InstallSchema implements InstallSchemaInterface
      *
      * @param SchemaSetupInterface $setup
      * @param ModuleContextInterface $context
+     *
+     * @return void
      */
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $setup->startSetup();
 
         $table = $setup->getConnection()
-            ->newTable($setup->getTable(BlogPosts::TBL_NAME))
+            ->newTable($setup->getTable(BlogPosts::BLOG_TABLE))
             ->addColumn(
-                BlogPosts::TBL_ENTITY,
+                BlogPosts::BLOG_ID,
                 Table::TYPE_INTEGER,
                 11,
                 ['identity' => true, 'unsigned' => true, 'nullable' => false,
@@ -34,7 +36,7 @@ class InstallSchema implements InstallSchemaInterface
                 'Entity ID'
             )->addColumn(
                 'theme',
-                'varchar',
+                Table::TYPE_TEXT,
                 512,
                 [],
                 'Theme'
@@ -46,7 +48,7 @@ class InstallSchema implements InstallSchemaInterface
                 'Content'
             )->addColumn(
                 'picture',
-                'varchar',
+                Table::TYPE_TEXT,
                 512,
                 [],
                 'Picture'
@@ -65,6 +67,9 @@ class InstallSchema implements InstallSchemaInterface
             );
 
         $setup->getConnection()->createTable($table);
+
+        $setup->getConnection()->query("ALTER TABLE `{BlogPosts::BLOG_TABLE}` modify `theme` varchar (512)");
+        $setup->getConnection()->query("ALTER TABLE `{BlogPosts::BLOG_TABLE}` modify `picture` varchar (512)");
 
         $setup->endSetup();
     }

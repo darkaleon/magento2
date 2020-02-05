@@ -7,7 +7,7 @@ use Magento\Backend\Block\Widget\Context as WidgetContext;
 use Magento\Framework\Registry;
 
 /**
- * Block for form
+ * Block for blog_index_edit layout.
  */
 class Edit extends Container
 {
@@ -28,6 +28,8 @@ class Edit extends Container
      * @param WidgetContext $context
      * @param Registry $registry
      * @param array $data
+     *
+     * @return void
      */
     public function __construct(
         WidgetContext $context,
@@ -64,41 +66,5 @@ class Edit extends Container
             -100
         );
         $this->buttonList->update('delete', 'label', __('Delete'));
-    }
-
-    /**
-     * Retrieve text for header element depending on loaded news
-     *
-     * @return string
-     */
-    public function getHeaderText()
-    {
-        $newsRegistry = $this->_coreRegistry->registry('blognews');
-        if ($newsRegistry->getId()) {
-            $newsTitle = $this->escapeHtml($newsRegistry->getTitle());
-            return __("Edit News '%1'", $newsTitle);
-        } else {
-            return __('Add News');
-        }
-    }
-
-    /**
-     * Prepare layout
-     *
-     * @return \Magento\Backend\Block\Widget\Form\Container
-     */
-    protected function _prepareLayout()
-    {
-        $this->_formScripts[] = "
-            function toggleEditor() {
-                if (tinyMCE.getInstanceById('post_content') == null) {
-                    tinyMCE.execCommand('mceAddControl', false, 'post_content');
-                } else {
-                    tinyMCE.execCommand('mceRemoveControl', false, 'post_content');
-                }
-            };
-        ";
-
-        return parent::_prepareLayout();
     }
 }

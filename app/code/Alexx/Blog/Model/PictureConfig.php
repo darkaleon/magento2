@@ -2,43 +2,37 @@
 
 namespace Alexx\Blog\Model;
 
-use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\View\Asset\Repository;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\UrlInterface;
 
 /**
  * Urls for blog pictures
  */
 class PictureConfig
 {
-    protected $storeManager;
+    private $_storeManager;
+    private $_context;
+    private $_repository;
 
     /**
      * Constructor
      *
+     * @param Context $context
      * @param StoreManagerInterface $storeManager
-     */
-    public function __construct(StoreManagerInterface $storeManager)
-    {
-        $this->storeManager = $storeManager;
-    }
-
-    /**
-     * Retrieve base url
-     * */
-    public function getBeforeMediaUrl()
-    {
-        return $this->storeManager->getStore()
-            ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
-    }
-
-    /**
-     * Retrieve base url for media files
+     * @param Repository $repository
      *
-     * @return string
+     * @return void
      */
-    public function getBaseMediaUrl()
-    {
-        return $this->getBeforeMediaUrl() . 'blog';
+    public function __construct(
+        Context $context,
+        StoreManagerInterface $storeManager,
+        Repository $repository
+    ) {
+        $this->_context = $context;
+        $this->_storeManager = $storeManager;
+        $this->_repository = $repository;
     }
 
     /**
@@ -49,7 +43,7 @@ class PictureConfig
      */
     public function getMediaUrl($file)
     {
-        return $this->getBeforeMediaUrl() . $this->_prepareFile($file);
+        return $this->getStoreMediaUrl() . $this->_prepareFile($file);
     }
 
     /**
@@ -61,7 +55,7 @@ class PictureConfig
     public function getBlogImageUrl($file)
     {
         return (
-        ($file == '' || $file === null) ?
+        empty($file) ?
             $this->getViewFileUrl('Alexx_Blog::images/image-placeholder.png') :
             $this->getMediaUrl($file));
     }
@@ -77,14 +71,11 @@ class PictureConfig
     {
         $params = array_merge(
             [
-                '_secure' => ObjectManager::getInstance()
-                    ->get(\Magento\Framework\App\Action\Context::class)
-                    ->getRequest()->isSecure()
+                '_secure' => $this->_context->getRequest()->isSecure()
             ],
             $params
         );
-        return ObjectManager::getInstance()->get(\Magento\Framework\View\Asset\Repository::class)
-            ->getUrlWithParams($fileId, $params);
+        return $this->_repository->getUrlWithParams($fileId, $params);
     }
 
     /**
@@ -106,5 +97,15 @@ class PictureConfig
     protected function _prepareFile($file)
     {
         return ltrim(str_replace('\\', '/', $file), '/');
+    }
+
+    /**
+     * Retrieve store base url
+     *
+     * @return string
+     * */
+    private function getStoreMediaUrl()
+    {
+        return $this->_storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
     }
 }

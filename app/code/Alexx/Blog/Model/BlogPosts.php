@@ -10,11 +10,13 @@ use Magento\Framework\App\ObjectManager;
  */
 class BlogPosts extends AbstractModel
 {
-    const TBL_NAME = 'alexx_blog_posts';
-    const TBL_ENTITY = 'entity_id';
+    const BLOG_TABLE = 'alexx_blog_posts';
+    const BLOG_ID = 'entity_id';
 
     /**
      * Generates url to image
+     *
+     * @return string
      */
     public function getImageUrl()
     {
@@ -24,6 +26,8 @@ class BlogPosts extends AbstractModel
 
     /**
      * Getting 5 last posts
+     *
+     * @return \Magento\Framework\Data\Collection
      */
     public function getLatestPosts()
     {
@@ -31,7 +35,7 @@ class BlogPosts extends AbstractModel
     }
 
     /**
-     * Constructor
+     * @inheritDoc
      */
     protected function _construct()
     {

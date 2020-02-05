@@ -2,16 +2,17 @@
 
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
+use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\App\Action\Action;
+use Magento\Backend\App\Action;
 
 /**
- * Class Index Admin Controller
+ * Admin blog index Controller that displays page with list of saved blogs posts
  */
-class Index extends Action
+class Index extends Action implements HttpGetActionInterface
 {
     /**
-     * Main logic method
+     * @inheritDoc
      */
     public function execute()
     {

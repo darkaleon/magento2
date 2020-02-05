@@ -4,33 +4,39 @@ namespace Alexx\Blog\Controller\Adminhtml\Index;
 
 use Alexx\Blog\Model\BlogPostsFactory;
 use Alexx\Blog\Model\PictureSaver;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context as ActionContext;
-use Magento\Framework\App\ObjectManager;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context as ActionContext;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 
 /**
- * Class Delete Admin Controller
+ * Admin blog delete Controller that perform deleting data from the database
  */
-class Delete extends Action
+class Delete extends Action implements HttpPostActionInterface
 {
     private $_postsFactory;
+    private $pictureSaver;
 
     /**
      * Constructor
      *
      * @param ActionContext $context
      * @param BlogPostsFactory $postsFactory
+     * @param PictureSaver $pictureSaver
+     *
+     * @return void
      */
     public function __construct(
         ActionContext $context,
-        BlogPostsFactory $postsFactory
+        BlogPostsFactory $postsFactory,
+        PictureSaver $pictureSaver
     ) {
         parent::__construct($context);
         $this->_postsFactory = $postsFactory;
+        $this->pictureSaver = $pictureSaver;
     }
 
     /**
-     * Main logic method
+     * @inheritDoc
      */
     public function execute()
     {
@@ -42,8 +48,8 @@ class Delete extends Action
 
                 if (!empty($blogPost->getData())) {
 
-                    if ($blogPost->getPicture() != '' && $blogPost->getPicture() !== null) {
-                        ObjectManager::getInstance()->get(PictureSaver::class)->deleteFile($blogPost->getPicture());
+                    if (!empty($blogPost->getPicture())) {
+                        $this->pictureSaver->deleteFile($blogPost->getPicture());
                     }
                     $blogPost->delete();
                     $this->messageManager->addSuccess(__('The post has been deleted.'));
@@ -56,7 +62,6 @@ class Delete extends Action
         } else {
             $this->messageManager->addError(__('Wrong request. Try again'));
         }
-
-        $this->_redirect('*/*/');
+        return $this->_redirect('*/*/');
     }
 }

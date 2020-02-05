@@ -10,13 +10,13 @@ use Magento\Cms\Model\Wysiwyg\Config;
 use Magento\Framework\App\Action\Context as ActionContext;
 
 /**
- * Class Form
+ * Generates form with specific configuration
  */
 class Form extends Generic
 {
-    use \Alexx\Blog\Controller\Adminhtml\UseFunctions;
 
     private $_wysiwygConfig;
+    private $_objectManager;
 
     /**
      * Constructor
@@ -27,8 +27,9 @@ class Form extends Generic
      * @param Config $wysiwygConfig
      * @param ActionContext $actionContext
      * @param array $data
+     *
+     * @return void
      */
-
     public function __construct(
         Context $context,
         Registry $registry,
@@ -44,11 +45,13 @@ class Form extends Generic
 
     /**
      * Form fields options
+     *
+     * @return \Magento\Backend\Block\Widget\Form
      * */
     protected function _prepareForm()
     {
         /** @var Magento\Framework\Data\Form $form */
-        $model = $this->getCurrentRegistry('blognews');
+        $model = $this->_coreRegistry->registry('blognews');
 
         $form = $this->_formFactory->create(
             [

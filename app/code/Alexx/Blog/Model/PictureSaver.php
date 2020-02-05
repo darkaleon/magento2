@@ -13,16 +13,31 @@ use Magento\Framework\App\ObjectManager;
  * */
 class PictureSaver
 {
-    private $_file;
     private $inputName;
     private $currentPicture = '';
     private $newPicture = false;
     private $deleteCurrentPicture = false;
-
+    private $_fileSystem;
+    private $_pictureConfig;
+    /**
+     * Constructor
+     *
+     * @param Filesystem $fileSystem
+     * @param PictureConfig $pictureConfig
+     *
+     * @return void
+     */
+    public function __construct(Filesystem $fileSystem, PictureConfig $pictureConfig)
+    {
+        $this->_fileSystem = $fileSystem;
+        $this->_pictureConfig = $pictureConfig;
+    }
     /**
      * Constructor
      *
      * @param string $inputName
+     *
+     * @return $this
      * */
     public function create($inputName)
     {
@@ -35,7 +50,7 @@ class PictureSaver
      *
      * @return bool|array
      */
-    public function saveFile()
+    private function saveFile()
     {
         /** @var Uploader $uploader */
         $uploader = ObjectManager::getInstance()->create(Uploader::class, ['fileId' => $this->inputName]);
@@ -43,7 +58,7 @@ class PictureSaver
         $uploader->setAllowRenameFiles(true);
         $uploader->setFilesDispersion(true);
         $uploader->setAllowCreateFolders(true);
-        $result = $uploader->save($this->getMediaPath(). $this->getBlogPath());
+        $result = $uploader->save($this->getMediaPath() . $this->getBlogPath());
         return $result;
     }
 
@@ -52,7 +67,6 @@ class PictureSaver
      *
      * @param string $name
      * @return void
-     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function deleteFile($name)
     {
@@ -64,6 +78,8 @@ class PictureSaver
 
     /**
      * Delete prev picture if saving success
+     *
+     * @return void
      */
     public function clearOnSuccess()
     {
@@ -87,19 +103,13 @@ class PictureSaver
      *
      * @param BlogPosts $model
      * @param array $picData
+     *
      * @return array
      */
-    public function getImageData()
+    private function getImageData()
     {
-        if ($this->newPicture) {
-            return $this->newPicture;
-        } else {
-            if ($this->deleteCurrentPicture) {
-                return '';
-            } else {
-                return $this->currentPicture;
-            }
-        }
+        return $this->newPicture ?
+            $this->newPicture : ($this->deleteCurrentPicture ? '' : $this->currentPicture);
     }
 
     /**
@@ -108,6 +118,8 @@ class PictureSaver
      * @param string $currentPicture
      * @param array $picturePostData
      * @param array $picturePostFiles
+     *
+     * @return array
      */
     public function uploadImage($currentPicture, $picturePostData, $picturePostFiles)
     {
@@ -130,10 +142,9 @@ class PictureSaver
      *
      * @return string
      */
-    public function getBlogPath()
+    private function getBlogPath()
     {
-        $pictureConfig =  ObjectManager::getInstance()->get(PictureConfig::class);
-        return $pictureConfig->getBaseMediaPath() . "/";
+        return $this->_pictureConfig->getBaseMediaPath() . "/";
     }
 
     /**
@@ -141,9 +152,8 @@ class PictureSaver
      *
      * @return string
      */
-    public function getMediaPath()
+    private function getMediaPath()
     {
-        return ObjectManager::getInstance()->get(Filesystem::class)
-            ->getDirectoryRead(DirectoryList::MEDIA)->getAbsolutePath();
+        return $this->_fileSystem->getDirectoryRead(DirectoryList::MEDIA)->getAbsolutePath();
     }
 }

@@ -43,18 +43,6 @@ class Collection extends GridCollection implements SearchResultInterface
     }
 
     /**
-     * GetAllIds
-     *
-     * @param integer $limit
-     * @param integer $offset
-     * @return array
-     */
-    public function getAllIds($limit = null, $offset = null)
-    {
-        return $this->getConnection()->fetchCol($this->_getAllIdsSelect($limit, $offset), $this->_bindParams);
-    }
-
-    /**
      * GetSearchCriteria
      */
     public function getSearchCriteria()
