@@ -4,17 +4,16 @@ namespace Alexx\Blog\Model;
 
 use Magento\Backend\App\Action;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\MediaStorage\Model\File\Uploader;
+use Magento\MediaStorage\Model\File\UploaderFactory;
 
 /**
  * Class for saving uploaded image to media directory
  * */
 class PictureSaver
 {
-    private $inputName;
     private $currentPicture = '';
     private $newPicture = false;
     private $deleteCurrentPicture = false;
@@ -23,12 +22,14 @@ class PictureSaver
     private $_file;
     private $pictureDataField;
     private $_currentAction;
+    private $_fileUploaderFactory;
 
     /**
      * @param Filesystem $fileSystem
      * @param PictureConfig $pictureConfig
      * @param File $file
      * @param Action $currentAction
+     * @param UploaderFactory $fileUploaderFactory,
      * @param string $pictureDataField
      *
      * @return void
@@ -38,8 +39,10 @@ class PictureSaver
         PictureConfig $pictureConfig,
         File $file,
         Action $currentAction,
+        UploaderFactory $fileUploaderFactory,
         $pictureDataField
     ) {
+        $this->_fileUploaderFactory = $fileUploaderFactory;
         $this->_currentAction = $currentAction;
         $this->pictureDataField = $pictureDataField;
         $this->_fileSystem = $fileSystem;
@@ -51,11 +54,12 @@ class PictureSaver
      * File Uploader
      *
      * @return bool|array
+     * @throws \Exception
      */
     private function saveFile()
     {
         /** @var Uploader $uploader */
-        $uploader = ObjectManager::getInstance()->create(Uploader::class, ['fileId' => $this->pictureDataField]);
+        $uploader = $this->_fileUploaderFactory->create(['fileId' => $this->pictureDataField]);
         $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
         $uploader->setAllowRenameFiles(true);
         $uploader->setFilesDispersion(true);
