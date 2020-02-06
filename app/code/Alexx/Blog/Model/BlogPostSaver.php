@@ -4,7 +4,6 @@ namespace Alexx\Blog\Model;
 
 use Alexx\Blog\Api\BlogInterface;
 use Magento\Backend\App\Action;
-use Magento\Framework\Model\AbstractModel;
 
 /**
  * Class for create/edit BlogPost data row
@@ -17,24 +16,20 @@ class BlogPostSaver
     private $_currentAction;
     private $formData;
     private $postDataField;
-    private $pictureDataField;
 
     /**
      * @param PictureSaver $pictureSaver
      * @param Action $currentAction
      * @param BlogInterface $model
      * @param string $postDataField
-     * @param string $pictureDataField
      */
     public function __construct(
         PictureSaver $pictureSaver,
         Action $currentAction,
         BlogInterface $model,
-        $postDataField,
-        $pictureDataField
+        $postDataField
     ) {
         $this->postDataField = $postDataField;
-        $this->pictureDataField = $pictureDataField;
         $this->_currentAction = $currentAction;
         $this->model = $model;
         $this->pictureSaver = $pictureSaver;
@@ -67,14 +62,8 @@ class BlogPostSaver
     public function loadPictureData()
     {
         $currentPicture = $this->model->getPicture();
-        $picturePostData = $this->_currentAction->getRequest()->getParam($this->pictureDataField);
-        $picturePostFiles = $this->_currentAction->getRequest()->getFiles($this->pictureDataField);
-        if (!$picturePostData) {
-            $picturePostData = [];
-        }
-        $this->pictureSaver->create($this->pictureDataField);
-        $this->formData['picture'] =
-            $this->pictureSaver->uploadImage($currentPicture, $picturePostData, $picturePostFiles);
+
+        $this->formData['picture'] = $this->pictureSaver->uploadImage($currentPicture);
     }
 
     /**
@@ -100,7 +89,9 @@ class BlogPostSaver
      * Saves model data to db
      *
      * @return void|bool
-     **/
+     *
+     * @throws \Magento\Framework\Exception\FileSystemException
+     */
     public function save()
     {
         $this->model->setData($this->formData);

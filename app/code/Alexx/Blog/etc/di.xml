@@ -24,6 +24,11 @@
             <argument name="postDataField" xsi:type="const">
                 Alexx\Blog\Block\Adminhtml\Index\Edit\Form::DATA_FIELD_NAME
             </argument>
+        </arguments>
+    </type>
+
+    <type name="Alexx\Blog\Model\PictureSaver">
+        <arguments>
             <argument name="pictureDataField" xsi:type="const">
                 Alexx\Blog\Block\Adminhtml\Index\Edit\Form::PICTURE_FIELD_NAME
             </argument>

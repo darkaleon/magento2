@@ -2,11 +2,12 @@
 
 namespace Alexx\Blog\Model;
 
+use Magento\Backend\App\Action;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\MediaStorage\Model\File\Uploader;
-use Magento\Framework\App\ObjectManager;
 
 /**
  * Class for saving uploaded image to media directory
@@ -20,31 +21,30 @@ class PictureSaver
     private $_fileSystem;
     private $_pictureConfig;
     private $_file;
+    private $pictureDataField;
+    private $_currentAction;
 
     /**
      * @param Filesystem $fileSystem
      * @param PictureConfig $pictureConfig
      * @param File $file
+     * @param Action $currentAction
+     * @param string $pictureDataField
      *
      * @return void
      */
-    public function __construct(Filesystem $fileSystem, PictureConfig $pictureConfig, File $file)
-    {
+    public function __construct(
+        Filesystem $fileSystem,
+        PictureConfig $pictureConfig,
+        File $file,
+        Action $currentAction,
+        $pictureDataField
+    ) {
+        $this->_currentAction = $currentAction;
+        $this->pictureDataField = $pictureDataField;
         $this->_fileSystem = $fileSystem;
         $this->_pictureConfig = $pictureConfig;
         $this->_file = $file;
-    }
-    /**
-     * Initial method
-     *
-     * @param string $inputName
-     *
-     * @return $this
-     * */
-    public function create($inputName)
-    {
-        $this->inputName = $inputName;
-        return $this;
     }
 
     /**
@@ -55,7 +55,7 @@ class PictureSaver
     private function saveFile()
     {
         /** @var Uploader $uploader */
-        $uploader = ObjectManager::getInstance()->create(Uploader::class, ['fileId' => $this->inputName]);
+        $uploader = ObjectManager::getInstance()->create(Uploader::class, ['fileId' => $this->pictureDataField]);
         $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
         $uploader->setAllowRenameFiles(true);
         $uploader->setFilesDispersion(true);
@@ -69,6 +69,7 @@ class PictureSaver
      *
      * @param string $name
      * @return void
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function deleteFile($name)
     {
@@ -82,6 +83,7 @@ class PictureSaver
      * Delete prev picture if saving success
      *
      * @return void
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function clearOnSuccess()
     {
@@ -92,6 +94,9 @@ class PictureSaver
 
     /**
      * Delete new picture if saving not success
+     *
+     * @return void
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function clearOnError()
     {
@@ -106,7 +111,7 @@ class PictureSaver
      * @param BlogPosts $model
      * @param array $picData
      *
-     * @return array
+     * @return array|string
      */
     private function getImageData()
     {
@@ -118,13 +123,17 @@ class PictureSaver
      * Managing image upload
      *
      * @param string $currentPicture
-     * @param array $picturePostData
-     * @param array $picturePostFiles
      *
      * @return array
      */
-    public function uploadImage($currentPicture, $picturePostData, $picturePostFiles)
+    public function uploadImage($currentPicture)
     {
+        $picturePostData = $this->_currentAction->getRequest()->getParam($this->pictureDataField);
+        $picturePostFiles = $this->_currentAction->getRequest()->getFiles($this->pictureDataField);
+        if (!$picturePostData) {
+            $picturePostData = [];
+        }
+
         $this->currentPicture = $currentPicture;
         if (array_key_exists("delete", $picturePostData)) {
             $this->deleteCurrentPicture = true;
