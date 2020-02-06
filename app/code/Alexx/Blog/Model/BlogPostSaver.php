@@ -13,9 +13,17 @@ class BlogPostSaver
 {
     /**@var AbstractModel $model */
     private $model;
-    private $pictureSaver = null;
+    private $pictureSaver;
     private $currentAction;
     private $formData;
+
+    /**
+     * @param PictureSaver $pictureSaver
+     */
+    public function __construct(PictureSaver $pictureSaver)
+    {
+        $this->pictureSaver = $pictureSaver;
+    }
 
     /**
      * Loads form data from form to model
@@ -53,8 +61,7 @@ class BlogPostSaver
         if (!$picturePostData) {
             $picturePostData = [];
         }
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->pictureSaver = $objectManager->get(PictureSaver::class)->create($pictureDataField);
+        $this->pictureSaver->create($pictureDataField);
         $this->formData['picture'] =
             $this->pictureSaver->uploadImage($currentPicture, $picturePostData, $picturePostFiles);
     }

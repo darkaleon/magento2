@@ -3,10 +3,8 @@
 namespace Alexx\Blog\Ui\Component\Listing\Column;
 
 use Alexx\Blog\Model\PictureConfig;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
-use Magento\Framework\App\Action\Context as ActionContext;
 use Magento\Ui\Component\Listing\Columns\Column;
 use Magento\Framework\DataObject;
 

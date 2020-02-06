@@ -49,5 +49,4 @@ interface BlogInterface
      * @return string
      */
     public function getUpdatedAt();
-
 }

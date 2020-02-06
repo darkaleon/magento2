@@ -19,17 +19,20 @@ class PictureSaver
     private $deleteCurrentPicture = false;
     private $_fileSystem;
     private $_pictureConfig;
+    private $_file;
 
     /**
      * @param Filesystem $fileSystem
      * @param PictureConfig $pictureConfig
+     * @param File $file
      *
      * @return void
      */
-    public function __construct(Filesystem $fileSystem, PictureConfig $pictureConfig)
+    public function __construct(Filesystem $fileSystem, PictureConfig $pictureConfig, File $file)
     {
         $this->_fileSystem = $fileSystem;
         $this->_pictureConfig = $pictureConfig;
+        $this->_file = $file;
     }
     /**
      * Initial method
@@ -70,8 +73,8 @@ class PictureSaver
     public function deleteFile($name)
     {
         $fileName = $this->getMediaPath() . $name;
-        if (ObjectManager::getInstance()->get(File::class)->isExists($fileName)) {
-            ObjectManager::getInstance()->get(File::class)->deleteFile($fileName);
+        if ($this->_file->isExists($fileName)) {
+            $this->_file->deleteFile($fileName);
         }
     }
 
