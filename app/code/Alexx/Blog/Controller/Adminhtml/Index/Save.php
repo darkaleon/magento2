@@ -2,10 +2,10 @@
 
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
-use Alexx\Blog\Model\BlogPostsFactory;
-use Magento\Backend\App\Action\Context as ActionContext;
-use Magento\Backend\App\Action;
 use Alexx\Blog\Model\BlogPostSaver;
+use Alexx\Blog\Model\BlogPostsFactory;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context as ActionContext;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 
 /**
@@ -75,32 +75,38 @@ class Save extends Action implements HttpPostActionInterface
     public function execute()
     {
         if ($this->getRequest()->getPost()) {
-            $postModel = $this->_blogPostSaver->create($this, $this->_postsFactory);
-
-            if (!$postModel->loadFormData('blog_data')) {
+            if (!$this->_blogPostSaver->loadFormData()) {
                 $this->redirectError(__('This post no longer exists.'), '*/*/');
                 return $this->getResponse();
             }
 
             try {
-                $postModel->loadPictureData('blog_picture');
+                $this->_blogPostSaver->loadPictureData();
             } catch (\Exception $e) {
-                $this->redirectError($e->getMessage(), '*/*/edit', ['id' => $postModel->getFormData('entity_id')]);
+                $this->redirectError(
+                    $e->getMessage(),
+                    '*/*/edit',
+                    ['id' => $this->_blogPostSaver->getFormData('entity_id')]
+                );
                 return $this->getResponse();
             }
 
             try {
-                $modelId = $postModel->save();
+                $modelId = $this->_blogPostSaver->save();
                 if ($modelId) {
                     $this->redirectSuccess($modelId);
                     return $this->getResponse();
                 }
             } catch (\Exception $e) {
-                $this->redirectError($e->getMessage(), '*/*/edit', ['id' => $postModel->getFormData('entity_id')]);
+                $this->redirectError(
+                    $e->getMessage(),
+                    '*/*/edit',
+                    ['id' => $this->_blogPostSaver->getFormData('entity_id')]
+                );
                 return $this->getResponse();
             }
 
-            $this->_getSession()->setFormData($postModel->getFormData());
+            $this->_getSession()->setFormData($this->_blogPostSaver->getFormData());
             $this->_redirect('*/*/edit', ['id' => $this->getRequest()->getPost()['entity_id']]);
         }
         return $this->getResponse();

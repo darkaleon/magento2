@@ -2,19 +2,21 @@
 
 namespace Alexx\Blog\Block\Adminhtml\Index\Edit;
 
-use Magento\Backend\Block\Widget\Form\Generic;
 use Magento\Backend\Block\Template\Context;
-use Magento\Framework\Registry;
-use Magento\Framework\Data\FormFactory;
+use Magento\Backend\Block\Widget\Form\Generic;
 use Magento\Cms\Model\Wysiwyg\Config;
 use Magento\Framework\App\Action\Context as ActionContext;
+use Magento\Framework\Data\FormFactory;
+use Magento\Framework\Registry;
 
 /**
  * Generates form with specific configuration
  */
 class Form extends Generic
 {
-
+    const DATA_FIELD_NAME = 'blog_data';
+    const PICTURE_FIELD_NAME = 'blog_picture';
+    const MODEL_REGISTY_NAME = 'blognews';
     private $_wysiwygConfig;
     private $_objectManager;
 
@@ -49,7 +51,7 @@ class Form extends Generic
     protected function _prepareForm()
     {
         /** @var Magento\Framework\Data\Form $form */
-        $model = $this->_coreRegistry->registry('blognews');
+        $model = $this->_coreRegistry->registry(self::MODEL_REGISTY_NAME);
 
         $form = $this->_formFactory->create(
             [
@@ -70,14 +72,14 @@ class Form extends Generic
             $fieldset->addField(
                 'entity_id',
                 'hidden',
-                ['name' => 'blog_data[entity_id]']
+                ['name' => self::DATA_FIELD_NAME . '[entity_id]']
             );
         }
         $fieldset->addField(
             'theme',
             'text',
             [
-                'name' => 'blog_data[theme]',
+                'name' => self::DATA_FIELD_NAME . '[theme]',
                 'label' => __('Title'),
                 'required' => true
             ]
@@ -87,7 +89,7 @@ class Form extends Generic
             'picture',
             'image',
             [
-                'name' => 'blog_picture',
+                'name' => self::PICTURE_FIELD_NAME,
                 'label' => __('Picture'),
                 'required' => false,
             ]
@@ -98,7 +100,7 @@ class Form extends Generic
             'content',
             'editor',
             [
-                'name' => 'blog_data[content]',
+                'name' => self::DATA_FIELD_NAME . '[content]',
                 'label' => __('Content'),
                 'required' => true,
                 'config' => $wysiwygConfig

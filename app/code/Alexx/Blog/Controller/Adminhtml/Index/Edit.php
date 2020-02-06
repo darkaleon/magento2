@@ -16,20 +16,24 @@ class Edit extends Action implements HttpGetActionInterface
 {
     private $_postsFactory;
     private $_coreRegistry;
+    private $_formRegistyName;
 
     /**
      * @param ActionContext $context
      * @param Registry $coreRegistry
      * @param BlogPostsFactory $postsFactory
+     * @param string $formRegistyName
      *
      * @return void
      */
     public function __construct(
         ActionContext $context,
         Registry $coreRegistry,
-        BlogPostsFactory $postsFactory
+        BlogPostsFactory $postsFactory,
+        $formRegistyName
     ) {
         parent::__construct($context);
+        $this->_formRegistyName = $formRegistyName;
         $this->_postsFactory = $postsFactory;
         $this->_coreRegistry = $coreRegistry;
     }
@@ -58,7 +62,7 @@ class Edit extends Action implements HttpGetActionInterface
             $model->setData($data);
         }
 
-        $this->_coreRegistry->register('blognews', $model);
+        $this->_coreRegistry->register($this->_formRegistyName, $model);
         return $this->resultFactory->create(ResultFactory::TYPE_PAGE);
     }
 }

@@ -2,39 +2,52 @@
 
 namespace Alexx\Blog\Model;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
+use Alexx\Blog\Api\BlogInterface;
+use Magento\Backend\App\Action;
 use Magento\Framework\Model\AbstractModel;
-use Magento\MediaStorage\Model\File\Uploader;
 
 /**
  * Class for create/edit BlogPost data row
  * */
 class BlogPostSaver
 {
-    /**@var AbstractModel $model */
+    /**@var BlogInterface $model */
     private $model;
     private $pictureSaver;
-    private $currentAction;
+    private $_currentAction;
     private $formData;
+    private $postDataField;
+    private $pictureDataField;
 
     /**
      * @param PictureSaver $pictureSaver
+     * @param Action $currentAction
+     * @param BlogInterface $model
+     * @param string $postDataField
+     * @param string $pictureDataField
      */
-    public function __construct(PictureSaver $pictureSaver)
-    {
+    public function __construct(
+        PictureSaver $pictureSaver,
+        Action $currentAction,
+        BlogInterface $model,
+        $postDataField,
+        $pictureDataField
+    ) {
+        $this->postDataField = $postDataField;
+        $this->pictureDataField = $pictureDataField;
+        $this->_currentAction = $currentAction;
+        $this->model = $model;
         $this->pictureSaver = $pictureSaver;
     }
 
     /**
      * Loads form data from form to model
      *
-     * @param string $postDataField
-     *
      * @return bool
      **/
-    public function loadFormData($postDataField)
+    public function loadFormData()
     {
-        $this->formData = $this->currentAction->getRequest()->getParam($postDataField);
+        $this->formData = $this->_currentAction->getRequest()->getParam($this->postDataField);
         $postId = $this->formData[$this->model::BLOG_ID] ?? null;
 
         if ($postId) {
@@ -49,36 +62,19 @@ class BlogPostSaver
     /**
      * Uploads  image posted by form
      *
-     * @param string $pictureDataField
-     *
      * @return void
      **/
-    public function loadPictureData($pictureDataField)
+    public function loadPictureData()
     {
-        $currentPicture = $this->model->getData('picture');
-        $picturePostData = $this->currentAction->getRequest()->getParam($pictureDataField);
-        $picturePostFiles = $this->currentAction->getRequest()->getFiles($pictureDataField);
+        $currentPicture = $this->model->getPicture();
+        $picturePostData = $this->_currentAction->getRequest()->getParam($this->pictureDataField);
+        $picturePostFiles = $this->_currentAction->getRequest()->getFiles($this->pictureDataField);
         if (!$picturePostData) {
             $picturePostData = [];
         }
-        $this->pictureSaver->create($pictureDataField);
+        $this->pictureSaver->create($this->pictureDataField);
         $this->formData['picture'] =
             $this->pictureSaver->uploadImage($currentPicture, $picturePostData, $picturePostFiles);
-    }
-
-    /**
-     * Init functin
-     *
-     * @param \Magento\Framework\App\Action\Action $currentAction
-     * @param \Magento\Framework\Model\AbstractModel $modelFactory
-     *
-     * @return $this
-     **/
-    public function create($currentAction, $modelFactory)
-    {
-        $this->currentAction = $currentAction;
-        $this->model = $modelFactory->create();
-        return $this;
     }
 
     /**
@@ -96,7 +92,6 @@ class BlogPostSaver
             } else {
                 return null;
             }
-
         }
         return $this->formData;
     }
