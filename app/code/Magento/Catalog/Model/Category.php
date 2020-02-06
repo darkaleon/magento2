@@ -20,7 +20,7 @@ use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
  *
  * @api
  * @method Category setAffectedProductIds(array $productIds)
- * @method array getAffectedProductIds()IdentityInterface
+ * @method array getAffectedProductIds()
  * @method Category setMovedCategoryId(array $productIds)
  * @method int getMovedCategoryId()
  * @method Category setAffectedCategoryIds(array $categoryIds)
