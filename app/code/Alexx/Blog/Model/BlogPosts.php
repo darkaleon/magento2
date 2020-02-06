@@ -4,11 +4,12 @@ namespace Alexx\Blog\Model;
 
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\App\ObjectManager;
+use Alexx\Blog\Api\BlogInterface;
 
 /**
  * Simple Model BlogPosts
  */
-class BlogPosts extends AbstractModel
+class BlogPosts extends AbstractModel implements BlogInterface
 {
     const BLOG_TABLE = 'alexx_blog_posts';
     const BLOG_ID = 'entity_id';
@@ -40,5 +41,45 @@ class BlogPosts extends AbstractModel
     protected function _construct()
     {
         $this->_init(ResourceModel\BlogPosts::class);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPicture()
+    {
+        return $this->getData('picture');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getTheme()
+    {
+        return $this->getData('theme');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getContent()
+    {
+        return $this->getData('content');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCreatedAt()
+    {
+        return $this->getData('created_at');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUpdatedAt()
+    {
+        return $this->getData('updated_at');
     }
 }
