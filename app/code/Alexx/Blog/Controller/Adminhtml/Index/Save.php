@@ -17,8 +17,6 @@ class Save extends Action implements HttpPostActionInterface
     private $_blogPostSaver;
 
     /**
-     * Constructor
-     *
      * @param ActionContext $context
      * @param BlogPostsFactory $postsFactory
      * @param BlogPostSaver $blogPostSaver

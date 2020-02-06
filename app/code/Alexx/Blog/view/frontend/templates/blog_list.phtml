@@ -9,7 +9,7 @@ if ($block->isBlogIsEnabled()) {
             <?php foreach ($posts as $post) { ?>
                 <div class="blog-card">
                     <div>
-                        <img src="<?= $block->escapeUrl($post->getImageUrl()) ?>">
+                        <img src="<?= $block->escapeUrl($post->getPictureUrl()) ?>">
                     </div>
                     <span><?= $block->escapeHtml($post->getTheme()) ?></span>
                 </div>

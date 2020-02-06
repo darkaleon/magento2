@@ -18,8 +18,6 @@ class BlogThumbnail extends Column
     private $_pictureConfig;
 
     /**
-     * Constructor
-     *
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
      * @param PictureConfig $pictureConfig

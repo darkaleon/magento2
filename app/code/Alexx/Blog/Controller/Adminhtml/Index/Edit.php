@@ -18,8 +18,6 @@ class Edit extends Action implements HttpGetActionInterface
     private $_coreRegistry;
 
     /**
-     * Constructor
-     *
      * @param ActionContext $context
      * @param Registry $coreRegistry
      * @param BlogPostsFactory $postsFactory

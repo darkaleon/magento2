@@ -22,8 +22,6 @@ class BlogList extends Template
     private $_currentProduct;
 
     /**
-     * Constructor
-     *
      * @param Context $context
      * @param BlogPostsFactory $blogsFactory
      * @param ScopeConfigInterface $scopeConfig

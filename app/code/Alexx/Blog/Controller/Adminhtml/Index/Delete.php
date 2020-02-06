@@ -17,8 +17,6 @@ class Delete extends Action implements HttpPostActionInterface
     private $pictureSaver;
 
     /**
-     * Constructor
-     *
      * @param ActionContext $context
      * @param BlogPostsFactory $postsFactory
      * @param PictureSaver $pictureSaver

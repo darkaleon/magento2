@@ -17,8 +17,6 @@ class PictureConfig
     private $_repository;
 
     /**
-     * Constructor
-     *
      * @param Context $context
      * @param StoreManagerInterface $storeManager
      * @param Repository $repository

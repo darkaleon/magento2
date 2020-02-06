@@ -19,9 +19,8 @@ class PictureSaver
     private $deleteCurrentPicture = false;
     private $_fileSystem;
     private $_pictureConfig;
+
     /**
-     * Constructor
-     *
      * @param Filesystem $fileSystem
      * @param PictureConfig $pictureConfig
      *
@@ -33,7 +32,7 @@ class PictureSaver
         $this->_pictureConfig = $pictureConfig;
     }
     /**
-     * Constructor
+     * Initial method
      *
      * @param string $inputName
      *

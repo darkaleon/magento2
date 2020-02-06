@@ -19,8 +19,6 @@ class Form extends Generic
     private $_objectManager;
 
     /**
-     * Constructor
-     *
      * @param Context $context
      * @param Registry $registry
      * @param FormFactory $formFactory
