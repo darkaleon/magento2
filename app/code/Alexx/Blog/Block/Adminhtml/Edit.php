@@ -16,9 +16,7 @@ class Edit extends Container
      *
      * @var Magento\Framework\Registry
      */
-    protected $_coreRegistry = null;
-
-    protected $_objectId = 'id';
+    protected $_coreRegistry;
 
     protected $_controller = 'adminhtml_index';
 

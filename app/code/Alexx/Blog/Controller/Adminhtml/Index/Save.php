@@ -13,6 +13,9 @@ use Magento\Framework\App\Action\HttpPostActionInterface;
  */
 class Save extends Action implements HttpPostActionInterface
 {
+    const ADMIN_RESOURCE = 'Alexx_Blog::menu';
+
+    private $_currentAction;
     private $_postsFactory;
     private $_blogPostSaver;
 
@@ -29,6 +32,7 @@ class Save extends Action implements HttpPostActionInterface
         BlogPostSaver $blogPostSaver
     ) {
         parent::__construct($context);
+        $this->_currentAction = $context;
 
         $this->_postsFactory = $postsFactory;
         $this->_blogPostSaver = $blogPostSaver;
@@ -72,7 +76,7 @@ class Save extends Action implements HttpPostActionInterface
     /**
      * @inheritDoc
      */
-    public function execute()
+    public function execute2()
     {
         if ($this->getRequest()->getPost()) {
             if (!$this->_blogPostSaver->loadFormData()) {
@@ -111,4 +115,44 @@ class Save extends Action implements HttpPostActionInterface
         }
         return $this->getResponse();
     }
+
+
+
+    public function execute()
+    {
+
+        if ($this->getRequest()->getPost()) {
+            if (!$this->_blogPostSaver->loadFormData2()) {
+                $this->redirectError(__('This post no longer exists.'), '*/*/');
+                return $this->getResponse();
+            }
+
+
+
+
+            try {
+                $modelId = $this->_blogPostSaver->save();
+                if ($modelId) {
+                    $this->redirectSuccess($modelId);
+                    return $this->getResponse();
+                }
+            } catch (\Exception $e) {
+                $this->redirectError(
+                    $e->getMessage(),
+                    '*/*/edit',
+                    ['id' => $this->_blogPostSaver->getFormData('entity_id')]
+                );
+                return $this->getResponse();
+            }
+
+
+
+        }
+
+
+        var_dump($this->_blogPostSaver->getFormData());exit;
+        $model->setData($data);
+        $model->save();
+    }
+
 }

@@ -13,6 +13,8 @@ use Magento\Framework\App\Action\HttpPostActionInterface;
  */
 class Delete extends Action implements HttpPostActionInterface
 {
+    const ADMIN_RESOURCE = 'Alexx_Blog::menu';
+
     private $_postsFactory;
     private $pictureSaver;
 

@@ -14,6 +14,8 @@ use Magento\Framework\Registry;
  */
 class Edit extends Action implements HttpGetActionInterface
 {
+    const ADMIN_RESOURCE = 'Alexx_Blog::menu';
+
     private $_postsFactory;
     private $_coreRegistry;
     private $_formRegistyName;

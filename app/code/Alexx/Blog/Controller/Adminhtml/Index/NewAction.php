@@ -9,6 +9,8 @@ use Magento\Framework\App\Action\HttpGetActionInterface;
  */
 class NewAction extends Edit implements HttpGetActionInterface
 {
+    const ADMIN_RESOURCE = 'Alexx_Blog::menu';
+
     /**
      * @inheritDoc
      */

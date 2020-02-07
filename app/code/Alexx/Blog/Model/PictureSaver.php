@@ -6,7 +6,6 @@ use Magento\Backend\App\Action;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Driver\File;
-use Magento\MediaStorage\Model\File\Uploader;
 use Magento\MediaStorage\Model\File\UploaderFactory;
 
 /**
@@ -29,7 +28,7 @@ class PictureSaver
      * @param PictureConfig $pictureConfig
      * @param File $file
      * @param Action $currentAction
-     * @param UploaderFactory $fileUploaderFactory,
+     * @param UploaderFactory $fileUploaderFactory
      * @param string $pictureDataField
      *
      * @return void
@@ -58,7 +57,7 @@ class PictureSaver
      */
     private function saveFile()
     {
-        /** @var Uploader $uploader */
+        /** @var Magento\MediaStorage\Model\File\Uploader $uploader */
         $uploader = $this->_fileUploaderFactory->create(['fileId' => $this->pictureDataField]);
         $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
         $uploader->setAllowRenameFiles(true);

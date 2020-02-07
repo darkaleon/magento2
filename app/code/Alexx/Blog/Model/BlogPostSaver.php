@@ -14,7 +14,7 @@ class BlogPostSaver
     private $model;
     private $pictureSaver;
     private $_currentAction;
-    private $formData;
+    private $formData = [];
     private $postDataField;
 
     /**
@@ -34,6 +34,32 @@ class BlogPostSaver
         $this->model = $model;
         $this->pictureSaver = $pictureSaver;
     }
+
+    public function loadFormData2(){
+        $dataFields=['entity_id','theme','content','picture','pictureUploader'];
+        foreach ($dataFields as $fieldName){
+            $this->formData[$fieldName]=$this->_currentAction->getRequest()->getParam($fieldName);
+        }
+        $postId = $this->formData[$this->model::BLOG_ID] ?? null;
+
+        if ($postId) {
+            $this->model->load($postId);
+            if (empty($this->model->getData())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+/*    public function loadPictureData2()
+        {
+            //Replace icon with fileuploader field name
+            if (isset($this->formData['pictureUploader'][0]['name'])) {
+                $this->formData['picture'] = $this->formData['pictureUploader'][0]['url'];
+            }
+    }*/
+
 
     /**
      * Loads form data from form to model

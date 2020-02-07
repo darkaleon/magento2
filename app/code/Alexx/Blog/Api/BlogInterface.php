@@ -5,7 +5,6 @@ namespace Alexx\Blog\Api;
 /*
  * Blog storage is used to retrieve posts data.
  * */
-
 interface BlogInterface
 {
 
@@ -69,6 +68,4 @@ interface BlogInterface
      * Save object data
      */
     public function save();
-
-
 }
