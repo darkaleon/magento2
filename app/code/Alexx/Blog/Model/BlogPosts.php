@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Alexx\Blog\Model;
 
@@ -8,6 +9,7 @@ use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Registry;
+use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 
 /**
  * Simple Model BlogPosts
@@ -17,12 +19,12 @@ class BlogPosts extends AbstractModel implements BlogInterface
     const BLOG_TABLE = 'alexx_blog_posts';
     const BLOG_ID = 'entity_id';
 
-    private $_pictureConfig;
+    private $blogMediaConfig;
 
     /**
      * @param Context $context
      * @param Registry $registry
-     * @param PictureConfig $pictureConfig
+     * @param  BlogMediaConfig $blogMediaConfig
      * @param AbstractResource $resource
      * @param AbstractDb $resourceCollection
      * @param array $data
@@ -30,12 +32,13 @@ class BlogPosts extends AbstractModel implements BlogInterface
     public function __construct(
         Context $context,
         Registry $registry,
-        PictureConfig $pictureConfig,
+        BlogMediaConfig $blogMediaConfig,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        $this->_pictureConfig = $pictureConfig;
+        $this->blogMediaConfig = $blogMediaConfig;
+
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
@@ -46,7 +49,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
      */
     public function getPictureUrl()
     {
-        return $this->_pictureConfig->getBlogImageUrl($this->getPicture());
+        return $this->blogMediaConfig->getBlogImageUrl($this->getPicture());
     }
 
     /**

@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Alexx\Blog\Model;
 
 use Alexx\Blog\Api\BlogInterface;
+use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Magento\Backend\App\Action;
 
 /**
@@ -15,51 +17,25 @@ class BlogPostSaver
     private $pictureSaver;
     private $_currentAction;
     private $formData = [];
-    private $postDataField;
+    private $blogMediaConfig;
 
     /**
      * @param PictureSaver $pictureSaver
+     * @param BlogMediaConfig $blogMediaConfig
      * @param Action $currentAction
      * @param BlogInterface $model
-     * @param string $postDataField
      */
     public function __construct(
         PictureSaver $pictureSaver,
+        BlogMediaConfig $blogMediaConfig,
         Action $currentAction,
-        BlogInterface $model,
-        $postDataField
+        BlogInterface $model
     ) {
-        $this->postDataField = $postDataField;
+        $this->blogMediaConfig = $blogMediaConfig;
         $this->_currentAction = $currentAction;
         $this->model = $model;
         $this->pictureSaver = $pictureSaver;
     }
-
-    public function loadFormData2(){
-        $dataFields=['entity_id','theme','content','picture','pictureUploader'];
-        foreach ($dataFields as $fieldName){
-            $this->formData[$fieldName]=$this->_currentAction->getRequest()->getParam($fieldName);
-        }
-        $postId = $this->formData[$this->model::BLOG_ID] ?? null;
-
-        if ($postId) {
-            $this->model->load($postId);
-            if (empty($this->model->getData())) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-/*    public function loadPictureData2()
-        {
-            //Replace icon with fileuploader field name
-            if (isset($this->formData['pictureUploader'][0]['name'])) {
-                $this->formData['picture'] = $this->formData['pictureUploader'][0]['url'];
-            }
-    }*/
-
 
     /**
      * Loads form data from form to model
@@ -68,15 +44,22 @@ class BlogPostSaver
      **/
     public function loadFormData()
     {
-        $this->formData = $this->_currentAction->getRequest()->getParam($this->postDataField);
+        $dataFields=['entity_id','theme','content','picture'];
+        foreach ($dataFields as $fieldName) {
+            if (!empty($this->_currentAction->getRequest()->getParam($fieldName))) {
+                $this->formData[$fieldName]=$this->_currentAction->getRequest()->getParam($fieldName);
+            }
+        }
         $postId = $this->formData[$this->model::BLOG_ID] ?? null;
 
         if ($postId) {
             $this->model->load($postId);
+
             if (empty($this->model->getData())) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -87,9 +70,11 @@ class BlogPostSaver
      **/
     public function loadPictureData()
     {
-        $currentPicture = $this->model->getPicture();
+        //Replace icon with fileuploader field name
 
-        $this->formData['picture'] = $this->pictureSaver->uploadImage($currentPicture);
+        if (isset($this->formData['picture'][0]['file'])) {
+            $this->formData['picture'][0]= $this->pictureSaver->uploadImage($this->formData['picture'][0]);
+        }
     }
 
     /**
@@ -120,21 +105,34 @@ class BlogPostSaver
      */
     public function save()
     {
-        $this->model->setData($this->formData);
+        $this->model->setData($this->adaptFormData($this->formData));
+        if (!$this->model->getId()) {
+            $this->model->setData('entity_id', null);
+        }
         try {
             // Save news
             $this->model->save();
-            // Display success message
-            if ($this->pictureSaver) {
-                $this->pictureSaver->clearOnSuccess();
-            }
             return $this->model->getId();
         } catch (\Exception $e) {
-            if ($this->pictureSaver) {
-                $this->pictureSaver->clearOnError();
-            }
             throw $e;
         }
         return false;
+    }
+
+    /**
+     * Returns parsed form data
+     *
+     * @param array $formData
+     *
+     * @return array
+     */
+    public function adaptFormData($formData)
+    {
+        if (isset($formData['picture'])) {
+            $formData['picture']=$formData['picture'][0]['url'];
+        } else {
+            $formData['picture']=null;
+        }
+        return $formData;
     }
 }

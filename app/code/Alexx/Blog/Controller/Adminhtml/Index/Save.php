@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
@@ -6,6 +7,7 @@ use Alexx\Blog\Model\BlogPostSaver;
 use Alexx\Blog\Model\BlogPostsFactory;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context as ActionContext;
+use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 
 /**
@@ -18,21 +20,25 @@ class Save extends Action implements HttpPostActionInterface
     private $_currentAction;
     private $_postsFactory;
     private $_blogPostSaver;
+    protected $_session;
 
     /**
      * @param ActionContext $context
      * @param BlogPostsFactory $postsFactory
      * @param BlogPostSaver $blogPostSaver
+     * @param Session $session
      *
      * @return void
      * */
     public function __construct(
         ActionContext $context,
         BlogPostsFactory $postsFactory,
-        BlogPostSaver $blogPostSaver
+        BlogPostSaver $blogPostSaver,
+        Session $session
     ) {
         parent::__construct($context);
         $this->_currentAction = $context;
+        $this->_session = $session;
 
         $this->_postsFactory = $postsFactory;
         $this->_blogPostSaver = $blogPostSaver;
@@ -66,7 +72,7 @@ class Save extends Action implements HttpPostActionInterface
 
         // Check if 'Save and Continue'
         if ($this->getRequest()->getParam('back')) {
-            $this->_redirect('*/*/edit', ['id' => $result, '_current' => true]);
+            $this->_redirect('*/*/editform', ['id' => $result, '_current' => true]);
             return;
         }
         // Go to grid page
@@ -74,24 +80,39 @@ class Save extends Action implements HttpPostActionInterface
     }
 
     /**
+     * Handling redirect when error
+     *
+     * @param string $message
+     * @param array $formData
+     * */
+    private function errorRedirect($message, $formData = [])
+    {
+        $this->_session->setBlogPostForm($formData);
+
+        if (empty($formData)) {
+            $this->redirectError($message, '*/*/');
+        } elseif (isset($formData['entity_id'])) {
+            $this->redirectError($message, '*/*/editform', ['id' => $formData['entity_id']]);
+        } else {
+            $this->redirectError($message, '*/*/newform');
+        }
+    }
+
+    /**
      * @inheritDoc
      */
-    public function execute2()
+    public function execute()
     {
         if ($this->getRequest()->getPost()) {
             if (!$this->_blogPostSaver->loadFormData()) {
-                $this->redirectError(__('This post no longer exists.'), '*/*/');
+                $this->errorRedirect(__('This post no longer exists.'));
                 return $this->getResponse();
             }
 
             try {
                 $this->_blogPostSaver->loadPictureData();
             } catch (\Exception $e) {
-                $this->redirectError(
-                    $e->getMessage(),
-                    '*/*/edit',
-                    ['id' => $this->_blogPostSaver->getFormData('entity_id')]
-                );
+                $this->errorRedirect($e->getMessage(), $this->_blogPostSaver->getFormData());
                 return $this->getResponse();
             }
 
@@ -102,57 +123,11 @@ class Save extends Action implements HttpPostActionInterface
                     return $this->getResponse();
                 }
             } catch (\Exception $e) {
-                $this->redirectError(
-                    $e->getMessage(),
-                    '*/*/edit',
-                    ['id' => $this->_blogPostSaver->getFormData('entity_id')]
-                );
+                $this->errorRedirect($e->getMessage(), $this->_blogPostSaver->getFormData());
                 return $this->getResponse();
             }
-
-            $this->_getSession()->setFormData($this->_blogPostSaver->getFormData());
-            $this->_redirect('*/*/edit', ['id' => $this->getRequest()->getPost()['entity_id']]);
         }
+        $this->errorRedirect(__('Not saved.'), $this->_blogPostSaver->getFormData());
         return $this->getResponse();
     }
-
-
-
-    public function execute()
-    {
-
-        if ($this->getRequest()->getPost()) {
-            if (!$this->_blogPostSaver->loadFormData2()) {
-                $this->redirectError(__('This post no longer exists.'), '*/*/');
-                return $this->getResponse();
-            }
-
-
-
-
-            try {
-                $modelId = $this->_blogPostSaver->save();
-                if ($modelId) {
-                    $this->redirectSuccess($modelId);
-                    return $this->getResponse();
-                }
-            } catch (\Exception $e) {
-                $this->redirectError(
-                    $e->getMessage(),
-                    '*/*/edit',
-                    ['id' => $this->_blogPostSaver->getFormData('entity_id')]
-                );
-                return $this->getResponse();
-            }
-
-
-
-        }
-
-
-        var_dump($this->_blogPostSaver->getFormData());exit;
-        $model->setData($data);
-        $model->save();
-    }
-
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
@@ -47,10 +48,6 @@ class Delete extends Action implements HttpPostActionInterface
                 $blogPost = $model->load($postId);
 
                 if (!empty($blogPost->getData())) {
-
-                    if (!empty($blogPost->getPicture())) {
-                        $this->pictureSaver->deleteFile($blogPost->getPicture());
-                    }
                     $blogPost->delete();
                     $this->messageManager->addSuccess(__('The post has been deleted.'));
                 } else {

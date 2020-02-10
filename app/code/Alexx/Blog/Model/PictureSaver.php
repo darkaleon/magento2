@@ -1,11 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace Alexx\Blog\Model;
 
+use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Magento\Backend\App\Action;
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\Image\AdapterFactory;
+use Magento\MediaStorage\Helper\File\Storage\Database;
 use Magento\MediaStorage\Model\File\UploaderFactory;
 
 /**
@@ -13,40 +15,40 @@ use Magento\MediaStorage\Model\File\UploaderFactory;
  * */
 class PictureSaver
 {
-    private $currentPicture = '';
-    private $newPicture = false;
-    private $deleteCurrentPicture = false;
     private $_fileSystem;
-    private $_pictureConfig;
-    private $_file;
-    private $pictureDataField;
+    private $blogMediaConfig;
     private $_currentAction;
     private $_fileUploaderFactory;
+    private $adapterFactory;
+    private $coreFileStorageDatabase;
+    private $mediaDirectory;
 
     /**
+     * @param Database $coreFileStorageDatabase
      * @param Filesystem $fileSystem
-     * @param PictureConfig $pictureConfig
-     * @param File $file
+     * @param  BlogMediaConfig $blogMediaConfig
      * @param Action $currentAction
      * @param UploaderFactory $fileUploaderFactory
-     * @param string $pictureDataField
-     *
-     * @return void
+     * @param AdapterFactory $adapterFactory
      */
     public function __construct(
+        Database $coreFileStorageDatabase,
         Filesystem $fileSystem,
-        PictureConfig $pictureConfig,
-        File $file,
+        BlogMediaConfig $blogMediaConfig,
         Action $currentAction,
         UploaderFactory $fileUploaderFactory,
-        $pictureDataField
+        AdapterFactory $adapterFactory
     ) {
+        $this->coreFileStorageDatabase = $coreFileStorageDatabase;
+        $this->mediaDirectory = $fileSystem->getDirectoryWrite(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA);
+
         $this->_fileUploaderFactory = $fileUploaderFactory;
         $this->_currentAction = $currentAction;
-        $this->pictureDataField = $pictureDataField;
+
         $this->_fileSystem = $fileSystem;
-        $this->_pictureConfig = $pictureConfig;
-        $this->_file = $file;
+        $this->blogMediaConfig = $blogMediaConfig;
+
+        $this->adapterFactory = $adapterFactory;
     }
 
     /**
@@ -55,119 +57,65 @@ class PictureSaver
      * @return bool|array
      * @throws \Exception
      */
-    private function saveFile()
+    public function saveFile()
     {
-        /** @var Magento\MediaStorage\Model\File\Uploader $uploader */
-        $uploader = $this->_fileUploaderFactory->create(['fileId' => $this->pictureDataField]);
+        /** @var \Magento\MediaStorage\Model\File\Uploader $uploader */
+        $uploader = $this->_fileUploaderFactory->create(['fileId' => 'picture']);
         $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
+
+        $imageAdapter = $this->adapterFactory->create();
+        $uploader->addValidateCallback('blog_image', $imageAdapter, 'validateUploadFile');
         $uploader->setAllowRenameFiles(true);
         $uploader->setFilesDispersion(true);
         $uploader->setAllowCreateFolders(true);
-        $result = $uploader->save($this->getMediaPath() . $this->getBlogPath());
+
+        $result = $uploader->save($this->blogMediaConfig->getTmpUploadDir());
+        $fullFilePath = $result['path'] . $result['file'];
+
+        unset($result['tmp_name']);
+        unset($result['path']);
+        $result['url'] = $this->blogMediaConfig->getUrlToSavedFile($fullFilePath);
+
         return $result;
-    }
-
-    /**
-     * Delete file
-     *
-     * @param string $name
-     * @return void
-     * @throws \Magento\Framework\Exception\FileSystemException
-     */
-    public function deleteFile($name)
-    {
-        $fileName = $this->getMediaPath() . $name;
-        if ($this->_file->isExists($fileName)) {
-            $this->_file->deleteFile($fileName);
-        }
-    }
-
-    /**
-     * Delete prev picture if saving success
-     *
-     * @return void
-     * @throws \Magento\Framework\Exception\FileSystemException
-     */
-    public function clearOnSuccess()
-    {
-        if ($this->deleteCurrentPicture) {
-            $this->deleteFile($this->currentPicture);
-        }
-    }
-
-    /**
-     * Delete new picture if saving not success
-     *
-     * @return void
-     * @throws \Magento\Framework\Exception\FileSystemException
-     */
-    public function clearOnError()
-    {
-        if ($this->newPicture) {
-            $this->deleteFile($this->newPicture);
-        }
-    }
-
-    /**
-     * Upload file to media path
-     *
-     * @param BlogPosts $model
-     * @param array $picData
-     *
-     * @return array|string
-     */
-    private function getImageData()
-    {
-        return $this->newPicture ?
-            $this->newPicture : ($this->deleteCurrentPicture ? '' : $this->currentPicture);
     }
 
     /**
      * Managing image upload
      *
-     * @param string $currentPicture
+     * @param array $tmpPicture
      *
      * @return array
      */
-    public function uploadImage($currentPicture)
+    public function uploadImage($tmpPicture)
     {
-        $picturePostData = $this->_currentAction->getRequest()->getParam($this->pictureDataField);
-        $picturePostFiles = $this->_currentAction->getRequest()->getFiles($this->pictureDataField);
-        if (!$picturePostData) {
-            $picturePostData = [];
-        }
+        $baseTmpPath = 'tmp/blog';
+        $basePath = 'blog';
 
-        $this->currentPicture = $currentPicture;
-        if (array_key_exists("delete", $picturePostData)) {
-            $this->deleteCurrentPicture = true;
-        }
-        if ($picturePostFiles["size"] > 0) {
-            $file = $this->saveFile();
-            $this->newPicture = $this->getBlogPath() . ltrim($file['file'], '/');
-            if ($this->currentPicture != '') {
-                $this->deleteCurrentPicture = true;
-            }
-        }
-        return $this->getImageData();
-    }
+        $sourceTmpFile = $this->blogMediaConfig->getFilePath($baseTmpPath, $tmpPicture['file']);
 
-    /**
-     * Media path to files from picture config
-     *
-     * @return string
-     */
-    private function getBlogPath()
-    {
-        return $this->_pictureConfig->getBaseMediaPath() . "/";
-    }
+        $baseImagePath= $this->blogMediaConfig->getFilePath($basePath, $tmpPicture['file']);
 
-    /**
-     * Media path to files
-     *
-     * @return string
-     */
-    private function getMediaPath()
-    {
-        return $this->_fileSystem->getDirectoryRead(DirectoryList::MEDIA)->getAbsolutePath();
+        $destinationFile=$this->blogMediaConfig->getNewFileName($baseImagePath);
+
+        $uploadedPicture=[
+            'name'=>$destinationFile,
+            'url'=>$this->blogMediaConfig->getUrlToSavedFile($destinationFile)
+        ];
+
+        try {
+            $this->coreFileStorageDatabase->copyFile(
+                $sourceTmpFile,
+                $destinationFile
+            );
+            $this->mediaDirectory->renameFile(
+                $sourceTmpFile,
+                $destinationFile
+            );
+        } catch (\Exception $e) {
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __('Something went wrong while saving the file(s).')
+            );
+        }
+        return $uploadedPicture;
     }
 }

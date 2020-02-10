@@ -1,20 +1,17 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Backend\App\Action;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\ObjectManager;
+use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 
+/**
+ * Admin Controller that perform uploading image from form and store it in tmp directory
+ */
 class ImageUpload extends Action implements HttpPostActionInterface
 {
-    /**
-     * Authorization level of a basic admin session
-     *
-     * @see _isAllowed()
-     */
     const ADMIN_RESOURCE = 'Alexx_Blog::menu';
 
     /**
@@ -42,33 +39,27 @@ class ImageUpload extends Action implements HttpPostActionInterface
      */
     private $filesystem;
 
-    /**
-     * @var \Magento\Catalog\Model\Product\Media\Config
-     */
-    private $productMediaConfig;
+    private $blogMediaConfig;
 
     /**
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\Controller\Result\RawFactory $resultRawFactory
      * @param \Magento\Framework\Image\AdapterFactory $adapterFactory
      * @param \Magento\Framework\Filesystem $filesystem
-     * @param \Magento\Catalog\Model\Product\Media\Config $productMediaConfig
+     * @param BlogMediaConfig $blogMediaConfig
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Controller\Result\RawFactory $resultRawFactory,
-        \Magento\Framework\Image\AdapterFactory $adapterFactory = null,
-        \Magento\Framework\Filesystem $filesystem = null,
-        \Magento\Catalog\Model\Product\Media\Config $productMediaConfig = null
+        \Magento\Framework\Image\AdapterFactory $adapterFactory,
+        \Magento\Framework\Filesystem $filesystem,
+        BlogMediaConfig $blogMediaConfig
     ) {
         parent::__construct($context);
         $this->resultRawFactory = $resultRawFactory;
-        $this->adapterFactory = $adapterFactory ?: ObjectManager::getInstance()
-            ->get(\Magento\Framework\Image\AdapterFactory::class);
-        $this->filesystem = $filesystem ?: ObjectManager::getInstance()
-            ->get(\Magento\Framework\Filesystem::class);
-        $this->productMediaConfig = $productMediaConfig ?: ObjectManager::getInstance()
-            ->get(\Magento\Catalog\Model\Product\Media\Config::class);
+        $this->adapterFactory = $adapterFactory;
+        $this->filesystem = $filesystem;
+        $this->blogMediaConfig = $blogMediaConfig;
     }
 
     /**
@@ -79,25 +70,10 @@ class ImageUpload extends Action implements HttpPostActionInterface
     public function execute()
     {
         try {
-            $uploader = $this->_objectManager->create(
-                \Magento\MediaStorage\Model\File\Uploader::class,
-                ['fileId' => 'pictureUploader']
-            );
-            $uploader->setAllowedExtensions($this->getAllowedExtensions());
-            $imageAdapter = $this->adapterFactory->create();
-            $uploader->addValidateCallback('blog_image', $imageAdapter, 'validateUploadFile');
-            $uploader->setAllowRenameFiles(true);
-            $uploader->setFilesDispersion(true);
-            $mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
-            $result = $uploader->save(
-                $mediaDirectory->getAbsolutePath($this->productMediaConfig->getBaseTmpMediaPath())
-            );
 
-            unset($result['tmp_name']);
-            unset($result['path']);
+            $uploader = $this->_objectManager->get(\Alexx\Blog\Model\PictureSaver::class);
+            $result=$uploader->saveFile();
 
-            $result['url'] = $this->productMediaConfig->getTmpMediaUrl($result['file']);
-            $result['file'] = $result['file'] . '.tmp';
         } catch (\Exception $e) {
             $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
         }

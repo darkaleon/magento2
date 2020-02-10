@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Alexx\Blog\Ui\Component\Listing\Column;
 
-use Alexx\Blog\Model\PictureConfig;
+use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
@@ -13,12 +14,12 @@ use Magento\Framework\DataObject;
  */
 class BlogThumbnail extends Column
 {
-    private $_pictureConfig;
+    private $blogMediaConfig;
 
     /**
      * @param ContextInterface $context
      * @param UiComponentFactory $uiComponentFactory
-     * @param PictureConfig $pictureConfig
+     * @param BlogMediaConfig $blogMediaConfig
      * @param array $components
      * @param array $data
      *
@@ -27,12 +28,12 @@ class BlogThumbnail extends Column
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        PictureConfig $pictureConfig,
+        BlogMediaConfig $blogMediaConfig,
         array $components = [],
         array $data = []
     ) {
         parent::__construct($context, $uiComponentFactory, $components, $data);
-        $this->_pictureConfig = $pictureConfig;
+        $this->blogMediaConfig = $blogMediaConfig;
     }
 
     /**
@@ -44,7 +45,7 @@ class BlogThumbnail extends Column
             $fieldName = $this->getData('name');
             foreach ($dataSource['data']['items'] as & $item) {
                 $model = new DataObject($item);
-                $item[$fieldName . '_src'] = $this->_pictureConfig->getBlogImageUrl($model->getPicture());
+                $item[$fieldName . '_src'] = $this->blogMediaConfig->getBlogImageUrl($model->getPicture());
                 $item[$fieldName . '_alt'] = $model->getTheme();
             }
         }

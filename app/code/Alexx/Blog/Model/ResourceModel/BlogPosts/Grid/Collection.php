@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Alexx\Blog\Model\ResourceModel\BlogPosts\Grid;
 

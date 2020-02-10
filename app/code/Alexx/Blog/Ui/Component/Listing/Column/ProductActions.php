@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Alexx\Blog\Ui\Component\Listing\Column;
 
@@ -17,16 +18,6 @@ class ProductActions extends Column
         if (isset($dataSource['data']['items'])) {
             $storeId = $this->context->getFilterParam('store_id');
             foreach ($dataSource['data']['items'] as &$item) {
-
-                $item[$this->getData('name')]['editform'] = [
-                    'href' => $this->context->getUrl(
-                        'blog/index/editform',
-                        ['id' => $item['entity_id'], 'store' => $storeId]
-                    ),
-                    'label' => __('EditForm'),
-                    'hidden' => false,
-                    '__disableTmpl' => true
-                ];
 
                 $item[$this->getData('name')]['edit'] = [
                     'href' => $this->context->getUrl(

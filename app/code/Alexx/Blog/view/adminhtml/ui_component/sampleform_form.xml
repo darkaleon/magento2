@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">sampleform_form.sampleform_form_data_source</item>
             <item name="deps" xsi:type="string">sampleform_form.sampleform_form_data_source</item>
         </item>
         <item name="label" xsi:type="string" translate="true">Sample Form</item>
-     <!--   <item name="layout" xsi:type="array">
-            <item name="type" xsi:type="string">tabs</item>
-        </item>-->
         <item name="config" xsi:type="array">
             <item name="dataScope" xsi:type="string">data</item>
             <item name="namespace" xsi:type="string">sampleform_form</item>
@@ -16,13 +14,22 @@
         <item name="template" xsi:type="string">templates/form/collapsible</item>
 
         <item name="buttons" xsi:type="array">
-            <item name="back" xsi:type="string">Alexx\Blog\Block\Adminhtml\Blog\Edit\BackButton</item>
+            <item name="back" xsi:type="array">
+                <item name="name" xsi:type="string">back</item>
+                <item name="label" xsi:type="string" translate="true">Back</item>
+                <item name="class" xsi:type="string">back</item>
+                <item name="url" xsi:type="string">*/*/</item>
+            </item>
             <item name="delete" xsi:type="string">Alexx\Blog\Block\Adminhtml\Blog\Edit\DeleteButton</item>
-            <item name="reset" xsi:type="string">Alexx\Blog\Block\Adminhtml\Blog\Edit\ResetButton</item>
-<!--            <item name="save" xsi:type="string">Alexx\Blog\Block\Adminhtml\Blog\Edit\SaveButton</item>-->
+            <item name="reset" xsi:type="array">
+                <item name="name" xsi:type="string">reset</item>
+                <item name="label" xsi:type="string" translate="true">Reset</item>
+                <item name="class" xsi:type="string">reset</item>
+            </item>
+
             <item name="save" xsi:type="array">
                 <item name="name" xsi:type="string">save</item>
-                <item name="label" xsi:type="string" translate="true">save</item>
+                <item name="label" xsi:type="string" translate="true">Save</item>
                 <item name="class" xsi:type="string">primary</item>
                 <item name="url" xsi:type="string">*/*/save</item>
                 <item name="post" xsi:type="boolean">true</item>
@@ -32,7 +39,7 @@
 
     <dataSource name="sampleform_form_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
-            <argument name="class" xsi:type="string">Alexx\Blog\Model\DataProvider</argument>
+            <argument name="class" xsi:type="string">Alexx\Blog\Model\Media\DataProvider</argument>
             <argument name="name" xsi:type="string">sampleform_form_data_source</argument>
             <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
             <argument name="requestFieldName" xsi:type="string">id</argument>
@@ -40,7 +47,7 @@
         <argument name="data" xsi:type="array">
             <item name="js_config" xsi:type="array">
                 <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
-                <item name="submit_url" path="*/*/save" xsi:type="url" />
+                <item name="submit_url" path="*/*/save" xsi:type="url"/>
             </item>
         </argument>
     </dataSource>
@@ -52,7 +59,6 @@
             </item>
         </argument>
 
-        <!-- This field represents form id and is hidden -->
         <field name="entity_id">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -64,7 +70,6 @@
             </argument>
         </field>
 
-        <!-- This field has data type 'text' and standard 'input' form element and looks like input -->
         <field name="theme">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -103,7 +108,7 @@
             </formElements>
         </field>
 
-<!--        <field name="pictureUploader" formElement="imageUploader">
+        <field name="picture" formElement="imageUploader">
             <settings>
                 <label translate="true">Picture</label>
                 <componentType>imageUploader</componentType>
@@ -111,6 +116,7 @@
             <formElements>
                 <imageUploader>
                     <settings>
+                        <previewTmpl>Alexx_Blog/image-preview</previewTmpl>
                         <allowedExtensions>jpg jpeg gif png</allowedExtensions>
                         <maxFileSize>2097152</maxFileSize>
                         <uploaderConfig>
@@ -119,6 +125,6 @@
                     </settings>
                 </imageUploader>
             </formElements>
-        </field>-->
-     </fieldset>
- </form>
+        </field>
+    </fieldset>
+</form>
