@@ -3,13 +3,13 @@
       xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
-            <item name="provider" xsi:type="string">sampleform_form.sampleform_form_data_source</item>
-            <item name="deps" xsi:type="string">sampleform_form.sampleform_form_data_source</item>
+            <item name="provider" xsi:type="string">blog_form.blog_form_data_source</item>
+            <item name="deps" xsi:type="string">blog_form.blog_form_data_source</item>
         </item>
         <item name="label" xsi:type="string" translate="true">Sample Form</item>
         <item name="config" xsi:type="array">
             <item name="dataScope" xsi:type="string">data</item>
-            <item name="namespace" xsi:type="string">sampleform_form</item>
+            <item name="namespace" xsi:type="string">blog_form</item>
         </item>
         <item name="template" xsi:type="string">templates/form/collapsible</item>
 
@@ -37,10 +37,10 @@
         </item>
     </argument>
 
-    <dataSource name="sampleform_form_data_source">
+    <dataSource name="blog_form_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
             <argument name="class" xsi:type="string">Alexx\Blog\Model\Media\DataProvider</argument>
-            <argument name="name" xsi:type="string">sampleform_form_data_source</argument>
+            <argument name="name" xsi:type="string">blog_form_data_source</argument>
             <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
             <argument name="requestFieldName" xsi:type="string">id</argument>
         </argument>
@@ -52,7 +52,7 @@
         </argument>
     </dataSource>
 
-    <fieldset name="sample_fieldset">
+    <fieldset name="main_fieldset">
         <argument name="data" xsi:type="array">
             <item name="config" xsi:type="array">
                 <item name="label" xsi:type="string" translate="true">General</item>
@@ -80,33 +80,13 @@
                     <item name="dataScope" xsi:type="string">theme</item>
                 </item>
             </argument>
-        </field>
-
-
-        <field name="content" sortOrder="50" formElement="wysiwyg">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="wysiwygConfigData" xsi:type="array">
-                        <item name="height" xsi:type="string">100px</item>
-                        <item name="add_variables" xsi:type="boolean">true</item>
-                        <item name="add_widgets" xsi:type="boolean">true</item>
-                        <item name="add_images" xsi:type="boolean">true</item>
-                        <item name="add_directives" xsi:type="boolean">true</item>
-                    </item>
-                </item>
-            </argument>
             <settings>
-                <label>Content</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
             </settings>
-            <formElements>
-                <wysiwyg>
-                    <settings>
-                        <rows>8</rows>
-                        <wysiwyg>true</wysiwyg>
-                    </settings>
-                </wysiwyg>
-            </formElements>
         </field>
+
 
         <field name="picture" formElement="imageUploader">
             <settings>
@@ -126,5 +106,29 @@
                 </imageUploader>
             </formElements>
         </field>
+
+
+        <field name="content">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="formElement" xsi:type="string">wysiwyg</item>
+                    <item name="label" xsi:type="string">Content</item>
+
+                    <item name="template" xsi:type="string">ui/form/field</item>
+                    <item name="wysiwyg" xsi:type="boolean">true</item>
+                    <item name="dataScope" xsi:type="string">content</item>
+                    <item name="sortOrder" xsi:type="number">130</item>
+                    <item name="rows" xsi:type="number">8</item>
+                    <item name="validation" xsi:type="array">
+                        <item name="required-entry" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
     </fieldset>
+
+
+
+
 </form>

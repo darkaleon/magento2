@@ -5,7 +5,6 @@ namespace Alexx\Blog\Model\Media;
 
 use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Alexx\Blog\Model\ResourceModel\BlogPosts\CollectionFactory;
-//use Magento\Customer\Model\Session;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
@@ -63,13 +62,19 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
             return $this->_loadedData;
         }
 
+
         foreach ($this->collection->getItems() as $blogPost) {
+
             $this->_loadedData[$blogPost->getId()] = $blogPost->getData();
+
             if ($blogPost->getPicture()) {
+                $this->_loadedData[$blogPost->getId()]['picture'] = [0=>[]];
+
                 $this->_loadedData[$blogPost->getId()]['picture'][0]['name'] = $blogPost->getPicture();
                 $this->_loadedData[$blogPost->getId()]['picture'][0]['url'] = $blogPost->getPicture();
             }
         }
+
         return $this->_loadedData;
     }
 }
