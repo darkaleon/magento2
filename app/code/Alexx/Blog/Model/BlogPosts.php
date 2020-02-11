@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Model;
 
-use Alexx\Blog\Api\BlogInterface;
+use Alexx\Blog\Api\Data\BlogInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Model\Context;
@@ -38,7 +38,6 @@ class BlogPosts extends AbstractModel implements BlogInterface
         array $data = []
     ) {
         $this->blogMediaConfig = $blogMediaConfig;
-
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
@@ -46,20 +45,11 @@ class BlogPosts extends AbstractModel implements BlogInterface
      * Generates url to image
      *
      * @return string
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function getPictureUrl()
     {
         return $this->blogMediaConfig->getBlogImageUrl($this->getPicture());
-    }
-
-    /**
-     * Getting 5 last posts
-     *
-     * @return \Magento\Framework\Data\Collection
-     */
-    public function getLatestPosts()
-    {
-        return $this->getCollection()->addOrder('main_table.created_at', 'desc')->setPageSize(5);
     }
 
     /**

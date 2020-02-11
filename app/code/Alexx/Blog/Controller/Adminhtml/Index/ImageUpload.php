@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
+use Alexx\Blog\Model\PictureSaver;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Backend\App\Action;
-use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
+use Magento\Framework\Controller\Result\RawFactory;
+use Magento\Backend\App\Action\Context;
 
 /**
  * Admin Controller that perform uploading image from form and store it in tmp directory
@@ -15,67 +17,42 @@ class ImageUpload extends Action implements HttpPostActionInterface
     const ADMIN_RESOURCE = 'Alexx_Blog::menu';
 
     /**
-     * @var \Magento\Framework\Controller\Result\RawFactory
+     * @var RawFactory
      */
     protected $resultRawFactory;
 
     /**
-     * @var array
+     * @var PictureSaver
      */
-    private $allowedMimeTypes = [
-        'jpg' => 'image/jpg',
-        'jpeg' => 'image/jpeg',
-        'gif' => 'image/png',
-        'png' => 'image/gif'
-    ];
+    private $pictureSaver;
 
     /**
-     * @var \Magento\Framework\Image\AdapterFactory
-     */
-    private $adapterFactory;
-
-    /**
-     * @var \Magento\Framework\Filesystem
-     */
-    private $filesystem;
-
-    private $blogMediaConfig;
-
-    /**
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\Controller\Result\RawFactory $resultRawFactory
-     * @param \Magento\Framework\Image\AdapterFactory $adapterFactory
-     * @param \Magento\Framework\Filesystem $filesystem
-     * @param BlogMediaConfig $blogMediaConfig
+     * @param Context $context
+     * @param RawFactory $resultRawFactory
+     * @param PictureSaver $pictureSaver
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Controller\Result\RawFactory $resultRawFactory,
-        \Magento\Framework\Image\AdapterFactory $adapterFactory,
-        \Magento\Framework\Filesystem $filesystem,
-        BlogMediaConfig $blogMediaConfig
+        Context $context,
+        RawFactory $resultRawFactory,
+        PictureSaver $pictureSaver
     ) {
         parent::__construct($context);
         $this->resultRawFactory = $resultRawFactory;
-        $this->adapterFactory = $adapterFactory;
-        $this->filesystem = $filesystem;
-        $this->blogMediaConfig = $blogMediaConfig;
+        $this->pictureSaver = $pictureSaver;
     }
 
     /**
-     * Upload image(s) to the product gallery.
+     * Upload image to the blog gallery.
      *
      * @return \Magento\Framework\Controller\Result\Raw
      */
     public function execute()
     {
         try {
-
-            $uploader = $this->_objectManager->get(\Alexx\Blog\Model\PictureSaver::class);
-            $result=$uploader->saveFile();
+            $result = $this->pictureSaver->saveFile();
 
         } catch (\Exception $e) {
-            $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
+            $result = ['error' => __($e->getMessage()), 'errorcode' => $e->getCode()];
         }
 
         /** @var \Magento\Framework\Controller\Result\Raw $response */
@@ -83,15 +60,5 @@ class ImageUpload extends Action implements HttpPostActionInterface
         $response->setHeader('Content-type', 'text/plain');
         $response->setContents(json_encode($result));
         return $response;
-    }
-
-    /**
-     * Get the set of allowed file extensions.
-     *
-     * @return array
-     */
-    private function getAllowedExtensions()
-    {
-        return array_keys($this->allowedMimeTypes);
     }
 }

@@ -3,77 +3,86 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Model;
 
-use Alexx\Blog\Api\BlogInterface;
+use Alexx\Blog\Api\BlogRepositoryInterfaceFactory;
+use Alexx\Blog\Api\Data\BlogInterface;
 use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Magento\Backend\App\Action;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
  * Class for create/edit BlogPost data row
  * */
 class BlogPostSaver
 {
-    /**@var BlogInterface $model */
+    /**@var BlogInterface  */
     private $model;
+
+    /**@var PictureSaver  */
     private $pictureSaver;
+
+    /**@var Action*/
     private $_currentAction;
+
+    /**@var array*/
     private $formData = [];
+
+    /**@var BlogMediaConfig*/
     private $blogMediaConfig;
+
+    /**@var BlogRepository*/
+    private $_blogRepsitoryFactory;
 
     /**
      * @param PictureSaver $pictureSaver
      * @param BlogMediaConfig $blogMediaConfig
      * @param Action $currentAction
+     * @param BlogRepositoryInterfaceFactory $blogRepsitoryFactory
      * @param BlogInterface $model
      */
     public function __construct(
         PictureSaver $pictureSaver,
         BlogMediaConfig $blogMediaConfig,
         Action $currentAction,
+        BlogRepositoryInterfaceFactory $blogRepsitoryFactory,
         BlogInterface $model
     ) {
         $this->blogMediaConfig = $blogMediaConfig;
         $this->_currentAction = $currentAction;
         $this->model = $model;
         $this->pictureSaver = $pictureSaver;
+        $this->_blogRepsitoryFactory = $blogRepsitoryFactory->create();
     }
 
     /**
      * Loads form data from form to model
      *
-     * @return bool
+     * @throws NoSuchEntityException
      **/
     public function loadFormData()
     {
-        $dataFields=['entity_id','theme','content','picture'];
+        $dataFields = ['entity_id', 'theme', 'content', 'picture'];
         foreach ($dataFields as $fieldName) {
             if (!empty($this->_currentAction->getRequest()->getParam($fieldName))) {
-                $this->formData[$fieldName]=$this->_currentAction->getRequest()->getParam($fieldName);
+                $this->formData[$fieldName] = $this->_currentAction->getRequest()->getParam($fieldName);
             }
         }
         $postId = $this->formData[$this->model::BLOG_ID] ?? null;
 
         if ($postId) {
-            $this->model->load($postId);
-
-            if (empty($this->model->getData())) {
-                return false;
-            }
+            $this->model = $this->_blogRepsitoryFactory->getById($postId);
         }
-
-        return true;
     }
 
     /**
-     * Uploads  image posted by form
-     *
-     * @return void
+     * Uploads image posted by form
      **/
     public function loadPictureData()
     {
         //Replace icon with fileuploader field name
 
         if (isset($this->formData['picture'][0]['file'])) {
-            $this->formData['picture'][0]= $this->pictureSaver->uploadImage($this->formData['picture'][0]);
+            $this->formData['picture'][0] = $this->pictureSaver->uploadImage($this->formData['picture'][0]);
         }
     }
 
@@ -101,7 +110,7 @@ class BlogPostSaver
      *
      * @return void|bool
      *
-     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws CouldNotSaveException
      */
     public function save()
     {
@@ -109,14 +118,8 @@ class BlogPostSaver
         if (!$this->model->getId()) {
             $this->model->setData('entity_id', null);
         }
-        try {
-            // Save news
-            $this->model->save();
-            return $this->model->getId();
-        } catch (\Exception $e) {
-            throw $e;
-        }
-        return false;
+        $this->model = $this->_blogRepsitoryFactory->save($this->model);
+        return $this->model->getId();
     }
 
     /**
@@ -129,9 +132,9 @@ class BlogPostSaver
     public function adaptFormData($formData)
     {
         if (isset($formData['picture'])) {
-            $formData['picture']=$formData['picture'][0]['url'];
+            $formData['picture'] = $formData['picture'][0]['url'];
         } else {
-            $formData['picture']=null;
+            $formData['picture'] = null;
         }
         return $formData;
     }

@@ -5,7 +5,8 @@ namespace Alexx\Blog\Model\Media;
 
 use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Alexx\Blog\Model\ResourceModel\BlogPosts\CollectionFactory;
-use Magento\Customer\Model\Session;
+//use Magento\Customer\Model\Session;
+use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
@@ -16,7 +17,7 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
     protected $collection;
     protected $_loadedData;
     private $_storeManager;
-    private $_session;
+    private $_dataPersistor;
     private $blogMediaConfig;
 
     /**
@@ -25,7 +26,7 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      * @param string $primaryFieldName
      * @param string $requestFieldName
      * @param StoreManagerInterface $storeManager
-     * @param Session $session
+     * @param DataPersistorInterface $dataPersistor
      * @param BlogMediaConfig $blogMediaConfig
      * @param array $data
      */
@@ -35,13 +36,13 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         $primaryFieldName,
         $requestFieldName,
         StoreManagerInterface $storeManager,
-        Session $session,
+        DataPersistorInterface $dataPersistor,
         BlogMediaConfig $blogMediaConfig,
         array $data = []
     ) {
         $this->blogMediaConfig = $blogMediaConfig;
         $this->_storeManager = $storeManager;
-        $this->_session = $session;
+        $this->_dataPersistor = $dataPersistor;
         parent::__construct($name, $primaryFieldName, $requestFieldName, $data);
         $this->collection = $mycollectionFactory->create();
     }
@@ -51,15 +52,11 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      */
     public function getData()
     {
-        $blogPostedForm=$this->_session->getBlogPostForm();
+        $blogPostedForm=$this->_dataPersistor->get('BlogPostForm');
 
         if ($blogPostedForm) {
-//            try {
-                $this->_loadedData[$blogPostedForm["entity_id"]]=$blogPostedForm;
-//            } catch (\Exception $e) {
-
-//            }
-            $this->_session->setBlogPostForm(null);
+            $this->_loadedData[$blogPostedForm["entity_id"]]=$blogPostedForm;
+            $this->_dataPersistor->clear('BlogPostForm');
         }
 
         if (isset($this->_loadedData)) {

@@ -15,21 +15,38 @@ use Magento\MediaStorage\Model\File\UploaderFactory;
  * */
 class PictureSaver
 {
+    /**
+     * @var Filesystem
+     */
     private $_fileSystem;
     private $blogMediaConfig;
     private $_currentAction;
     private $_fileUploaderFactory;
+    /**
+     * @var \Magento\Framework\Image\AdapterFactory
+     */
     private $adapterFactory;
     private $coreFileStorageDatabase;
     private $mediaDirectory;
 
     /**
+     * @var array
+     */
+    private $allowedMimeTypes = [
+        'jpg' => 'image/jpg',
+        'jpeg' => 'image/jpeg',
+        'gif' => 'image/png',
+        'png' => 'image/gif'
+    ];
+
+    /**
      * @param Database $coreFileStorageDatabase
      * @param Filesystem $fileSystem
-     * @param  BlogMediaConfig $blogMediaConfig
+     * @param BlogMediaConfig $blogMediaConfig
      * @param Action $currentAction
      * @param UploaderFactory $fileUploaderFactory
      * @param AdapterFactory $adapterFactory
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function __construct(
         Database $coreFileStorageDatabase,
@@ -54,14 +71,14 @@ class PictureSaver
     /**
      * File Uploader
      *
-     * @return bool|array
+     * @return array
      * @throws \Exception
      */
     public function saveFile()
     {
         /** @var \Magento\MediaStorage\Model\File\Uploader $uploader */
         $uploader = $this->_fileUploaderFactory->create(['fileId' => 'picture']);
-        $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
+        $uploader->setAllowedExtensions($this->getAllowedExtensions());
 
         $imageAdapter = $this->adapterFactory->create();
         $uploader->addValidateCallback('blog_image', $imageAdapter, 'validateUploadFile');
@@ -70,11 +87,12 @@ class PictureSaver
         $uploader->setAllowCreateFolders(true);
 
         $result = $uploader->save($this->blogMediaConfig->getTmpUploadDir());
+
         $fullFilePath = $result['path'] . $result['file'];
+        $result['url'] = $this->blogMediaConfig->getUrlToSavedFile($fullFilePath);
 
         unset($result['tmp_name']);
         unset($result['path']);
-        $result['url'] = $this->blogMediaConfig->getUrlToSavedFile($fullFilePath);
 
         return $result;
     }
@@ -85,6 +103,7 @@ class PictureSaver
      * @param array $tmpPicture
      *
      * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function uploadImage($tmpPicture)
     {
@@ -93,13 +112,13 @@ class PictureSaver
 
         $sourceTmpFile = $this->blogMediaConfig->getFilePath($baseTmpPath, $tmpPicture['file']);
 
-        $baseImagePath= $this->blogMediaConfig->getFilePath($basePath, $tmpPicture['file']);
+        $baseImagePath = $this->blogMediaConfig->getFilePath($basePath, $tmpPicture['file']);
 
-        $destinationFile=$this->blogMediaConfig->getNewFileName($baseImagePath);
+        $destinationFile = $this->blogMediaConfig->getNewFileName($baseImagePath);
 
-        $uploadedPicture=[
-            'name'=>$destinationFile,
-            'url'=>$this->blogMediaConfig->getUrlToSavedFile($destinationFile)
+        $uploadedPicture = [
+            'name' => $destinationFile,
+            'url' => $this->blogMediaConfig->getUrlToSavedFile($destinationFile)
         ];
 
         try {
@@ -117,5 +136,15 @@ class PictureSaver
             );
         }
         return $uploadedPicture;
+    }
+
+    /**
+     * Get the set of allowed file extensions.
+     *
+     * @return array
+     */
+    private function getAllowedExtensions()
+    {
+        return array_keys($this->allowedMimeTypes);
     }
 }

@@ -22,8 +22,6 @@ class BlogThumbnail extends Column
      * @param BlogMediaConfig $blogMediaConfig
      * @param array $components
      * @param array $data
-     *
-     * @return void
      */
     public function __construct(
         ContextInterface $context,

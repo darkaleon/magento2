@@ -32,8 +32,7 @@ class Config
      * @param Repository $repository
      * @param File $file
      * @param IoFile $ioFile
-     *
-     * @return void
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function __construct(
         Context $context,
@@ -59,6 +58,7 @@ class Config
      * @param string $file
      *
      * @return string
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function getBlogImageUrl($file)
     {

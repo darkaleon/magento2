@@ -22,9 +22,7 @@ class DeleteButton implements ButtonProviderInterface
     }
 
     /**
-     * Gets data for generation delete button
-     *
-     * @return array
+     * @inheritDoc
      */
     public function getButtonData()
     {

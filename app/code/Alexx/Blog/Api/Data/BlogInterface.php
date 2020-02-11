@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Alexx\Blog\Api;
+namespace Alexx\Blog\Api\Data;
 
-/*
+/**
  * Blog storage is used to retrieve posts data.
- * */
+ */
 interface BlogInterface
 {
 

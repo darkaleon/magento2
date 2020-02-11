@@ -12,6 +12,8 @@ use Alexx\Blog\Model\ResourceModel\BlogPosts as BlogPostsResourceModel;
  */
 class Collection extends AbstractCollection
 {
+    protected $_idFieldName = 'entity_id';
+
     /**
      * @inheritDoc
      */

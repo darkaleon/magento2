@@ -36,7 +36,7 @@ class Collection extends GridCollection implements SearchResultInterface
     /**
      * SetAggregations
      *
-     * @param Magento\Framework\Api\Search\AggregationInterface $aggregations
+     * @param \Magento\Framework\Api\Search\AggregationInterface $aggregations
      */
     public function setAggregations($aggregations)
     {
