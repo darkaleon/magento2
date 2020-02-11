@@ -62,7 +62,6 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
             return $this->_loadedData;
         }
 
-
         foreach ($this->collection->getItems() as $blogPost) {
 
             $this->_loadedData[$blogPost->getId()] = $blogPost->getData();
