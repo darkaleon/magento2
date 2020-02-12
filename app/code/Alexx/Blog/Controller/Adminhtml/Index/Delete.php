@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
-use Alexx\Blog\Api\BlogRepositoryInterfaceFactory;
+use Alexx\Blog\Api\BlogRepositoryInterface;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context as ActionContext;
 use Magento\Framework\App\Action\HttpPostActionInterface;
@@ -16,18 +16,18 @@ class Delete extends Action implements HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Alexx_Blog::manage';
 
-    /**@var BlogRepositoryInterfaceFactory */
-    private $blogRepsitoryFactory;
+    /**@var BlogRepositoryInterface */
+    private $blogRepsitory;
 
     /**
      * @param ActionContext $context
-     * @param BlogRepositoryInterfaceFactory $blogRepsitoryFactory
+     * @param BlogRepositoryInterface $blogRepsitory
      */
     public function __construct(
         ActionContext $context,
-        BlogRepositoryInterfaceFactory $blogRepsitoryFactory
+        BlogRepositoryInterface $blogRepsitory
     ) {
-        $this->blogRepsitoryFactory = $blogRepsitoryFactory;
+        $this->blogRepsitory = $blogRepsitory;
         parent::__construct($context);
     }
 
@@ -38,10 +38,9 @@ class Delete extends Action implements HttpPostActionInterface
     {
         if ($this->getRequest()->getPost()) {
             $postId = (int)$this->getRequest()->getParam('id');
-            $repository = $this->blogRepsitoryFactory->create();
             if ($postId) {
                 try {
-                    $repository->deleteById($postId);
+                    $this->blogRepsitory->deleteById($postId);
                     $this->messageManager->addSuccess(__('The post has been deleted.'));
                 } catch (LocalizedException $exception) {
                     $this->messageManager->addError($exception->getMessage());

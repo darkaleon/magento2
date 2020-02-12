@@ -7,7 +7,7 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context as ActionContext;
 use Alexx\Blog\Model\ResourceModel\BlogPosts\CollectionFactory as BlogCollectionFactory;
 use Magento\Framework\App\Action\HttpPostActionInterface;
-use Alexx\Blog\Api\BlogRepositoryInterfaceFactory;
+use Alexx\Blog\Api\BlogRepositoryInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Ui\Component\MassAction\Filter;
@@ -20,8 +20,8 @@ class MassDelete extends Action implements HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Alexx_Blog::manage';
 
-    /**@var BlogRepositoryInterfaceFactory */
-    private $blogRepsitoryFactory;
+    /**@var BlogRepositoryInterface */
+    private $blogRepsitory;
 
     /**@var BlogCollectionFactory */
     private $collectionFactory;
@@ -36,19 +36,19 @@ class MassDelete extends Action implements HttpPostActionInterface
      * @param ActionContext $context
      * @param Filter $filter
      * @param BlogCollectionFactory $collectionFactory
-     * @param BlogRepositoryInterfaceFactory $blogRepsitoryFactory
+     * @param BlogRepositoryInterface $blogRepsitory
      * @param LoggerInterface $logger
      */
     public function __construct(
         ActionContext $context,
         Filter $filter,
         BlogCollectionFactory $collectionFactory,
-        BlogRepositoryInterfaceFactory $blogRepsitoryFactory,
+        BlogRepositoryInterface $blogRepsitory,
         LoggerInterface $logger
     ) {
         $this->filter = $filter;
         $this->collectionFactory = $collectionFactory;
-        $this->blogRepsitoryFactory = $blogRepsitoryFactory;
+        $this->blogRepsitory = $blogRepsitory;
         $this->logger = $logger;
         parent::__construct($context);
     }
@@ -58,14 +58,13 @@ class MassDelete extends Action implements HttpPostActionInterface
      */
     public function execute()
     {
-        $repsitory = $this->blogRepsitoryFactory->create();
         $collection = $this->filter->getCollection($this->collectionFactory->create());
         $postsDeleted = 0;
         $postsDeletedError = 0;
         /** @var \Magento\Catalog\Model\Product $product */
         foreach ($collection->getItems() as $product) {
             try {
-                $repsitory->delete($product);
+                $this->blogRepsitory->delete($product);
                 $postsDeleted++;
             } catch (LocalizedException $exception) {
                 $this->logger->error($exception->getLogMessage());

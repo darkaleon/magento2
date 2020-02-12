@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Block;
 
-use Alexx\Blog\Api\BlogRepositoryInterfaceFactory;
+use Alexx\Blog\Api\BlogRepositoryInterface;
 use Magento\Catalog\Model\Locator\RegistryLocator;
 use Magento\Framework\Api\Search\SearchCriteriaInterfaceFactory;
 use Magento\Framework\Api\SortOrderBuilder;
@@ -25,7 +25,7 @@ class BlogList extends Template
     /**@var RegistryLocator */
     private $productRegistryLocator;
 
-    /**@var BlogRepositoryInterfaceFactory */
+    /**@var BlogRepositoryInterface */
     private $blogRepsitoryFactory;
 
     /**@var SearchCriteriaInterfaceFactory */
@@ -40,7 +40,7 @@ class BlogList extends Template
     /**
      * @param Context $context
      * @param RegistryLocator $productRegistryLocator
-     * @param BlogRepositoryInterfaceFactory $blogRepsitoryFactory
+     * @param BlogRepositoryInterface $blogRepsitory
      * @param SearchCriteriaInterfaceFactory $searchCriteriaFactory
      * @param SortOrderBuilder $sortOrderBuilder
      * @param LoggerInterface $logger
@@ -49,14 +49,14 @@ class BlogList extends Template
     public function __construct(
         Context $context,
         RegistryLocator $productRegistryLocator,
-        BlogRepositoryInterfaceFactory $blogRepsitoryFactory,
+        BlogRepositoryInterface $blogRepsitory,
         SearchCriteriaInterfaceFactory $searchCriteriaFactory,
         SortOrderBuilder $sortOrderBuilder,
         LoggerInterface $logger,
         array $data = []
     ) {
         $this->productRegistryLocator = $productRegistryLocator;
-        $this->blogRepsitoryFactory = $blogRepsitoryFactory;
+        $this->blogRepsitory = $blogRepsitory;
         $this->searchCriteriaFactory = $searchCriteriaFactory;
         $this->sortOrderBuilder = $sortOrderBuilder;
         $this->logger = $logger;
@@ -117,7 +117,7 @@ class BlogList extends Template
         $searchCriteria->setSortOrders([$defaultSortOrder]);
 
         try {
-            return $this->blogRepsitoryFactory->create()->getList($searchCriteria)->getItems();
+            return $this->blogRepsitory->getList($searchCriteria)->getItems();
         } catch (LocalizedException $exception) {
             $this->logger->error($exception->getLogMessage());
             return [];
