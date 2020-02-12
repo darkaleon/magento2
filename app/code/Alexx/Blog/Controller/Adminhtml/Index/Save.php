@@ -3,14 +3,17 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
+use Alexx\Blog\Api\BlogRepositoryInterface;
+use Alexx\Blog\Api\Data\BlogInterface;
 use Alexx\Blog\Model\BlogPostSaver;
+use Alexx\Blog\Model\BlogRepository;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context as ActionContext;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Catalog\Model\ImageUploader;
+
 /**
  * Admin blog save Controller that perform saving data posted from the form to database
  */
@@ -18,27 +21,25 @@ class Save extends Action implements HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Alexx_Blog::manage';
 
-    /**@var BlogPostSaver*/
-    private $blogPostSaver;
-
-    /**@var DataPersistorInterface*/
+    /**@var DataPersistorInterface */
     private $dataPersistor;
-    private $imageUploader;
+
+    /**@var BlogRepository */
+    private $blogRepsitory;
 
     /**
      * @param ActionContext $context
-     * @param BlogPostSaver $blogPostSaver
+     * @param BlogRepositoryInterface $blogRepsitory
      * @param DataPersistorInterface $dataPersistor
      */
     public function __construct(
         ActionContext $context,
-        BlogPostSaver $blogPostSaver,
-        ImageUploader $imageUploader,
+        BlogRepositoryInterface $blogRepsitory,
         DataPersistorInterface $dataPersistor
     ) {
-        $this->imageUploader = $imageUploader;
         $this->dataPersistor = $dataPersistor;
-        $this->blogPostSaver = $blogPostSaver;
+        $this->blogRepsitory = $blogRepsitory;
+
         parent::__construct($context);
     }
 
@@ -101,26 +102,25 @@ class Save extends Action implements HttpPostActionInterface
      */
     public function execute()
     {
-        if ($this->getRequest()->getPost()) {
+        $formPostData = $this->getRequest()->getPostValue();
+        $isNewPost = !isset($formPostData['entity_id']);
+        if (!$isNewPost) {
             try {
-                $this->blogPostSaver->loadFormData();
+                /**@var BlogInterface $postModel */
+                $postModel = $this->blogRepsitory->getById((int)$formPostData['entity_id']);
             } catch (NoSuchEntityException $exception) {
                 return $this->errorRedirect($exception->getMessage());
             }
-
-            try {
-                $this->blogPostSaver->loadPictureData($this->imageUploader);
-            } catch (\Exception $e) {
-                return  $this->errorRedirect($e->getMessage(), $this->blogPostSaver->getFormData());
-            }
-
-            try {
-                $modelId = $this->blogPostSaver->save();
-                return $this->redirectSuccess($modelId);
-            } catch (CouldNotSaveException $e) {
-                return $this->errorRedirect($e->getMessage(), $this->blogPostSaver->getFormData());
-            }
+        } else {
+            /**@var BlogInterface $postModel */
+            $postModel = $this->blogRepsitory->getFactory()->create();
         }
-        return $this->errorRedirect(__('Wrong request type.'), $this->blogPostSaver->getFormData());
+        try {
+            $postModel->setData($formPostData);
+            $this->blogRepsitory->save($postModel);
+            return $this->redirectSuccess($postModel->getId());
+        } catch (CouldNotSaveException $e) {
+            return $this->errorRedirect($e->getMessage(), $postModel->getData());
+        }
     }
 }

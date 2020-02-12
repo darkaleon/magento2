@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Alexx\Blog\Api\Data\BlogInterface" type="Alexx\Blog\Model\BlogPosts"/>
-    <preference for="Alexx\Blog\Api\BlogRepositoryInterface" type="Alexx\Blog\Model\BlogRepository" />
+    <preference for="Alexx\Blog\Api\BlogRepositoryInterface" type="Alexx\Blog\Model\BlogRepository"/>
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
             <argument name="collections" xsi:type="array">
@@ -35,7 +35,7 @@
             <argument name="imageUploader" xsi:type="object">BlogImageUploader</argument>
         </arguments>
     </type>
-    <type name="Alexx\Blog\Controller\Adminhtml\Index\Save">
+    <type name="Alexx\Blog\Model\ResourceModel\BlogPosts">
         <arguments>
             <argument name="imageUploader" xsi:type="object">BlogImageUploader</argument>
         </arguments>

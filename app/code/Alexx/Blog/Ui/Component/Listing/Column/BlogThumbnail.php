@@ -43,7 +43,7 @@ class BlogThumbnail extends Column
             $fieldName = $this->getData('name');
             foreach ($dataSource['data']['items'] as & $item) {
                 $model = new DataObject($item);
-                $item[$fieldName . '_src'] = $this->blogMediaConfig->getBlogImageUrl($model->getPicture());
+                $item[$fieldName . '_src'] = $this->blogMediaConfig->getBlogImageUrl($model->getPicture() ?? '');
                 $item[$fieldName . '_alt'] = $model->getTheme();
             }
         }

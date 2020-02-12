@@ -9,6 +9,7 @@ use Alexx\Blog\Model\ResourceModel\BlogPosts\CollectionFactory as BlogCollection
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Alexx\Blog\Api\BlogRepositoryInterface;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Ui\Component\MassAction\Filter;
 use Psr\Log\LoggerInterface;
@@ -58,13 +59,14 @@ class MassDelete extends Action implements HttpPostActionInterface
      */
     public function execute()
     {
+        /**@var AbstractDb $collection */
         $collection = $this->filter->getCollection($this->collectionFactory->create());
         $postsDeleted = 0;
         $postsDeletedError = 0;
-        /** @var \Magento\Catalog\Model\Product $product */
-        foreach ($collection->getItems() as $product) {
+        /** @var \Alexx\Blog\Model\BlogPosts $blogPost */
+        foreach ($collection->getItems() as $blogPost) {
             try {
-                $this->blogRepsitory->delete($product);
+                $this->blogRepsitory->delete($blogPost);
                 $postsDeleted++;
             } catch (LocalizedException $exception) {
                 $this->logger->error($exception->getLogMessage());

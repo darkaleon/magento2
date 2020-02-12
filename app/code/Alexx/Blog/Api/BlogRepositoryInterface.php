@@ -25,11 +25,11 @@ interface BlogRepositoryInterface
     /**
      * Retrieve post
      *
-     * @param string $blogPostId
+     * @param integer $blogPostId
      * @return BlogInterface
      * @throws LocalizedException
      */
-    public function getById($blogPostId);
+    public function getById(int $blogPostId);
 
     /**
      * Retrieve posts matching the specified criteria.
@@ -52,9 +52,9 @@ interface BlogRepositoryInterface
     /**
      * Delete post by ID
      *
-     * @param string $blogPostId
+     * @param integer $blogPostId
      * @return bool
      * @throws LocalizedException
      */
-    public function deleteById($blogPostId);
+    public function deleteById(int $blogPostId);
 }

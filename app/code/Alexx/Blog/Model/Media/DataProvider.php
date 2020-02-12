@@ -13,10 +13,16 @@ use Magento\Store\Model\StoreManagerInterface;
  */
 class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
 {
-    protected $collection;
+    /**@var array */
     private $loadedData;
+
+    /**@var StoreManagerInterface */
     private $storeManager;
+
+    /**@var DataPersistorInterface */
     private $dataPersistor;
+
+    /**@var BlogMediaConfig */
     private $blogMediaConfig;
 
     /**
@@ -51,6 +57,7 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      */
     public function getData()
     {
+        /**@var array $blogPostedForm*/
         $blogPostedForm = $this->dataPersistor->get('BlogPostForm');
 
         if ($blogPostedForm) {
@@ -62,13 +69,17 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
             return $this->loadedData;
         }
 
+        /** @var \Alexx\Blog\Model\BlogPosts $blogPost */
         foreach ($this->collection->getItems() as $blogPost) {
+            $dataToEdit = $blogPost->getData();
 
-            $this->loadedData[$blogPost->getId()] = $blogPost->getData();
-
+            unset($dataToEdit['created_at']);
+            unset($dataToEdit['updated_at']);
             if ($blogPost->getPicture()) {
-                $this->loadedData[$blogPost->getId()]['picture'] = [['name'=>$blogPost->getPicture(),'url'=>$blogPost->getPicture()]];
+                $dataToEdit['picture'] = [['name' => $blogPost->getPicture(), 'url' => $blogPost->getPicture()]];
             }
+
+            $this->loadedData[$blogPost->getId()] = $dataToEdit;
         }
 
         return $this->loadedData;

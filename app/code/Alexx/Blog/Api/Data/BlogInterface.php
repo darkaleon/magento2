@@ -57,18 +57,4 @@ interface BlogInterface
      * @return string
      */
     public function getUpdatedAt();
-
-    /**
-     * Overwrite data in the object.
-     *
-     * The $key parameter can be string or array.
-     * If $key is string, the attribute value will be overwritten by $value
-     *
-     * If $key is an array, it will overwrite all the data in the object.
-     *
-     * @param string|array $key
-     * @param mixed $value
-     * @return $this
-     */
-    public function setData($key, $value = null);
 }

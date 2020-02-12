@@ -5,6 +5,8 @@ namespace Alexx\Blog\Block;
 
 use Alexx\Blog\Api\BlogRepositoryInterface;
 use Magento\Catalog\Model\Locator\RegistryLocator;
+use Magento\Framework\Api\AbstractSimpleObject;
+use Magento\Framework\Api\Search\SearchCriteriaInterface;
 use Magento\Framework\Api\Search\SearchCriteriaInterfaceFactory;
 use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\Exception\LocalizedException;
@@ -26,7 +28,7 @@ class BlogList extends Template
     private $productRegistryLocator;
 
     /**@var BlogRepositoryInterface */
-    private $blogRepsitoryFactory;
+    private $blogRepsitory;
 
     /**@var SearchCriteriaInterfaceFactory */
     private $searchCriteriaFactory;
@@ -106,10 +108,12 @@ class BlogList extends Template
      */
     public function getLastPosts()
     {
+        /**@var SearchCriteriaInterface $searchCriteria */
         $searchCriteria = $this->searchCriteriaFactory->create();
 
         $searchCriteria->setPageSize(5);
 
+        /**@var  AbstractSimpleObject $defaultSortOrder */
         $defaultSortOrder = $this->sortOrderBuilder
             ->setField('created_at')
             ->setDirection('desc')

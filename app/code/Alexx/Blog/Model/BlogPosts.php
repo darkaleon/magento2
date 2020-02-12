@@ -4,26 +4,25 @@ declare(strict_types=1);
 namespace Alexx\Blog\Model;
 
 use Alexx\Blog\Api\Data\BlogInterface;
+use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Registry;
-use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 
 /**
  * Simple Model BlogPosts
  */
 class BlogPosts extends AbstractModel implements BlogInterface
 {
-
-
+    /**@var BlogMediaConfig */
     private $blogMediaConfig;
 
     /**
      * @param Context $context
-     * @param Registry $registry
-     * @param  BlogMediaConfig $blogMediaConfig
+     * @param  Registry $registry
+     * @param BlogMediaConfig $blogMediaConfig
      * @param AbstractResource $resource
      * @param AbstractDb $resourceCollection
      * @param array $data
@@ -36,6 +35,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
         AbstractDb $resourceCollection = null,
         array $data = []
     ) {
+
         $this->blogMediaConfig = $blogMediaConfig;
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
@@ -64,7 +64,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
      */
     public function getPicture()
     {
-        return $this->getData(BlogInterface::FIELD_PICTURE);
+        return ($this->getData(BlogInterface::FIELD_PICTURE) ?? '');
     }
 
     /**

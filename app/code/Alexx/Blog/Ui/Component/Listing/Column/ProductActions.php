@@ -38,7 +38,7 @@ class ProductActions extends Column
                     'post' => true,
                     'confirm' => [
                         'title' => __('Delete %1', $item['entity_id']),
-                        'message' =>__('Are you sure you want to delete  "%1" ?', $item['theme']),
+                        'message' => __('Are you sure you want to delete  "%1" ?', $item['theme']),
                     ],
                     '__disableTmpl' => true
                 ];

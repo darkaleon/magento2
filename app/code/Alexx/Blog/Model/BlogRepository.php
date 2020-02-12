@@ -67,6 +67,16 @@ class BlogRepository implements BlogRepositoryInterface
     }
 
     /**
+     * Gets factory for create new entities
+     *
+     * @return BlogPostsFactory
+     */
+    public function getFactory()
+    {
+        return $this->blogFactory;
+    }
+
+    /**
      * @inheritDoc
      */
     public function save(BlogInterface $block)
@@ -82,7 +92,7 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getById($blockId)
+    public function getById(int $blockId)
     {
         $block = $this->blogFactory->create();
         $this->resource->load($block, $blockId);
@@ -128,7 +138,7 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function deleteById($blockId)
+    public function deleteById(int $blockId)
     {
         return $this->delete($this->getById($blockId));
     }
