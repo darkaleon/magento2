@@ -30,8 +30,8 @@ class BlogThumbnail extends Column
         array $components = [],
         array $data = []
     ) {
-        parent::__construct($context, $uiComponentFactory, $components, $data);
         $this->blogMediaConfig = $blogMediaConfig;
+        parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
     /**

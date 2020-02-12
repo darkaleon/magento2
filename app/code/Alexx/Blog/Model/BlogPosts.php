@@ -16,8 +16,7 @@ use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
  */
 class BlogPosts extends AbstractModel implements BlogInterface
 {
-    const BLOG_TABLE = 'alexx_blog_posts';
-    const BLOG_ID = 'entity_id';
+
 
     private $blogMediaConfig;
 
@@ -65,7 +64,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
      */
     public function getPicture()
     {
-        return $this->getData('picture');
+        return $this->getData(BlogInterface::FIELD_PICTURE);
     }
 
     /**
@@ -73,7 +72,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
      */
     public function getTheme()
     {
-        return $this->getData('theme');
+        return $this->getData(BlogInterface::FIELD_THEME);
     }
 
     /**
@@ -81,7 +80,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
      */
     public function getContent()
     {
-        return $this->getData('content');
+        return $this->getData(BlogInterface::FIELD_CONTENT);
     }
 
     /**
@@ -89,7 +88,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
      */
     public function getCreatedAt()
     {
-        return $this->getData('created_at');
+        return $this->getData(BlogInterface::FIELD_CREATED_AT);
     }
 
     /**
@@ -97,6 +96,6 @@ class BlogPosts extends AbstractModel implements BlogInterface
      */
     public function getUpdatedAt()
     {
-        return $this->getData('updated_at');
+        return $this->getData(BlogInterface::FIELD_UPDATED_AT);
     }
 }

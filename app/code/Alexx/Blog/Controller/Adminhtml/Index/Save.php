@@ -10,32 +10,36 @@ use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
-
+use Magento\Catalog\Model\ImageUploader;
 /**
  * Admin blog save Controller that perform saving data posted from the form to database
  */
 class Save extends Action implements HttpPostActionInterface
 {
-    const ADMIN_RESOURCE = 'Alexx_Blog::menu';
+    const ADMIN_RESOURCE = 'Alexx_Blog::manage';
 
-    private $_currentAction;
-    private $_blogPostSaver;
-    private $_dataPersistor;
+    /**@var BlogPostSaver*/
+    private $blogPostSaver;
+
+    /**@var DataPersistorInterface*/
+    private $dataPersistor;
+    private $imageUploader;
 
     /**
      * @param ActionContext $context
      * @param BlogPostSaver $blogPostSaver
      * @param DataPersistorInterface $dataPersistor
-     * */
+     */
     public function __construct(
         ActionContext $context,
         BlogPostSaver $blogPostSaver,
+        ImageUploader $imageUploader,
         DataPersistorInterface $dataPersistor
     ) {
+        $this->imageUploader = $imageUploader;
+        $this->dataPersistor = $dataPersistor;
+        $this->blogPostSaver = $blogPostSaver;
         parent::__construct($context);
-        $this->_currentAction = $context;
-        $this->_dataPersistor = $dataPersistor;
-        $this->_blogPostSaver = $blogPostSaver;
     }
 
     /**
@@ -44,11 +48,13 @@ class Save extends Action implements HttpPostActionInterface
      * @param string $message
      * @param string $path
      * @param array $arguments
+     *
+     * @return \Magento\Framework\App\ResponseInterface
      */
     public function redirectError($message, $path, $arguments = [])
     {
         $this->messageManager->addError($message);
-        $this->_redirect($path, $arguments);
+        return $this->_redirect($path, $arguments);
     }
 
     /**
@@ -79,16 +85,15 @@ class Save extends Action implements HttpPostActionInterface
      */
     private function errorRedirect($message, $formData = [])
     {
-        $this->_dataPersistor->set('BlogPostForm', $formData);
+        $this->dataPersistor->set('BlogPostForm', $formData);
 
         if (empty($formData)) {
-            $this->redirectError($message, '*/*/');
+            return $this->redirectError($message, '*/*/');
         } elseif (isset($formData['entity_id'])) {
-            $this->redirectError($message, '*/*/edit', ['id' => $formData['entity_id']]);
+            return $this->redirectError($message, '*/*/edit', ['id' => $formData['entity_id']]);
         } else {
-            $this->redirectError($message, '*/*/new');
+            return $this->redirectError($message, '*/*/new');
         }
-        return $this->getResponse();
     }
 
     /**
@@ -98,24 +103,24 @@ class Save extends Action implements HttpPostActionInterface
     {
         if ($this->getRequest()->getPost()) {
             try {
-                $this->_blogPostSaver->loadFormData();
+                $this->blogPostSaver->loadFormData();
             } catch (NoSuchEntityException $exception) {
                 return $this->errorRedirect($exception->getMessage());
             }
 
             try {
-                $this->_blogPostSaver->loadPictureData();
+                $this->blogPostSaver->loadPictureData($this->imageUploader);
             } catch (\Exception $e) {
-                return  $this->errorRedirect($e->getMessage(), $this->_blogPostSaver->getFormData());
+                return  $this->errorRedirect($e->getMessage(), $this->blogPostSaver->getFormData());
             }
 
             try {
-                $modelId = $this->_blogPostSaver->save();
+                $modelId = $this->blogPostSaver->save();
                 return $this->redirectSuccess($modelId);
             } catch (CouldNotSaveException $e) {
-                return $this->errorRedirect($e->getMessage(), $this->_blogPostSaver->getFormData());
+                return $this->errorRedirect($e->getMessage(), $this->blogPostSaver->getFormData());
             }
         }
-        return $this->errorRedirect(__('Not saved.'), $this->_blogPostSaver->getFormData());
+        return $this->errorRedirect(__('Wrong request type.'), $this->blogPostSaver->getFormData());
     }
 }

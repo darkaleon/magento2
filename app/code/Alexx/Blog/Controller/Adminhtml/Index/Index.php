@@ -12,7 +12,7 @@ use Magento\Backend\App\Action;
  */
 class Index extends Action implements HttpGetActionInterface
 {
-    const ADMIN_RESOURCE = 'Alexx_Blog::menu';
+    const ADMIN_RESOURCE = 'Alexx_Blog::manage';
 
     /**
      * @inheritDoc

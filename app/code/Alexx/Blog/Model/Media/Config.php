@@ -9,20 +9,17 @@ use Magento\Framework\View\Asset\Repository;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Driver\File;
-use Magento\Framework\Filesystem\Io\File as IoFile;
 
 /**
  * Urls for blog pictures
  */
 class Config
 {
-    private $_file;
-    private $_ioFile;
-    private $_storeManager;
-    private $_context;
-    private $_repository;
-    private $mediaDirectory;
-    private $_dir;
+    private $file;
+    private $storeManager;
+    private $context;
+    private $repository;
+    private $dir;
 
     /**
      * @param Context $context
@@ -31,7 +28,6 @@ class Config
      * @param StoreManagerInterface $storeManager
      * @param Repository $repository
      * @param File $file
-     * @param IoFile $ioFile
      * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function __construct(
@@ -40,18 +36,18 @@ class Config
         DirectoryList $dir,
         StoreManagerInterface $storeManager,
         Repository $repository,
-        File $file,
-        IoFile $ioFile
+        File $file
     ) {
-        $this->mediaDirectory = $fileSystem->getDirectoryWrite('media');//\Magento\Framework\Filesystem\DirectoryList::MEDIA
-        $this->_file = $file;
-        $this->_ioFile = $ioFile;
-        $this->_dir = $dir;
-        $this->_context = $context;
-        $this->_storeManager = $storeManager;
-        $this->_repository = $repository;
+        $this->file = $file;
+        $this->dir = $dir;
+        $this->context = $context;
+        $this->storeManager = $storeManager;
+        $this->repository = $repository;
     }
 
+    public function getBaseMediaDir(){
+        return $this->storeManager->getStore()->getBaseMediaDir();
+    }
     /**
      * Retrieve url for image to display
      *
@@ -66,7 +62,7 @@ class Config
             return $this->getViewFileUrl('Alexx_Blog::images/image-placeholder.png');
         } else {
 
-            if ($this->_file->isExists($this->getRootFolder() . $file)) {
+            if ($this->file->isExists($this->getRootFolder() . $file)) {
                 return $file;
             } else {
                 return $this->getViewFileUrl('Alexx_Blog::images/image-placeholder.png');
@@ -86,57 +82,30 @@ class Config
     {
         $params = array_merge(
             [
-                '_secure' => $this->_context->getRequest()->isSecure()
+                '_secure' => $this->context->getRequest()->isSecure()
             ],
             $params
         );
-        return $this->_repository->getUrlWithParams($fileId, $params);
+        return $this->repository->getUrlWithParams($fileId, $params);
     }
 
-    /**
-     * Gets absolute path to file
-     *
-     * @param string $path
-     * @param string $imageName
-     *
-     * @return string
-     */
-    public function getFilePath($path, $imageName)
-    {
-        return $this->mediaDirectory->getAbsolutePath(rtrim($path, '/') . '/' . ltrim($imageName, '/'));
-    }
-
-    /**
-     * Cuts $remove string from $str
-     *
-     * @param string $str
-     * @param string $remove
-     *
-     * @return string
-     * */
-    public function extractFilePath($str, $remove)
-    {
-        $str = (string)$str;
-        $remove = (string)$remove;
-        $offset = strlen($str) - strlen($remove);
-        $str = substr($str, strlen($remove), $offset);
-        return $str;
-    }
-
-    /**
-     * Path to temp dir
-     */
-    public function getTmpUploadDir()
-    {
-        return $this->mediaDirectory->getAbsolutePath('tmp/blog');
-    }
 
     /**
      * Path to root of the shop
      */
     public function getRootFolder()
     {
-        return $this->_dir->getRoot();
+        return $this->dir->getRoot();
+    }
+
+    /**
+     * Path to root of the shop
+     */
+    public function getRootUrl()
+    {
+        return $this->storeManager
+            ->getStore()
+            ->getBaseUrl();
     }
 
     /**
@@ -146,32 +115,26 @@ class Config
      *
      * @return string
      */
-    public function getUrlToSavedFile($file)
-    {
-        return $this->extractFilePath($file, $this->getRootFolder());
+    public function adaptUrl($file){
+        return $this->extractFilePath($file, rtrim($this->getRootUrl(), '/'));
     }
 
     /**
-     * Get new file name if the same is already exists
+     * Cuts $remove string from $str
      *
-     * @param string $destinationFile
+     * @param string $str
+     * @param string $remove
+     *
      * @return string
      */
-    public function getNewFileName($destinationFile)
+    private function extractFilePath($str, $remove)
     {
-        $fileInfo = $this->_ioFile->getPathInfo($destinationFile);
-        if ($this->_file->isExists($destinationFile)) {
-            $index = 1;
-            $baseName = $fileInfo['filename'] . '.' . $fileInfo['extension'];
-            while ($this->_file->isExists($fileInfo['dirname'] . '/' . $baseName)) {
-                $baseName = $fileInfo['filename'] . '_' . $index . '.' . $fileInfo['extension'];
-                $index++;
-            }
-            $destFileName = $baseName;
-        } else {
-            return $fileInfo['dirname'] . '/' . $fileInfo['basename'];
-        }
-
-        return $fileInfo['dirname'] . '/' . $destFileName;
+        $str = (string)$str;
+        $remove = (string)$remove;
+        $offset = strlen($str) - strlen($remove);
+        $str = substr($str, strlen($remove), $offset);
+        return $str;
     }
+
+
 }

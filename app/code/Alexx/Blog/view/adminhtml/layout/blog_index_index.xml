@@ -6,7 +6,7 @@
     <body>
         <referenceBlock name="menu">
             <action method="setActive">
-                <argument name="itemId" xsi:type="string">Alexx_Blog::menu</argument>
+                <argument name="itemId" xsi:type="string">Alexx_Blog::manage</argument>
             </action>
         </referenceBlock>
         <referenceContainer name="content">

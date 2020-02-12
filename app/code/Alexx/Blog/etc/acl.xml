@@ -2,7 +2,7 @@
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="Alexx_Blog::menu" title="Blog" sortOrder="0" />
+                <resource id="Alexx_Blog::manage" title="Blog" sortOrder="0" />
             </resource>
         </resources>
     </acl>

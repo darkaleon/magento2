@@ -12,7 +12,7 @@ use Magento\Framework\Controller\ResultFactory;
  */
 class Edit extends Action implements HttpGetActionInterface
 {
-    const ADMIN_RESOURCE = 'Alexx_Blog::menu';
+    const ADMIN_RESOURCE = 'Alexx_Blog::manage';
 
     /**
      * @inheritDoc

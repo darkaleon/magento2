@@ -7,17 +7,17 @@ use Alexx\Blog\Api\BlogRepositoryInterfaceFactory;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context as ActionContext;
 use Magento\Framework\App\Action\HttpPostActionInterface;
-use Magento\Framework\Exception\CouldNotDeleteException;
-use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Admin blog delete Controller that perform deleting data from the database
  */
 class Delete extends Action implements HttpPostActionInterface
 {
-    const ADMIN_RESOURCE = 'Alexx_Blog::menu';
+    const ADMIN_RESOURCE = 'Alexx_Blog::manage';
 
-    private $_blogRepsitoryFactory;
+    /**@var BlogRepositoryInterfaceFactory */
+    private $blogRepsitoryFactory;
 
     /**
      * @param ActionContext $context
@@ -27,8 +27,8 @@ class Delete extends Action implements HttpPostActionInterface
         ActionContext $context,
         BlogRepositoryInterfaceFactory $blogRepsitoryFactory
     ) {
+        $this->blogRepsitoryFactory = $blogRepsitoryFactory;
         parent::__construct($context);
-        $this->_blogRepsitoryFactory = $blogRepsitoryFactory;
     }
 
     /**
@@ -37,15 +37,13 @@ class Delete extends Action implements HttpPostActionInterface
     public function execute()
     {
         if ($this->getRequest()->getPost()) {
-            $postId = $this->getRequest()->getParam('id');
-            $repository = $this->_blogRepsitoryFactory->create();
+            $postId = (int)$this->getRequest()->getParam('id');
+            $repository = $this->blogRepsitoryFactory->create();
             if ($postId) {
                 try {
                     $repository->deleteById($postId);
                     $this->messageManager->addSuccess(__('The post has been deleted.'));
-                } catch (NoSuchEntityException $exception) {
-                    $this->messageManager->addError($exception->getMessage());
-                } catch (CouldNotDeleteException $exception) {
+                } catch (LocalizedException $exception) {
                     $this->messageManager->addError($exception->getMessage());
                 }
             }

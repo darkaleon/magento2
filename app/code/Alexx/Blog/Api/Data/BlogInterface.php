@@ -8,6 +8,13 @@ namespace Alexx\Blog\Api\Data;
  */
 interface BlogInterface
 {
+    const BLOG_TABLE = 'alexx_blog_posts';
+    const BLOG_ID = 'entity_id';
+    const FIELD_PICTURE = 'picture';
+    const FIELD_THEME = 'theme';
+    const FIELD_CONTENT = 'content';
+    const FIELD_CREATED_AT = 'created_at';
+    const FIELD_UPDATED_AT = 'updated_at';
 
     /**
      * Identifier getter
@@ -64,9 +71,4 @@ interface BlogInterface
      * @return $this
      */
     public function setData($key, $value = null);
-
-    /**
-     * Save object data
-     */
-    public function save();
 }

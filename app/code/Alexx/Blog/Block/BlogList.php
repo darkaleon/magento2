@@ -3,13 +3,15 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Block;
 
+use Alexx\Blog\Api\BlogRepositoryInterfaceFactory;
+use Magento\Catalog\Model\Locator\RegistryLocator;
 use Magento\Framework\Api\Search\SearchCriteriaInterfaceFactory;
 use Magento\Framework\Api\SortOrderBuilder;
-use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\View\Element\Template;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Registry;
-use Alexx\Blog\Api\BlogRepositoryInterfaceFactory;
+use Magento\Framework\View\Element\Template\Context;
+use Psr\Log\LoggerInterface;
 
 /**
  *  Block which injects to catalog_product_view
@@ -20,37 +22,44 @@ class BlogList extends Template
 {
     const XML_PATH_BLOG_VISIBLE = 'catalog_blog/general/applied_to';
 
-    protected $_scopeConfig;
-    private $_currentProduct;
-    private $_blogRepsitoryFactory;
+    /**@var RegistryLocator */
+    private $productRegistryLocator;
+
+    /**@var BlogRepositoryInterfaceFactory */
+    private $blogRepsitoryFactory;
+
+    /**@var SearchCriteriaInterfaceFactory */
     private $searchCriteriaFactory;
+
+    /**@var SortOrderBuilder */
     private $sortOrderBuilder;
+
+    /**@var LoggerInterface */
+    private $logger;
 
     /**
      * @param Context $context
-     * @param ScopeConfigInterface $scopeConfig
-     * @param Registry $coreRegistry
+     * @param RegistryLocator $productRegistryLocator
      * @param BlogRepositoryInterfaceFactory $blogRepsitoryFactory
      * @param SearchCriteriaInterfaceFactory $searchCriteriaFactory
      * @param SortOrderBuilder $sortOrderBuilder
+     * @param LoggerInterface $logger
      * @param array $data
-     *
-     * @return void
-     * */
+     */
     public function __construct(
         Context $context,
-        ScopeConfigInterface $scopeConfig,
-        Registry $coreRegistry,
+        RegistryLocator $productRegistryLocator,
         BlogRepositoryInterfaceFactory $blogRepsitoryFactory,
         SearchCriteriaInterfaceFactory $searchCriteriaFactory,
         SortOrderBuilder $sortOrderBuilder,
+        LoggerInterface $logger,
         array $data = []
     ) {
-        $this->_currentProduct = $coreRegistry->registry('current_product');
-        $this->_blogRepsitoryFactory = $blogRepsitoryFactory;
+        $this->productRegistryLocator = $productRegistryLocator;
+        $this->blogRepsitoryFactory = $blogRepsitoryFactory;
         $this->searchCriteriaFactory = $searchCriteriaFactory;
         $this->sortOrderBuilder = $sortOrderBuilder;
-        $this->_scopeConfig = $scopeConfig;
+        $this->logger = $logger;
         parent::__construct($context, $data);
     }
 
@@ -58,17 +67,18 @@ class BlogList extends Template
      * Get Product Type Id
      *
      * @return string
-     * */
+     * @throws NotFoundException
+     */
     public function getCurrentProductTypeId()
     {
-        return $this->_currentProduct->getTypeId();
+        return $this->productRegistryLocator->getProduct()->getTypeId();
     }
 
     /**
      * Gets system config value for checking applying blog to current product type
      *
      * @return string
-     * */
+     */
     private function getBlogSettingIsApplied()
     {
         return $this->_scopeConfig->getValue(self::XML_PATH_BLOG_VISIBLE);
@@ -78,20 +88,25 @@ class BlogList extends Template
      * Checking all paramerets
      *
      * @return bool
-     * */
-    public function isBlogIsEnabled()
+     */
+    public function isBlogEnabled()
     {
-        return in_array($this->getCurrentProductTypeId(), explode(',', $this->getBlogSettingIsApplied()));
+        try {
+            return in_array($this->getCurrentProductTypeId(), explode(',', $this->getBlogSettingIsApplied()));
+        } catch (NotFoundException $exception) {
+            $this->logger->error($exception->getLogMessage());
+            return false;
+        }
     }
 
     /**
      * Gets latest blog posts
      *
      * @return array
-     * */
+     */
     public function getLastPosts()
     {
-        $searchCriteria=$this->searchCriteriaFactory->create();
+        $searchCriteria = $this->searchCriteriaFactory->create();
 
         $searchCriteria->setPageSize(5);
 
@@ -101,6 +116,11 @@ class BlogList extends Template
             ->create();
         $searchCriteria->setSortOrders([$defaultSortOrder]);
 
-        return $this->_blogRepsitoryFactory->create()->getList($searchCriteria)->getItems();
+        try {
+            return $this->blogRepsitoryFactory->create()->getList($searchCriteria)->getItems();
+        } catch (LocalizedException $exception) {
+            $this->logger->error($exception->getLogMessage());
+            return [];
+        }
     }
 }

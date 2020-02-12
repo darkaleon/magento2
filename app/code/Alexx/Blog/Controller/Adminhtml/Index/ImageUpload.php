@@ -3,42 +3,37 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
-use Alexx\Blog\Model\PictureSaver;
+use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Backend\App\Action;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\Controller\ResultFactory;
 
 /**
  * Admin Controller that perform uploading image from form and store it in tmp directory
  */
 class ImageUpload extends Action implements HttpPostActionInterface
 {
-    const ADMIN_RESOURCE = 'Alexx_Blog::menu';
+    const ADMIN_RESOURCE = 'Alexx_Blog::manage';
 
-    /**
-     * @var RawFactory
-     */
-    protected $resultRawFactory;
 
-    /**
-     * @var PictureSaver
-     */
-    private $pictureSaver;
+    private $imageUploader;
+    private $blogMediaConfig;
 
     /**
      * @param Context $context
-     * @param RawFactory $resultRawFactory
-     * @param PictureSaver $pictureSaver
      */
     public function __construct(
         Context $context,
-        RawFactory $resultRawFactory,
-        PictureSaver $pictureSaver
-    ) {
+        \Magento\Catalog\Model\ImageUploader $imageUploader,
+        BlogMediaConfig $blogMediaConfig
+    )
+    {
+        $this->imageUploader = $imageUploader;
+        $this->blogMediaConfig = $blogMediaConfig;
+
         parent::__construct($context);
-        $this->resultRawFactory = $resultRawFactory;
-        $this->pictureSaver = $pictureSaver;
     }
 
     /**
@@ -48,17 +43,18 @@ class ImageUpload extends Action implements HttpPostActionInterface
      */
     public function execute()
     {
+        $imageId = $this->_request->getParam('param_name', 'image');
+
+
         try {
-            $result = $this->pictureSaver->saveFile();
+            $result = $this->imageUploader->saveFileToTmpDir($imageId);
+            $result['url'] = $this->blogMediaConfig->adaptUrl($result['url']);
 
         } catch (\Exception $e) {
             $result = ['error' => __($e->getMessage()), 'errorcode' => $e->getCode()];
         }
 
-        /** @var \Magento\Framework\Controller\Result\Raw $response */
-        $response = $this->resultRawFactory->create();
-        $response->setHeader('Content-type', 'text/plain');
-        $response->setContents(json_encode($result));
-        return $response;
+        return $this->resultFactory->create(ResultFactory::TYPE_JSON)->setData($result);
+
     }
 }

@@ -3,26 +3,22 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Model;
 
-use Alexx\Blog\Api\BlogRepositoryInterfaceFactory;
+use Alexx\Blog\Api\BlogRepositoryInterface;
 use Alexx\Blog\Api\Data\BlogInterface;
 use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Magento\Backend\App\Action;
 use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
  * Class for create/edit BlogPost data row
- * */
+ */
 class BlogPostSaver
 {
     /**@var BlogInterface  */
     private $model;
 
-    /**@var PictureSaver  */
-    private $pictureSaver;
-
     /**@var Action*/
-    private $_currentAction;
+    private $currentAction;
 
     /**@var array*/
     private $formData = [];
@@ -31,58 +27,61 @@ class BlogPostSaver
     private $blogMediaConfig;
 
     /**@var BlogRepository*/
-    private $_blogRepsitoryFactory;
+    private $blogRepsitory;
 
     /**
-     * @param PictureSaver $pictureSaver
      * @param BlogMediaConfig $blogMediaConfig
      * @param Action $currentAction
-     * @param BlogRepositoryInterfaceFactory $blogRepsitoryFactory
+     * @param BlogRepositoryInterface $blogRepsitory
      * @param BlogInterface $model
      */
     public function __construct(
-        PictureSaver $pictureSaver,
         BlogMediaConfig $blogMediaConfig,
         Action $currentAction,
-        BlogRepositoryInterfaceFactory $blogRepsitoryFactory,
+        BlogRepositoryInterface $blogRepsitory,
         BlogInterface $model
     ) {
         $this->blogMediaConfig = $blogMediaConfig;
-        $this->_currentAction = $currentAction;
+        $this->currentAction = $currentAction;
         $this->model = $model;
-        $this->pictureSaver = $pictureSaver;
-        $this->_blogRepsitoryFactory = $blogRepsitoryFactory->create();
+        $this->blogRepsitory = $blogRepsitory;
     }
 
     /**
      * Loads form data from form to model
      *
-     * @throws NoSuchEntityException
-     **/
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
     public function loadFormData()
     {
         $dataFields = ['entity_id', 'theme', 'content', 'picture'];
         foreach ($dataFields as $fieldName) {
-            if (!empty($this->_currentAction->getRequest()->getParam($fieldName))) {
-                $this->formData[$fieldName] = $this->_currentAction->getRequest()->getParam($fieldName);
+            if (!empty($this->currentAction->getRequest()->getParam($fieldName))) {
+                $this->formData[$fieldName] = $this->currentAction->getRequest()->getParam($fieldName);
             }
         }
         $postId = $this->formData[$this->model::BLOG_ID] ?? null;
 
         if ($postId) {
-            $this->model = $this->_blogRepsitoryFactory->getById($postId);
+            $this->model = $this->blogRepsitory->getById($postId);
         }
     }
 
     /**
      * Uploads image posted by form
-     **/
-    public function loadPictureData()
+     */
+    public function loadPictureData($newFileUploader)
     {
         //Replace icon with fileuploader field name
 
         if (isset($this->formData['picture'][0]['file'])) {
-            $this->formData['picture'][0] = $this->pictureSaver->uploadImage($this->formData['picture'][0]);
+            $newImgRelativePath=$newFileUploader->moveFileFromTmp($this->formData['picture'][0]['file'],true);
+            $result=[
+                'name'=>$newImgRelativePath,
+                'url' => '/' . $this->blogMediaConfig->getBaseMediaDir() . '/' . $newImgRelativePath
+            ];
+
+            $this->formData['picture'][0] =$result;
         }
     }
 
@@ -92,7 +91,7 @@ class BlogPostSaver
      * @param string $field
      *
      * @return array
-     **/
+     */
     public function getFormData($field = null)
     {
         if ($field) {
@@ -118,7 +117,7 @@ class BlogPostSaver
         if (!$this->model->getId()) {
             $this->model->setData('entity_id', null);
         }
-        $this->model = $this->_blogRepsitoryFactory->save($this->model);
+        $this->model = $this->blogRepsitory->save($this->model);
         return $this->model->getId();
     }
 
@@ -131,11 +130,7 @@ class BlogPostSaver
      */
     public function adaptFormData($formData)
     {
-        if (isset($formData['picture'])) {
-            $formData['picture'] = $formData['picture'][0]['url'];
-        } else {
-            $formData['picture'] = null;
-        }
+        $formData['picture'] = $formData['picture'][0]['url'] ?? null;
         return $formData;
     }
 }

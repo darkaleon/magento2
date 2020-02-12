@@ -6,7 +6,6 @@ namespace Alexx\Blog\Controller\Adminhtml\Index;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context as ActionContext;
 use Alexx\Blog\Model\ResourceModel\BlogPosts\CollectionFactory as BlogCollectionFactory;
-
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Alexx\Blog\Api\BlogRepositoryInterfaceFactory;
 use Magento\Framework\Controller\ResultFactory;
@@ -19,11 +18,18 @@ use Psr\Log\LoggerInterface;
  */
 class MassDelete extends Action implements HttpPostActionInterface
 {
-    const ADMIN_RESOURCE = 'Alexx_Blog::menu';
+    const ADMIN_RESOURCE = 'Alexx_Blog::manage';
 
-    private $_blogRepsitoryFactory;
+    /**@var BlogRepositoryInterfaceFactory */
+    private $blogRepsitoryFactory;
+
+    /**@var BlogCollectionFactory */
     private $collectionFactory;
+
+    /**@var Filter */
     private $filter;
+
+    /**@var LoggerInterface */
     private $logger;
 
     /**
@@ -38,13 +44,13 @@ class MassDelete extends Action implements HttpPostActionInterface
         Filter $filter,
         BlogCollectionFactory $collectionFactory,
         BlogRepositoryInterfaceFactory $blogRepsitoryFactory,
-        LoggerInterface $logger = null
+        LoggerInterface $logger
     ) {
-        parent::__construct($context);
         $this->filter = $filter;
         $this->collectionFactory = $collectionFactory;
-        $this->_blogRepsitoryFactory = $blogRepsitoryFactory;
+        $this->blogRepsitoryFactory = $blogRepsitoryFactory;
         $this->logger = $logger;
+        parent::__construct($context);
     }
 
     /**
@@ -52,33 +58,32 @@ class MassDelete extends Action implements HttpPostActionInterface
      */
     public function execute()
     {
-
-        $repsitory = $this->_blogRepsitoryFactory->create();
+        $repsitory = $this->blogRepsitoryFactory->create();
         $collection = $this->filter->getCollection($this->collectionFactory->create());
-        $productDeleted = 0;
-        $productDeletedError = 0;
+        $postsDeleted = 0;
+        $postsDeletedError = 0;
         /** @var \Magento\Catalog\Model\Product $product */
         foreach ($collection->getItems() as $product) {
             try {
                 $repsitory->delete($product);
-                $productDeleted++;
+                $postsDeleted++;
             } catch (LocalizedException $exception) {
                 $this->logger->error($exception->getLogMessage());
-                $productDeletedError++;
+                $postsDeletedError++;
             }
         }
 
-        if ($productDeleted) {
+        if ($postsDeleted) {
             $this->messageManager->addSuccessMessage(
-                __('A total of %1 record(s) have been deleted.', $productDeleted)
+                __('A total of %1 record(s) have been deleted.', $postsDeleted)
             );
         }
 
-        if ($productDeletedError) {
+        if ($postsDeletedError) {
             $this->messageManager->addErrorMessage(
                 __(
                     'A total of %1 record(s) haven\'t been deleted. Please see server logs for more details.',
-                    $productDeletedError
+                    $postsDeletedError
                 )
             );
         }

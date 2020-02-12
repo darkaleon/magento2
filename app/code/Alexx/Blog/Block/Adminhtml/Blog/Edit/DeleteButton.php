@@ -11,14 +11,15 @@ use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
  */
 class DeleteButton implements ButtonProviderInterface
 {
-    private $_context;
+    /**@var Context*/
+    private $context;
 
     /**
      * @param Context $context
      */
     public function __construct(Context $context)
     {
-        $this->_context = $context;
+        $this->context = $context;
     }
 
     /**
@@ -26,9 +27,9 @@ class DeleteButton implements ButtonProviderInterface
      */
     public function getButtonData()
     {
-        if ($this->_context->getRequest()->getParam('id')) {
-            $id = $this->_context->getRequest()->getParam('id');
-            $url = $this->_context->getUrlBuilder()->getUrl('*/*/delete', ['id' => $id]);
+        if ($this->context->getRequest()->getParam('id')) {
+            $id = $this->context->getRequest()->getParam('id');
+            $url = $this->context->getUrlBuilder()->getUrl('*/*/delete', ['id' => $id]);
             return [
                 'label' => __('Delete'),
                 'on_click' => 'deleteConfirm(\'' . __(

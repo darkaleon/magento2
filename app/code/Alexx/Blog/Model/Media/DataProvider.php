@@ -14,9 +14,9 @@ use Magento\Store\Model\StoreManagerInterface;
 class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
 {
     protected $collection;
-    protected $_loadedData;
-    private $_storeManager;
-    private $_dataPersistor;
+    private $loadedData;
+    private $storeManager;
+    private $dataPersistor;
     private $blogMediaConfig;
 
     /**
@@ -40,10 +40,10 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         array $data = []
     ) {
         $this->blogMediaConfig = $blogMediaConfig;
-        $this->_storeManager = $storeManager;
-        $this->_dataPersistor = $dataPersistor;
-        parent::__construct($name, $primaryFieldName, $requestFieldName, $data);
+        $this->storeManager = $storeManager;
+        $this->dataPersistor = $dataPersistor;
         $this->collection = $mycollectionFactory->create();
+        parent::__construct($name, $primaryFieldName, $requestFieldName, $data);
     }
 
     /**
@@ -51,29 +51,26 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      */
     public function getData()
     {
-        $blogPostedForm=$this->_dataPersistor->get('BlogPostForm');
+        $blogPostedForm = $this->dataPersistor->get('BlogPostForm');
 
         if ($blogPostedForm) {
-            $this->_loadedData[$blogPostedForm["entity_id"]]=$blogPostedForm;
-            $this->_dataPersistor->clear('BlogPostForm');
+            $this->loadedData[$blogPostedForm['entity_id']] = $blogPostedForm;
+            $this->dataPersistor->clear('BlogPostForm');
         }
 
-        if (isset($this->_loadedData)) {
-            return $this->_loadedData;
+        if (isset($this->loadedData)) {
+            return $this->loadedData;
         }
 
         foreach ($this->collection->getItems() as $blogPost) {
 
-            $this->_loadedData[$blogPost->getId()] = $blogPost->getData();
+            $this->loadedData[$blogPost->getId()] = $blogPost->getData();
 
             if ($blogPost->getPicture()) {
-                $this->_loadedData[$blogPost->getId()]['picture'] = [0=>[]];
-
-                $this->_loadedData[$blogPost->getId()]['picture'][0]['name'] = $blogPost->getPicture();
-                $this->_loadedData[$blogPost->getId()]['picture'][0]['url'] = $blogPost->getPicture();
+                $this->loadedData[$blogPost->getId()]['picture'] = [['name'=>$blogPost->getPicture(),'url'=>$blogPost->getPicture()]];
             }
         }
 
-        return $this->_loadedData;
+        return $this->loadedData;
     }
 }

@@ -14,7 +14,6 @@
                        ifconfig="catalog_blog/general/enable">
                 </block>
             </container>
-
         </referenceContainer>
     </body>
 </page>

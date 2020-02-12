@@ -2,7 +2,7 @@
 /**@var $block \Alexx\Blog\Block\BlogList */
 
 
-if ($block->isBlogIsEnabled()) {
+if ($block->isBlogEnabled()) {
     $posts = $block->getLastPosts();
     if (count($posts) > 0) { ?>
         <div class="blogs-applied-to-category">
