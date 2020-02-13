@@ -52,7 +52,7 @@ class ImageUpload extends Action implements HttpPostActionInterface
             $result['url'] = $this->adaptUrl($result['url']);
 
         } catch (LocalizedException $e) {
-            $result = ['error' => __($e->getMessage()), 'errorcode' => $e->getCode()];
+            $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
         }
 
         return $this->resultFactory->create(ResultFactory::TYPE_JSON)->setData($result);
