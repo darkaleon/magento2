@@ -12,6 +12,7 @@ use Alexx\Blog\Model\ResourceModel\BlogPosts as BlogPostsResourceModel;
  */
 class Collection extends AbstractCollection
 {
+    /**@var string*/
     protected $_idFieldName = 'entity_id';
 
     /**

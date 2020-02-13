@@ -14,6 +14,7 @@ use Magento\Ui\Component\Listing\Columns\Column;
  */
 class BlogThumbnail extends Column
 {
+    /**@var BlogMediaConfig */
     private $blogMediaConfig;
 
     /**
