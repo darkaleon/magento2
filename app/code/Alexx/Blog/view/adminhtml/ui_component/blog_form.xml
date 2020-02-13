@@ -6,7 +6,7 @@
             <item name="provider" xsi:type="string">blog_form.blog_form_data_source</item>
             <item name="deps" xsi:type="string">blog_form.blog_form_data_source</item>
         </item>
-        <item name="label" xsi:type="string" translate="true">Sample Form</item>
+        <item name="label" xsi:type="string" translate="true">Blog Form</item>
         <item name="config" xsi:type="array">
             <item name="dataScope" xsi:type="string">data</item>
             <item name="namespace" xsi:type="string">blog_form</item>

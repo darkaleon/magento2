@@ -48,7 +48,7 @@ class BlogPosts extends AbstractDb
         $pictureData = $object->getData(BlogInterface::FIELD_PICTURE);
 
         if (is_array($pictureData)) {
-            if (isset($pictureData[0]['file'])) {
+            if (!empty($pictureData[0]['file'])) {
                 $newImgRelativePath = $this->imageUploader->moveFileFromTmp($pictureData[0]['file'], true);
                 $pictureData = [[
                     'name' => $newImgRelativePath,
