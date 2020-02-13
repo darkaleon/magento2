@@ -12,7 +12,7 @@
                    showInStore="1">
                 <label>Blog settings</label>
                 <field id="enable" translate="label comment" type="select" sortOrder="0" showInDefault="1"
-                       showInWebsite="1" showInStore="1">
+                       showInWebsite="0" showInStore="0">
                     <label>Module Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Enable blog</comment>
