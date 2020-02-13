@@ -113,7 +113,6 @@
                 <filter>textRange</filter>
                 <label translate="true">theme</label>
                 <sortable>false</sortable>
-
             </settings>
         </column>
         <column name="created_at" class="Magento\Ui\Component\Listing\Columns\Date">

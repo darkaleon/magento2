@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Alexx\Blog\Block;
 
 use Alexx\Blog\Api\BlogRepositoryInterface;
+use Alexx\Blog\Api\Data\BlogInterface;
+use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Magento\Catalog\Model\Locator\RegistryLocator;
 use Magento\Framework\Api\AbstractSimpleObject;
 use Magento\Framework\Api\Search\SearchCriteriaInterface;
@@ -39,6 +41,9 @@ class BlogList extends Template
     /**@var LoggerInterface */
     private $logger;
 
+    /**@var BlogMediaConfig */
+    private $blogMediaConfig;
+
     /**
      * @param Context $context
      * @param RegistryLocator $productRegistryLocator
@@ -46,6 +51,7 @@ class BlogList extends Template
      * @param SearchCriteriaInterfaceFactory $searchCriteriaFactory
      * @param SortOrderBuilder $sortOrderBuilder
      * @param LoggerInterface $logger
+     * @param BlogMediaConfig $blogMediaConfig
      * @param array $data
      */
     public function __construct(
@@ -55,8 +61,10 @@ class BlogList extends Template
         SearchCriteriaInterfaceFactory $searchCriteriaFactory,
         SortOrderBuilder $sortOrderBuilder,
         LoggerInterface $logger,
+        BlogMediaConfig $blogMediaConfig,
         array $data = []
     ) {
+        $this->blogMediaConfig = $blogMediaConfig;
         $this->productRegistryLocator = $productRegistryLocator;
         $this->blogRepsitory = $blogRepsitory;
         $this->searchCriteriaFactory = $searchCriteriaFactory;
@@ -126,5 +134,17 @@ class BlogList extends Template
             $this->logger->error($exception->getLogMessage());
             return [];
         }
+    }
+
+    /**
+     * Generates url to image
+     *
+     * @param BlogInterface $post
+     *
+     * @return string
+     */
+    public function getPictureUrl(BlogInterface $post)
+    {
+        return $this->blogMediaConfig->getBlogImageUrl($post->getPicture());
     }
 }

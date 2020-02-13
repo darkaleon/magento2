@@ -13,6 +13,7 @@ use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\App\ResponseInterface;
 
 /**
  * Admin blog save Controller that perform saving data posted from the form to database
@@ -50,7 +51,7 @@ class Save extends Action implements HttpPostActionInterface
      * @param string $path
      * @param array $arguments
      *
-     * @return \Magento\Framework\App\ResponseInterface
+     * @return ResponseInterface
      */
     public function redirectError($message, $path, $arguments = [])
     {
@@ -62,7 +63,7 @@ class Save extends Action implements HttpPostActionInterface
      * Redirect with success message
      *
      * @param string $result
-     * @return \Magento\Framework\App\ResponseInterface
+     * @return ResponseInterface
      */
     public function redirectSuccess($result)
     {
@@ -82,7 +83,7 @@ class Save extends Action implements HttpPostActionInterface
      * @param string $message
      * @param array $formData
      *
-     * @return \Magento\Framework\App\ResponseInterface
+     * @return ResponseInterface
      */
     private function errorRedirect($message, $formData = [])
     {
@@ -106,18 +107,16 @@ class Save extends Action implements HttpPostActionInterface
         $isNewPost = !isset($formPostData['entity_id']);
         if (!$isNewPost) {
             try {
-                /**@var BlogInterface $postModel */
                 $postModel = $this->blogRepsitory->getById((int)$formPostData['entity_id']);
             } catch (NoSuchEntityException $exception) {
                 return $this->errorRedirect($exception->getMessage());
             }
         } else {
-            /**@var BlogInterface $postModel */
             $postModel = $this->blogRepsitory->getFactory()->create();
         }
         try {
-            $postModel->setData($formPostData);
-            $this->blogRepsitory->save($postModel);
+            /**@var BlogInterface $postModel */
+            $this->blogRepsitory->save($postModel, $formPostData);
             return $this->redirectSuccess($postModel->getId());
         } catch (CouldNotSaveException $e) {
             return $this->errorRedirect($e->getMessage(), $postModel->getData());

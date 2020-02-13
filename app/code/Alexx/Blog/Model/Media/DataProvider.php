@@ -7,11 +7,12 @@ use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Alexx\Blog\Model\ResourceModel\BlogPosts\CollectionFactory;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Ui\DataProvider\AbstractDataProvider;
 
 /**
  * Class DataProvider for edit form
  */
-class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
+class DataProvider extends AbstractDataProvider
 {
     /**@var array */
     private $loadedData;
@@ -26,7 +27,7 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
     private $blogMediaConfig;
 
     /**
-     * @param CollectionFactory $mycollectionFactory
+     * @param CollectionFactory $myCollectionFactory
      * @param string $name
      * @param string $primaryFieldName
      * @param string $requestFieldName
@@ -36,7 +37,7 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      * @param array $data
      */
     public function __construct(
-        CollectionFactory $mycollectionFactory,
+        CollectionFactory $myCollectionFactory,
         $name,
         $primaryFieldName,
         $requestFieldName,
@@ -48,7 +49,7 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         $this->blogMediaConfig = $blogMediaConfig;
         $this->storeManager = $storeManager;
         $this->dataPersistor = $dataPersistor;
-        $this->collection = $mycollectionFactory->create();
+        $this->collection = $myCollectionFactory->create();
         parent::__construct($name, $primaryFieldName, $requestFieldName, $data);
     }
 
@@ -57,7 +58,7 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      */
     public function getData()
     {
-        /**@var array $blogPostedForm*/
+        /**@var array $blogPostedForm */
         $blogPostedForm = $this->dataPersistor->get('BlogPostForm');
 
         if ($blogPostedForm) {
@@ -65,21 +66,20 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
             $this->dataPersistor->clear('BlogPostForm');
         }
 
-        if (isset($this->loadedData)) {
-            return $this->loadedData;
-        }
+        if (!isset($this->loadedData)) {
 
-        /** @var \Alexx\Blog\Model\BlogPosts $blogPost */
-        foreach ($this->collection->getItems() as $blogPost) {
-            $dataToEdit = $blogPost->getData();
+            /** @var \Alexx\Blog\Model\BlogPosts $blogPost */
+            foreach ($this->collection->getItems() as $blogPost) {
+                $dataToEdit = $blogPost->getData();
 
-            unset($dataToEdit['created_at']);
-            unset($dataToEdit['updated_at']);
-            if ($blogPost->getPicture()) {
-                $dataToEdit['picture'] = [['name' => $blogPost->getPicture(), 'url' => $blogPost->getPicture()]];
+                unset($dataToEdit['created_at']);
+                unset($dataToEdit['updated_at']);
+                if ($blogPost->getPicture()) {
+                    $dataToEdit['picture'] = [['name' => $blogPost->getPicture(), 'url' => $blogPost->getPicture()]];
+                }
+
+                $this->loadedData[$blogPost->getId()] = $dataToEdit;
             }
-
-            $this->loadedData[$blogPost->getId()] = $dataToEdit;
         }
 
         return $this->loadedData;

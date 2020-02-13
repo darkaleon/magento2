@@ -4,53 +4,13 @@ declare(strict_types=1);
 namespace Alexx\Blog\Model;
 
 use Alexx\Blog\Api\Data\BlogInterface;
-use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
-use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Registry;
 
 /**
  * Simple Model BlogPosts
  */
 class BlogPosts extends AbstractModel implements BlogInterface
 {
-    /**@var BlogMediaConfig */
-    private $blogMediaConfig;
-
-    /**
-     * @param Context $context
-     * @param  Registry $registry
-     * @param BlogMediaConfig $blogMediaConfig
-     * @param AbstractResource $resource
-     * @param AbstractDb $resourceCollection
-     * @param array $data
-     */
-    public function __construct(
-        Context $context,
-        Registry $registry,
-        BlogMediaConfig $blogMediaConfig,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
-        array $data = []
-    ) {
-
-        $this->blogMediaConfig = $blogMediaConfig;
-        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
-    }
-
-    /**
-     * Generates url to image
-     *
-     * @return string
-     * @throws \Magento\Framework\Exception\FileSystemException
-     */
-    public function getPictureUrl()
-    {
-        return $this->blogMediaConfig->getBlogImageUrl($this->getPicture());
-    }
-
     /**
      * @inheritDoc
      */
@@ -97,5 +57,29 @@ class BlogPosts extends AbstractModel implements BlogInterface
     public function getUpdatedAt()
     {
         return $this->getData(BlogInterface::FIELD_UPDATED_AT);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setTheme(string $data)
+    {
+        return $this->setData(BlogInterface::FIELD_THEME, $data);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setPicture(string $data)
+    {
+        return $this->setData(BlogInterface::FIELD_PICTURE, $data);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setContent(string $data)
+    {
+        return $this->setData(BlogInterface::FIELD_CONTENT, $data);
     }
 }

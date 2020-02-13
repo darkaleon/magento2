@@ -54,16 +54,6 @@
                 <item name="label" xsi:type="string" translate="true">General</item>
             </item>
         </argument>
-     <!--   <field name="entity_id">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="visible" xsi:type="boolean">false</item>
-                    <item name="dataType" xsi:type="string">text</item>
-                    <item name="formElement" xsi:type="string">hidden</item>
-                    <item name="dataScope" xsi:type="string">entity_id</item>
-                </item>
-            </argument>
-        </field>-->
         <field name="theme">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -104,7 +94,6 @@
                     <item name="dataType" xsi:type="string">text</item>
                     <item name="formElement" xsi:type="string">wysiwyg</item>
                     <item name="label" xsi:type="string">Content</item>
-
                     <item name="template" xsi:type="string">ui/form/field</item>
                     <item name="wysiwyg" xsi:type="boolean">true</item>
                     <item name="dataScope" xsi:type="string">content</item>

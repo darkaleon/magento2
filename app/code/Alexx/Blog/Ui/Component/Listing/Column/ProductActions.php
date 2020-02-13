@@ -44,6 +44,7 @@ class ProductActions extends Column
                 ];
             }
         }
+
         return $dataSource;
     }
 }

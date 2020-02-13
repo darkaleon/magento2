@@ -5,9 +5,10 @@ namespace Alexx\Blog\Model;
 
 use Alexx\Blog\Api\BlogRepositoryInterface;
 use Alexx\Blog\Api\Data\BlogInterface;
+use Alexx\Blog\Api\Data\BlogInterfaceFactory;
 use Alexx\Blog\Model\ResourceModel\BlogPosts as ResourceBlog;
 use Alexx\Blog\Model\ResourceModel\BlogPosts\CollectionFactory as BlogCollectionFactory;
-
+use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;
@@ -26,7 +27,7 @@ class BlogRepository implements BlogRepositoryInterface
     private $resource;
 
     /**
-     * @var BlogPostsFactory
+     * @var BlogInterfaceFactory
      */
     private $blogFactory;
 
@@ -46,30 +47,38 @@ class BlogRepository implements BlogRepositoryInterface
     private $collectionProcessor;
 
     /**
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
+
+    /**
      * @param ResourceBlog $resource
-     * @param BlogPostsFactory $blogFactory
+     * @param BlogInterfaceFactory $blogFactory
      * @param BlogCollectionFactory $blogCollectionFactory
      * @param SearchResultsInterfaceFactory $searchResultsFactory
      * @param CollectionProcessorInterface $collectionProcessor
+     * @param DataObjectHelper $dataObjectHelper
      */
     public function __construct(
         ResourceBlog $resource,
-        BlogPostsFactory $blogFactory,
+        BlogInterfaceFactory $blogFactory,
         BlogCollectionFactory $blogCollectionFactory,
         SearchResultsInterfaceFactory $searchResultsFactory,
-        CollectionProcessorInterface $collectionProcessor
+        CollectionProcessorInterface $collectionProcessor,
+        DataObjectHelper $dataObjectHelper
     ) {
         $this->resource = $resource;
         $this->blogFactory = $blogFactory;
         $this->blogCollectionFactory = $blogCollectionFactory;
         $this->collectionProcessor = $collectionProcessor;
         $this->searchResultsFactory = $searchResultsFactory;
+        $this->dataObjectHelper = $dataObjectHelper;
     }
 
     /**
      * Gets factory for create new entities
      *
-     * @return BlogPostsFactory
+     * @return BlogInterfaceFactory
      */
     public function getFactory()
     {
@@ -79,8 +88,11 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function save(BlogInterface $block)
+    public function save(BlogInterface $block, array $data = null)
     {
+        if (!empty($data)) {
+            $this->setData($block, $data);
+        }
         try {
             $this->resource->save($block);
         } catch (\Exception $exception) {
@@ -141,5 +153,16 @@ class BlogRepository implements BlogRepositoryInterface
     public function deleteById(int $blockId)
     {
         return $this->delete($this->getById($blockId));
+    }
+
+    /**
+     * Populates BlogInterface fields with data
+     *
+     * @param BlogInterface $dataObject
+     * @param array $data
+     */
+    public function setData(BlogInterface $dataObject, array $data)
+    {
+        $this->dataObjectHelper->populateWithArray($dataObject, $data, BlogInterface::class);
     }
 }

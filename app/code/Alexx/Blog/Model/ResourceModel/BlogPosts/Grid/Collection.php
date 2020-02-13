@@ -3,22 +3,23 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Model\ResourceModel\BlogPosts\Grid;
 
-use Alexx\Blog\Model\ResourceModel\BlogPosts\Collection as GridCollection;
-use Magento\Framework\Search\AggregationInterface;
+use Alexx\Blog\Model\ResourceModel\BlogPosts\Collection as BlogPostsCollection;
 use Magento\Framework\Api\Search\SearchResultInterface;
 use Magento\Framework\View\Element\UiComponent\DataProvider\Document;
 use Alexx\Blog\Model\ResourceModel\BlogPosts;
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Api\Search\AggregationInterface;
 
 /**
- * BlogPosts GridCollection ResourceModel
+ * BlogPosts Collection model for blog_grid_listing_data_source
  */
-class Collection extends GridCollection implements SearchResultInterface
+class Collection extends BlogPostsCollection implements SearchResultInterface
 {
+    /**@var AggregationInterface */
     private $_aggregations;
 
     /**
-     * Constructor
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -26,7 +27,7 @@ class Collection extends GridCollection implements SearchResultInterface
     }
 
     /**
-     * GetAggregations
+     * @inheritDoc
      */
     public function getAggregations()
     {
@@ -34,9 +35,7 @@ class Collection extends GridCollection implements SearchResultInterface
     }
 
     /**
-     * SetAggregations
-     *
-     * @param \Magento\Framework\Api\Search\AggregationInterface $aggregations
+     * @inheritDoc
      */
     public function setAggregations($aggregations)
     {
@@ -44,7 +43,7 @@ class Collection extends GridCollection implements SearchResultInterface
     }
 
     /**
-     * GetSearchCriteria
+     * @inheritDoc
      */
     public function getSearchCriteria()
     {
@@ -52,10 +51,7 @@ class Collection extends GridCollection implements SearchResultInterface
     }
 
     /**
-     * SetSearchCriteria
-     *
-     * @param SearchCriteriaInterface $searchCriteria
-     * @return Collection
+     * @inheritDoc
      */
     public function setSearchCriteria(SearchCriteriaInterface $searchCriteria = null)
     {
@@ -63,7 +59,7 @@ class Collection extends GridCollection implements SearchResultInterface
     }
 
     /**
-     * GetTotalCount
+     * @inheritDoc
      */
     public function getTotalCount()
     {
@@ -71,10 +67,7 @@ class Collection extends GridCollection implements SearchResultInterface
     }
 
     /**
-     * SetTotalCount
-     *
-     * @param integer $totalCount
-     * @return Collection
+     * @inheritDoc
      */
     public function setTotalCount($totalCount)
     {
@@ -82,10 +75,7 @@ class Collection extends GridCollection implements SearchResultInterface
     }
 
     /**
-     * SetItems
-     *
-     * @param array $items
-     * @return Collection
+     * @inheritDoc
      */
     public function setItems(array $items = null)
     {

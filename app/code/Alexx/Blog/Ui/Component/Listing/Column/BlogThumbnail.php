@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Alexx\Blog\Ui\Component\Listing\Column;
 
 use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
+use Magento\Framework\DataObject;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use Magento\Framework\DataObject;
 
 /**
  * BlogThumbnail column
@@ -47,6 +47,7 @@ class BlogThumbnail extends Column
                 $item[$fieldName . '_alt'] = $model->getTheme();
             }
         }
+
         return $dataSource;
     }
 }

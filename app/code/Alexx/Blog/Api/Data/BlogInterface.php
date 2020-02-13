@@ -19,7 +19,7 @@ interface BlogInterface
     /**
      * Identifier getter
      *
-     * @return mixed
+     * @return string|null
      */
     public function getId();
 
@@ -57,4 +57,28 @@ interface BlogInterface
      * @return string
      */
     public function getUpdatedAt();
+
+    /**
+     * Set theme field
+     *
+     * @param string $data
+     * @return string
+     */
+    public function setTheme(string $data);
+
+    /**
+     * Set picture field
+     *
+     * @param string $data
+     * @return string
+     */
+    public function setPicture(string $data);
+
+    /**
+     * Set content field
+     *
+     * @param string $data
+     * @return string
+     */
+    public function setContent(string $data);
 }

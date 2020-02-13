@@ -4,9 +4,10 @@ declare(strict_types=1);
 namespace Alexx\Blog\Model\Media;
 
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\View\Asset\Repository;
+use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\View\Asset\Repository;
 
 /**
  * Urls for blog pictures
@@ -49,19 +50,23 @@ class Config
      * @param string $file
      *
      * @return string
-     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function getBlogImageUrl(string $file)
     {
         if (empty($file)) {
-            return $this->getViewFileUrl('Alexx_Blog::images/image-placeholder.png');
+            $result = $this->getViewFileUrl('Alexx_Blog::images/image-placeholder.png');
         } else {
-            return (
-            $this->file->isExists($this->getRootFolder() . $file) ?
-                $file :
-                $this->getViewFileUrl('Alexx_Blog::images/image-placeholder.png')
-            );
+            try {
+                $result = (
+                    $this->file->isExists($this->getRootFolder() . $file) ?
+                    $file :
+                    $this->getViewFileUrl('Alexx_Blog::images/image-placeholder.png')
+                );
+            } catch (FileSystemException $exception) {
+                $result = $this->getViewFileUrl('Alexx_Blog::images/image-placeholder.png');
+            }
         }
+        return $result;
     }
 
     /**

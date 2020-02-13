@@ -9,6 +9,7 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Model\ImageUploader;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Admin Controller that perform uploading image from form and store it in tmp directory
@@ -50,7 +51,7 @@ class ImageUpload extends Action implements HttpPostActionInterface
             $result = $this->imageUploader->saveFileToTmpDir($imageId);
             $result['url'] = $this->adaptUrl($result['url']);
 
-        } catch (\Exception $e) {
+        } catch (LocalizedException $e) {
             $result = ['error' => __($e->getMessage()), 'errorcode' => $e->getCode()];
         }
 

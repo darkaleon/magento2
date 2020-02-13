@@ -17,10 +17,11 @@ interface BlogRepositoryInterface
      * Save post to db
      *
      * @param BlogInterface $blogPost
+     * @param array $data
      * @return BlogInterface
      * @throws LocalizedException
      */
-    public function save(BlogInterface $blogPost);
+    public function save(BlogInterface $blogPost, array $data = null);
 
     /**
      * Retrieve post
