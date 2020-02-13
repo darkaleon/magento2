@@ -48,32 +48,24 @@ class BlogRepository implements BlogRepositoryInterface
     private $collectionProcessor;
 
     /**
-     * @var DataObjectHelper
-     */
-    private $dataObjectHelper;
-
-    /**
      * @param ResourceBlog $resource
      * @param BlogInterfaceFactory $blogFactory
      * @param BlogCollectionFactory $blogCollectionFactory
      * @param SearchResultsInterfaceFactory $searchResultsFactory
      * @param CollectionProcessorInterface $collectionProcessor
-     * @param DataObjectHelper $dataObjectHelper
      */
     public function __construct(
         ResourceBlog $resource,
         BlogInterfaceFactory $blogFactory,
         BlogCollectionFactory $blogCollectionFactory,
         SearchResultsInterfaceFactory $searchResultsFactory,
-        CollectionProcessorInterface $collectionProcessor,
-        DataObjectHelper $dataObjectHelper
+        CollectionProcessorInterface $collectionProcessor
     ) {
         $this->resource = $resource;
         $this->blogFactory = $blogFactory;
         $this->blogCollectionFactory = $blogCollectionFactory;
         $this->collectionProcessor = $collectionProcessor;
         $this->searchResultsFactory = $searchResultsFactory;
-        $this->dataObjectHelper = $dataObjectHelper;
     }
 
     /**
@@ -89,11 +81,8 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function save(BlogInterface $block, array $data = null)
+    public function save(BlogInterface $block)
     {
-        if (!empty($data)) {
-            $this->setData($block, $data);
-        }
         try {
             $this->resource->save($block);
         } catch (\Exception $exception) {
@@ -158,16 +147,5 @@ class BlogRepository implements BlogRepositoryInterface
     public function deleteById($blockId)
     {
         return $this->delete($this->getById($blockId));
-    }
-
-    /**
-     * Populates BlogInterface fields with data
-     *
-     * @param BlogInterface $dataObject
-     * @param array $data
-     */
-    public function setData(BlogInterface $dataObject, array $data)
-    {
-        $this->dataObjectHelper->populateWithArray($dataObject, $data, BlogInterface::class);
     }
 }

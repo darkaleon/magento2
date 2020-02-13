@@ -9,6 +9,7 @@ use Alexx\Blog\Model\BlogPostSaver;
 use Alexx\Blog\Model\BlogRepository;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context as ActionContext;
+use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
@@ -29,18 +30,25 @@ class Save extends Action implements HttpPostActionInterface
     private $blogRepsitory;
 
     /**
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
+
+    /**
      * @param ActionContext $context
      * @param BlogRepositoryInterface $blogRepsitory
      * @param DataPersistorInterface $dataPersistor
+     * @param DataObjectHelper $dataObjectHelper
      */
     public function __construct(
         ActionContext $context,
         BlogRepositoryInterface $blogRepsitory,
-        DataPersistorInterface $dataPersistor
+        DataPersistorInterface $dataPersistor,
+        DataObjectHelper $dataObjectHelper
     ) {
         $this->dataPersistor = $dataPersistor;
         $this->blogRepsitory = $blogRepsitory;
-
+        $this->dataObjectHelper = $dataObjectHelper;
         parent::__construct($context);
     }
 
@@ -105,6 +113,7 @@ class Save extends Action implements HttpPostActionInterface
     {
         $formPostData = $this->getRequest()->getPostValue();
         $isNewPost = !isset($formPostData['entity_id']);
+        /**@var BlogInterface $postModel */
         if (!$isNewPost) {
             try {
                 $postModel = $this->blogRepsitory->getById((int)$formPostData['entity_id']);
@@ -115,8 +124,8 @@ class Save extends Action implements HttpPostActionInterface
             $postModel = $this->blogRepsitory->getFactory()->create();
         }
         try {
-            /**@var BlogInterface $postModel */
-            $this->blogRepsitory->save($postModel, $formPostData);
+            $this->dataObjectHelper->populateWithArray($postModel, $formPostData, BlogInterface::class);
+            $this->blogRepsitory->save($postModel);
             return $this->redirectSuccess($postModel->getId());
         } catch (CouldNotSaveException $e) {
             return $this->errorRedirect($e->getMessage(), $postModel->getData());

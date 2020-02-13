@@ -20,11 +20,10 @@ interface BlogRepositoryInterface
      * Save post to db
      *
      * @param BlogInterface $blogPost
-     * @param array $data
      * @return BlogInterface
      * @throws CouldNotSaveException
      */
-    public function save(BlogInterface $blogPost, array $data = null);
+    public function save(BlogInterface $blogPost);
 
     /**
      * Retrieve post
