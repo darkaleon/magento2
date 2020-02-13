@@ -14,6 +14,7 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
@@ -104,7 +105,7 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getById(int $blockId)
+    public function getById($blockId)
     {
         $block = $this->blogFactory->create();
         $this->resource->load($block, $blockId);
@@ -121,7 +122,11 @@ class BlogRepository implements BlogRepositoryInterface
     {
         $collection = $this->blogCollectionFactory->create();
 
-        $this->collectionProcessor->process($searchCriteria, $collection);
+        try {
+            $this->collectionProcessor->process($searchCriteria, $collection);
+        } catch (\InvalidArgumentException $exception) {
+            throw new LocalizedException(__($exception->getMessage()));
+        }
 
         $searchResults = $this->searchResultsFactory->create();
 
@@ -150,7 +155,7 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function deleteById(int $blockId)
+    public function deleteById($blockId)
     {
         return $this->delete($this->getById($blockId));
     }

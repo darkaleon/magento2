@@ -5,21 +5,28 @@ namespace Alexx\Blog\Block\Adminhtml\Blog\Edit;
 
 use Magento\Backend\Block\Widget\Context;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
+use Magento\Framework\UrlInterface;
+use Magento\Framework\App\RequestInterface;
 
 /**
  * Class that controls delete button on blog edit form
  */
 class DeleteButton implements ButtonProviderInterface
 {
-    /**@var Context */
-    private $context;
+    /**@var UrlInterface */
+    private $urlInterface;
+
+    /**@var RequestInterface */
+    private $requestInterface;
 
     /**
-     * @param Context $context
+     * @param UrlInterface $urlInterface
+     * @param RequestInterface $requestInterface
      */
-    public function __construct(Context $context)
+    public function __construct(UrlInterface $urlInterface, RequestInterface $requestInterface)
     {
-        $this->context = $context;
+        $this->urlInterface = $urlInterface;
+        $this->requestInterface = $requestInterface;
     }
 
     /**
@@ -27,9 +34,9 @@ class DeleteButton implements ButtonProviderInterface
      */
     public function getButtonData()
     {
-        if ($this->context->getRequest()->getParam('id')) {
-            $id = $this->context->getRequest()->getParam('id');
-            $url = $this->context->getUrlBuilder()->getUrl('*/*/delete', ['id' => $id]);
+        $requestedId = $this->requestInterface->getParam('id');
+        if ($requestedId) {
+            $url = $this->urlInterface->getUrl('*/*/delete', ['id' => $requestedId]);
             return [
                 'label' => __('Delete'),
                 'on_click' => 'deleteConfirm(\'' .

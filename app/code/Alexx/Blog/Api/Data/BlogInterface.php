@@ -81,4 +81,20 @@ interface BlogInterface
      * @return string
      */
     public function setContent(string $data);
+
+    /**
+     * Set created_at field
+     *
+     * @param string $data
+     * @return string
+     */
+    public function setCreatedAt(string $data);
+
+    /**
+     * Set updated_at field
+     *
+     * @param string $data
+     * @return string
+     */
+    public function setUpdatedAt(string $data);
 }

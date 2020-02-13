@@ -6,7 +6,10 @@ namespace Alexx\Blog\Api;
 use Alexx\Blog\Api\Data\BlogInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SearchResultsInterface;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
  * Blog post CRUD interface.
@@ -19,7 +22,7 @@ interface BlogRepositoryInterface
      * @param BlogInterface $blogPost
      * @param array $data
      * @return BlogInterface
-     * @throws LocalizedException
+     * @throws CouldNotSaveException
      */
     public function save(BlogInterface $blogPost, array $data = null);
 
@@ -28,9 +31,9 @@ interface BlogRepositoryInterface
      *
      * @param integer $blogPostId
      * @return BlogInterface
-     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
-    public function getById(int $blogPostId);
+    public function getById($blogPostId);
 
     /**
      * Retrieve posts matching the specified criteria.
@@ -46,7 +49,7 @@ interface BlogRepositoryInterface
      *
      * @param BlogInterface $blogPost
      * @return bool
-     * @throws LocalizedException
+     * @throws CouldNotDeleteException
      */
     public function delete(BlogInterface $blogPost);
 
@@ -55,7 +58,7 @@ interface BlogRepositoryInterface
      *
      * @param integer $blogPostId
      * @return bool
-     * @throws LocalizedException
+     * @throws CouldNotDeleteException
      */
-    public function deleteById(int $blogPostId);
+    public function deleteById($blogPostId);
 }

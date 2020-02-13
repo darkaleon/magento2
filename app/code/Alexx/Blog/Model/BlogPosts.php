@@ -82,4 +82,20 @@ class BlogPosts extends AbstractModel implements BlogInterface
     {
         return $this->setData(BlogInterface::FIELD_CONTENT, $data);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function setCreatedAt(string $data)
+    {
+        return $this->setData(BlogInterface::FIELD_CREATED_AT, $data);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setUpdatedAt(string $data)
+    {
+        return $this->setData(BlogInterface::FIELD_UPDATED_AT, $data);
+    }
 }
