@@ -4,8 +4,8 @@
     <table name="alexx_blog_posts" resource="default" comment="Blog Posts table">
         <column xsi:type="int" name="entity_id" identity="true" unsigned="true" nullable="false"
                 comment="Entity ID Auto Increment"/>
-        <column xsi:type="varchar" name="theme" comment="Theme"/>
-        <column xsi:type="varchar" name="picture" comment="Picture"/>
+        <column xsi:type="varchar" name="theme" comment="Theme" length="255"/>
+        <column xsi:type="varchar" name="picture" comment="Picture" length="255"/>
         <column xsi:type="text" name="content" comment="Content"/>
         <column xsi:type="timestamp" name="created_at" default="CURRENT_TIMESTAMP" comment="Created At"/>
         <column xsi:type="timestamp" name="updated_at" default="CURRENT_TIMESTAMP" on_update="true"

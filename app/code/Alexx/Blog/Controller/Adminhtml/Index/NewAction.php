@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
 use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
 
 /**
  * Admin blog new Controller that displays page with form for new blogs post
@@ -11,12 +13,16 @@ use Magento\Framework\App\Action\HttpGetActionInterface;
 class NewAction extends Edit implements HttpGetActionInterface
 {
     const ADMIN_RESOURCE = 'Alexx_Blog::manage';
+    const PAGE_TITLE = 'Add new post';
 
     /**
      * @inheritDoc
      */
     public function execute()
     {
-        $this->_forward('edit');
+        /**@var ResultInterface $result*/
+        $result = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
+        $result->getConfig()->getTitle()->set(self::PAGE_TITLE);
+        return $result;
     }
 }

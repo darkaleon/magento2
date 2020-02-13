@@ -5,6 +5,7 @@ namespace Alexx\Blog\Controller\Adminhtml\Index;
 
 use Alexx\Blog\Api\BlogRepositoryInterface;
 use Alexx\Blog\Api\Data\BlogInterface;
+use Alexx\Blog\Api\Data\BlogInterfaceFactory;
 use Alexx\Blog\Model\BlogPostSaver;
 use Alexx\Blog\Model\BlogRepository;
 use Magento\Backend\App\Action;
@@ -29,23 +30,27 @@ class Save extends Action implements HttpPostActionInterface
     /**@var BlogRepository */
     private $blogRepsitory;
 
-    /**
-     * @var DataObjectHelper
-     */
+    /**@var DataObjectHelper */
     private $dataObjectHelper;
+
+    /**@var BlogInterfaceFactory */
+    private $blogFactory;
 
     /**
      * @param ActionContext $context
      * @param BlogRepositoryInterface $blogRepsitory
      * @param DataPersistorInterface $dataPersistor
      * @param DataObjectHelper $dataObjectHelper
+     * @param BlogInterfaceFactory $blogFactory
      */
     public function __construct(
         ActionContext $context,
         BlogRepositoryInterface $blogRepsitory,
         DataPersistorInterface $dataPersistor,
-        DataObjectHelper $dataObjectHelper
+        DataObjectHelper $dataObjectHelper,
+        BlogInterfaceFactory $blogFactory
     ) {
+        $this->blogFactory = $blogFactory;
         $this->dataPersistor = $dataPersistor;
         $this->blogRepsitory = $blogRepsitory;
         $this->dataObjectHelper = $dataObjectHelper;
@@ -61,7 +66,7 @@ class Save extends Action implements HttpPostActionInterface
      *
      * @return ResponseInterface
      */
-    public function redirectError($message, $path, $arguments = [])
+    private function redirectError(string $message, string $path, array $arguments = [])
     {
         $this->messageManager->addError($message);
         return $this->_redirect($path, $arguments);
@@ -73,13 +78,16 @@ class Save extends Action implements HttpPostActionInterface
      * @param string $result
      * @return ResponseInterface
      */
-    public function redirectSuccess($result)
+    private function redirectSuccess(string $result)
     {
+        $this->dataPersistor->clear('BlogPostForm');
+
         $this->messageManager->addSuccess(__('The post has been saved.'));
 
         // Check if 'Save and Continue'
-        if ($this->getRequest()->getParam('back')) {
-            return $this->_redirect('*/*/edit', ['id' => $result, '_current' => true]);
+        $backRoute = $this->getRequest()->getParam('back');
+        if ($backRoute) {
+            return $this->_redirect('*/*/' . $backRoute, ['id' => $result, '_current' => true]);
         }
         // Go to grid page
         return $this->_redirect('*/*/');
@@ -93,7 +101,7 @@ class Save extends Action implements HttpPostActionInterface
      *
      * @return ResponseInterface
      */
-    private function errorRedirect($message, $formData = [])
+    private function errorRedirect(string $message, array $formData = [])
     {
         $this->dataPersistor->set('BlogPostForm', $formData);
 
@@ -121,7 +129,7 @@ class Save extends Action implements HttpPostActionInterface
                 return $this->errorRedirect($exception->getMessage());
             }
         } else {
-            $postModel = $this->blogRepsitory->getFactory()->create();
+            $postModel = $this->blogFactory->create();
         }
         try {
             $this->dataObjectHelper->populateWithArray($postModel, $formPostData, BlogInterface::class);

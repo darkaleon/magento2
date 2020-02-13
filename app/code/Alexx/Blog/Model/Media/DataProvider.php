@@ -38,9 +38,9 @@ class DataProvider extends AbstractDataProvider
      */
     public function __construct(
         CollectionFactory $myCollectionFactory,
-        $name,
-        $primaryFieldName,
-        $requestFieldName,
+        string $name,
+        string $primaryFieldName,
+        string $requestFieldName,
         StoreManagerInterface $storeManager,
         DataPersistorInterface $dataPersistor,
         BlogMediaConfig $blogMediaConfig,
@@ -66,7 +66,7 @@ class DataProvider extends AbstractDataProvider
             $this->dataPersistor->clear('BlogPostForm');
         }
 
-        if (!isset($this->loadedData)) {
+        if ($this->loadedData === null) {
 
             /** @var \Alexx\Blog\Model\BlogPosts $blogPost */
             foreach ($this->collection->getItems() as $blogPost) {

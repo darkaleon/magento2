@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Block\Adminhtml\Blog\Edit;
 
-use Magento\Backend\Block\Widget\Context;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\App\RequestInterface;

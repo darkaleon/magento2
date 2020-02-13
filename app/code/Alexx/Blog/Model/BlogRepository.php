@@ -8,7 +8,6 @@ use Alexx\Blog\Api\Data\BlogInterface;
 use Alexx\Blog\Api\Data\BlogInterfaceFactory;
 use Alexx\Blog\Model\ResourceModel\BlogPosts as ResourceBlog;
 use Alexx\Blog\Model\ResourceModel\BlogPosts\CollectionFactory as BlogCollectionFactory;
-use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;
@@ -69,39 +68,29 @@ class BlogRepository implements BlogRepositoryInterface
     }
 
     /**
-     * Gets factory for create new entities
-     *
-     * @return BlogInterfaceFactory
-     */
-    public function getFactory()
-    {
-        return $this->blogFactory;
-    }
-
-    /**
      * @inheritDoc
      */
-    public function save(BlogInterface $block)
+    public function save(BlogInterface $blogPost)
     {
         try {
-            $this->resource->save($block);
+            $this->resource->save($blogPost);
         } catch (\Exception $exception) {
             throw new CouldNotSaveException(__($exception->getMessage()));
         }
-        return $block;
+        return $blogPost;
     }
 
     /**
      * @inheritDoc
      */
-    public function getById($blockId)
+    public function getById($blogPostId)
     {
-        $block = $this->blogFactory->create();
-        $this->resource->load($block, $blockId);
-        if (!$block->getId()) {
-            throw new NoSuchEntityException(__('The blogs post with the "%1" ID doesn\'t exist.', $blockId));
+        $blogPost = $this->blogFactory->create();
+        $this->resource->load($blogPost, $blogPostId);
+        if (!$blogPost->getId()) {
+            throw new NoSuchEntityException(__('The blogs post with the "%1" ID doesn\'t exist.', $blogPostId));
         }
-        return $block;
+        return $blogPost;
     }
 
     /**
@@ -131,10 +120,10 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function delete(BlogInterface $block)
+    public function delete(BlogInterface $blogPost)
     {
         try {
-            $this->resource->delete($block);
+            $this->resource->delete($blogPost);
         } catch (\Exception $exception) {
             throw new CouldNotDeleteException(__($exception->getMessage()));
         }
@@ -144,8 +133,8 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function deleteById($blockId)
+    public function deleteById($blogPostId)
     {
-        return $this->delete($this->getById($blockId));
+        return $this->delete($this->getById($blogPostId));
     }
 }

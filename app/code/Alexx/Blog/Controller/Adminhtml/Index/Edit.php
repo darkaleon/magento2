@@ -6,6 +6,7 @@ namespace Alexx\Blog\Controller\Adminhtml\Index;
 use Magento\Backend\App\Action;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
 
 /**
  * Admin blog edit Controller that displays page with form for edit blogs post
@@ -13,12 +14,16 @@ use Magento\Framework\Controller\ResultFactory;
 class Edit extends Action implements HttpGetActionInterface
 {
     const ADMIN_RESOURCE = 'Alexx_Blog::manage';
+    const PAGE_TITLE = 'Edit post';
 
     /**
      * @inheritDoc
      */
     public function execute()
     {
-        return $this->resultFactory->create(ResultFactory::TYPE_PAGE);
+        /**@var ResultInterface $result*/
+        $result = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
+        $result->getConfig()->getTitle()->set(self::PAGE_TITLE);
+        return $result;
     }
 }
