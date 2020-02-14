@@ -70,7 +70,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
     /**
      * @inheritDoc
      */
-    public function setPicture(string $data)
+    public function setPicture($data)
     {
         return $this->setData(BlogInterface::FIELD_PICTURE, $data);
     }

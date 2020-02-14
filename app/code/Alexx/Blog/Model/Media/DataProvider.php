@@ -5,6 +5,7 @@ namespace Alexx\Blog\Model\Media;
 
 use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Alexx\Blog\Model\ResourceModel\BlogPosts\CollectionFactory;
+use Magento\Catalog\Model\Category\FileInfo;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Ui\DataProvider\AbstractDataProvider;
@@ -75,9 +76,8 @@ class DataProvider extends AbstractDataProvider
                 unset($dataToEdit['created_at']);
                 unset($dataToEdit['updated_at']);
                 if ($blogPost->getPicture()) {
-                    $dataToEdit['picture'] = [['name' => $blogPost->getPicture(), 'url' => $blogPost->getPicture()]];
+                    $dataToEdit['picture'] = $this->blogMediaConfig->convertPictureForUploader($blogPost->getPicture());
                 }
-
                 $this->loadedData[$blogPost->getId()] = $dataToEdit;
             }
         }

@@ -81,7 +81,6 @@
             <formElements>
                 <imageUploader>
                     <settings>
-                        <previewTmpl>Alexx_Blog/image-preview</previewTmpl>
                         <allowedExtensions>jpg jpeg gif png</allowedExtensions>
                         <maxFileSize>2097152</maxFileSize>
                         <uploaderConfig>

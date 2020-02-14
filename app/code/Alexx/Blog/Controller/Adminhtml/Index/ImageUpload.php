@@ -18,23 +18,17 @@ class ImageUpload extends Action implements HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Alexx_Blog::manage';
 
-    /**@var StoreManagerInterface */
-    private $storeManager;
-
     /**@var ImageUploader */
     private $imageUploader;
 
     /**
      * @param Context $context
-     * @param StoreManagerInterface $storeManager
      * @param ImageUploader $imageUploader
      */
     public function __construct(
         Context $context,
-        StoreManagerInterface $storeManager,
         ImageUploader $imageUploader
     ) {
-        $this->storeManager = $storeManager;
         $this->imageUploader = $imageUploader;
 
         parent::__construct($context);
@@ -49,25 +43,10 @@ class ImageUpload extends Action implements HttpPostActionInterface
 
         try {
             $result = $this->imageUploader->saveFileToTmpDir($imageId);
-            $result['url'] = $this->adaptUrl($result['url']);
-
         } catch (LocalizedException $e) {
             $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
         }
 
         return $this->resultFactory->create(ResultFactory::TYPE_JSON)->setData($result);
-    }
-
-    /**
-     * Extracts relative url to file
-     *
-     * @param string $file
-     *
-     * @return string
-     */
-    private function adaptUrl(string $file)
-    {
-        $remove = rtrim($this->storeManager->getStore()->getBaseUrl(), '/');
-        return substr($file, strlen($remove), strlen($file) - strlen($remove));
     }
 }

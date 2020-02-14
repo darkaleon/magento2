@@ -69,10 +69,10 @@ interface BlogInterface
     /**
      * Set picture field
      *
-     * @param string $data
+     * @param string|array $data
      * @return string
      */
-    public function setPicture(string $data);
+    public function setPicture($data);
 
     /**
      * Set content field
