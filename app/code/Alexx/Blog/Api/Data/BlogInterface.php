@@ -62,7 +62,7 @@ interface BlogInterface
      * Set theme field
      *
      * @param string $data
-     * @return string
+     * @return void
      */
     public function setTheme(string $data): void;
 
@@ -70,7 +70,7 @@ interface BlogInterface
      * Set picture field
      *
      * @param string|array $data
-     * @return string
+     * @return void
      */
     public function setPicture($data): void;
 
@@ -78,7 +78,7 @@ interface BlogInterface
      * Set content field
      *
      * @param string $data
-     * @return string
+     * @return void
      */
     public function setContent(string $data): void;
 
@@ -86,7 +86,7 @@ interface BlogInterface
      * Set created_at field
      *
      * @param string $data
-     * @return string
+     * @return void
      */
     public function setCreatedAt(string $data): void;
 
@@ -94,7 +94,7 @@ interface BlogInterface
      * Set updated_at field
      *
      * @param string $data
-     * @return string
+     * @return void
      */
     public function setUpdatedAt(string $data): void;
 }
