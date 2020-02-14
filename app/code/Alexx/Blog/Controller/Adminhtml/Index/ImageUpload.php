@@ -7,7 +7,6 @@ use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Model\ImageUploader;
 use Magento\Framework\Exception\LocalizedException;
 

@@ -28,11 +28,11 @@ interface BlogRepositoryInterface
     /**
      * Retrieve post
      *
-     * @param integer $blogPostId
+     * @param string $blogPostId
      * @return BlogInterface
      * @throws NoSuchEntityException
      */
-    public function getById($blogPostId): BlogInterface;
+    public function getById(string $blogPostId): BlogInterface;
 
     /**
      * Retrieve posts matching the specified criteria.
@@ -59,5 +59,5 @@ interface BlogRepositoryInterface
      * @return bool
      * @throws CouldNotDeleteException|NoSuchEntityException
      */
-    public function deleteById($blogPostId): bool;
+    public function deleteById(string $blogPostId): bool;
 }

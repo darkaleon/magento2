@@ -24,7 +24,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
      */
     public function getPicture(): string
     {
-        return ($this->getData(BlogInterface::FIELD_PICTURE) ?? '');
+        return $this->getData(BlogInterface::FIELD_PICTURE) ?? '';
     }
 
     /**
@@ -70,7 +70,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
     /**
      * @inheritDoc
      */
-    public function setPicture($data): BlogInterface
+    public function setPicture(string $data): BlogInterface
     {
         return $this->setData(BlogInterface::FIELD_PICTURE, $data);
     }

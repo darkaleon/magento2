@@ -13,7 +13,6 @@ use Magento\Framework\Controller\ResultInterface;
 class NewAction extends Edit implements HttpGetActionInterface
 {
     const ADMIN_RESOURCE = 'Alexx_Blog::manage';
-    const PAGE_TITLE = 'Add new post';
 
     /**
      * @inheritDoc
@@ -22,7 +21,7 @@ class NewAction extends Edit implements HttpGetActionInterface
     {
         /**@var ResultInterface $result*/
         $result = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
-        $result->getConfig()->getTitle()->set(self::PAGE_TITLE);
+        $result->getConfig()->getTitle()->set(__('Add new post'));
         return $result;
     }
 }

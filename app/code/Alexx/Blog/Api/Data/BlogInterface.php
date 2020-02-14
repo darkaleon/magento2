@@ -69,10 +69,10 @@ interface BlogInterface
     /**
      * Set picture field
      *
-     * @param string|array $data
+     * @param string $data
      * @return BlogInterface
      */
-    public function setPicture($data): BlogInterface;
+    public function setPicture(string $data): BlogInterface;
 
     /**
      * Set content field

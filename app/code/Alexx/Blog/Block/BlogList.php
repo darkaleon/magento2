@@ -6,13 +6,12 @@ namespace Alexx\Blog\Block;
 use Alexx\Blog\Api\BlogRepositoryInterface;
 use Alexx\Blog\Api\Data\BlogInterface;
 use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
-use Magento\Catalog\Model\Locator\RegistryLocator;
+use Alexx\Blog\Model\BlogConfig;
 use Magento\Framework\Api\AbstractSimpleObject;
 use Magento\Framework\Api\Search\SearchCriteriaInterface;
 use Magento\Framework\Api\Search\SearchCriteriaInterfaceFactory;
 use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Psr\Log\LoggerInterface;
@@ -24,13 +23,8 @@ use Psr\Log\LoggerInterface;
  */
 class BlogList extends Template
 {
-    const XML_PATH_BLOG_VISIBLE = 'catalog_blog/general/applied_to';
-
-    /**@var RegistryLocator */
-    private $productRegistryLocator;
-
     /**@var BlogRepositoryInterface */
-    private $blogRepsitory;
+    private $blogRepository;
 
     /**@var SearchCriteriaInterfaceFactory */
     private $searchCriteriaFactory;
@@ -44,29 +38,32 @@ class BlogList extends Template
     /**@var BlogMediaConfig */
     private $blogMediaConfig;
 
+    /**@var BlogConfig */
+    private $blogConfig;
+
     /**
      * @param Context $context
-     * @param RegistryLocator $productRegistryLocator
-     * @param BlogRepositoryInterface $blogRepsitory
+     * @param BlogRepositoryInterface $blogRepository
      * @param SearchCriteriaInterfaceFactory $searchCriteriaFactory
      * @param SortOrderBuilder $sortOrderBuilder
      * @param LoggerInterface $logger
      * @param BlogMediaConfig $blogMediaConfig
+     * @param BlogConfig $blogConfig
      * @param array $data
      */
     public function __construct(
         Context $context,
-        RegistryLocator $productRegistryLocator,
-        BlogRepositoryInterface $blogRepsitory,
+        BlogRepositoryInterface $blogRepository,
         SearchCriteriaInterfaceFactory $searchCriteriaFactory,
         SortOrderBuilder $sortOrderBuilder,
         LoggerInterface $logger,
         BlogMediaConfig $blogMediaConfig,
+        BlogConfig $blogConfig,
         array $data = []
     ) {
+        $this->blogConfig = $blogConfig;
         $this->blogMediaConfig = $blogMediaConfig;
-        $this->productRegistryLocator = $productRegistryLocator;
-        $this->blogRepsitory = $blogRepsitory;
+        $this->blogRepository = $blogRepository;
         $this->searchCriteriaFactory = $searchCriteriaFactory;
         $this->sortOrderBuilder = $sortOrderBuilder;
         $this->logger = $logger;
@@ -74,39 +71,11 @@ class BlogList extends Template
     }
 
     /**
-     * Get Product Type Id
-     *
-     * @return string
-     * @throws NotFoundException
+     * Checks blog enabling in system config
      */
-    public function getCurrentProductTypeId(): string
+    public function isBlogVisible(): bool
     {
-        return $this->productRegistryLocator->getProduct()->getTypeId();
-    }
-
-    /**
-     * Gets system config value for checking applying blog to current product type
-     *
-     * @return string
-     */
-    private function getBlogSettingIsApplied(): string
-    {
-        return $this->_scopeConfig->getValue(self::XML_PATH_BLOG_VISIBLE);
-    }
-
-    /**
-     * Checking all paramerets
-     *
-     * @return bool
-     */
-    public function isBlogEnabled(): bool
-    {
-        try {
-            return in_array($this->getCurrentProductTypeId(), explode(',', $this->getBlogSettingIsApplied()));
-        } catch (NotFoundException $exception) {
-            $this->logger->error($exception->getLogMessage());
-            return false;
-        }
+        return $this->blogConfig->isBlogVisible();
     }
 
     /**
@@ -129,7 +98,7 @@ class BlogList extends Template
         $searchCriteria->setSortOrders([$defaultSortOrder]);
 
         try {
-            return $this->blogRepsitory->getList($searchCriteria)->getItems();
+            return $this->blogRepository->getList($searchCriteria)->getItems();
         } catch (LocalizedException $exception) {
             $this->logger->error($exception->getLogMessage());
             return [];

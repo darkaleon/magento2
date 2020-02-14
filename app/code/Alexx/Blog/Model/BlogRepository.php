@@ -84,10 +84,10 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getById($blogPostId): BlogInterface
+    public function getById(string $blogPostId): BlogInterface
     {
         $blogPost = $this->blogFactory->create();
-        $this->resource->load($blogPost, $blogPostId);
+        $this->resource->load($blogPost, (int)$blogPostId);
         if (!$blogPost->getId()) {
             throw new NoSuchEntityException(__('The blogs post with the "%1" ID doesn\'t exist.', $blogPostId));
         }
@@ -134,7 +134,7 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function deleteById($blogPostId): bool
+    public function deleteById(string $blogPostId): bool
     {
         return $this->delete($this->getById($blogPostId));
     }

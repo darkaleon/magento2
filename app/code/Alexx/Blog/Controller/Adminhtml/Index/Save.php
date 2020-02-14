@@ -10,10 +10,12 @@ use Alexx\Blog\Model\BlogPostSaver;
 use Alexx\Blog\Model\BlogRepository;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context as ActionContext;
+use Magento\Catalog\Model\ImageUploader;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\App\ResponseInterface;
 
@@ -28,7 +30,7 @@ class Save extends Action implements HttpPostActionInterface
     private $dataPersistor;
 
     /**@var BlogRepository */
-    private $blogRepsitory;
+    private $blogRepository;
 
     /**@var DataObjectHelper */
     private $dataObjectHelper;
@@ -36,24 +38,30 @@ class Save extends Action implements HttpPostActionInterface
     /**@var BlogInterfaceFactory */
     private $blogFactory;
 
+    /**@var ImageUploader */
+    private $imageUploader;
+
     /**
      * @param ActionContext $context
-     * @param BlogRepositoryInterface $blogRepsitory
+     * @param BlogRepositoryInterface $blogRepository
      * @param DataPersistorInterface $dataPersistor
      * @param DataObjectHelper $dataObjectHelper
      * @param BlogInterfaceFactory $blogFactory
+     * @param ImageUploader $imageUploader
      */
     public function __construct(
         ActionContext $context,
-        BlogRepositoryInterface $blogRepsitory,
+        BlogRepositoryInterface $blogRepository,
         DataPersistorInterface $dataPersistor,
         DataObjectHelper $dataObjectHelper,
-        BlogInterfaceFactory $blogFactory
+        BlogInterfaceFactory $blogFactory,
+        ImageUploader $imageUploader
     ) {
         $this->blogFactory = $blogFactory;
         $this->dataPersistor = $dataPersistor;
-        $this->blogRepsitory = $blogRepsitory;
+        $this->blogRepository = $blogRepository;
         $this->dataObjectHelper = $dataObjectHelper;
+        $this->imageUploader = $imageUploader;
         parent::__construct($context);
     }
 
@@ -121,22 +129,47 @@ class Save extends Action implements HttpPostActionInterface
     {
         $formPostData = $this->getRequest()->getPostValue();
         $isNewPost = !isset($formPostData['entity_id']);
-        /**@var BlogInterface $postModel */
         if (!$isNewPost) {
             try {
-                $postModel = $this->blogRepsitory->getById((int)$formPostData['entity_id']);
+                $postModel = $this->blogRepository->getById($formPostData['entity_id']);
             } catch (NoSuchEntityException $exception) {
                 return $this->errorRedirect($exception->getMessage());
             }
         } else {
             $postModel = $this->blogFactory->create();
         }
+        /**@var BlogInterface $postModel */
+
         try {
+            if (isset($formPostData['picture']) && is_array($formPostData['picture'])) {
+                $this->preparePicture($formPostData['picture']);
+            }
             $this->dataObjectHelper->populateWithArray($postModel, $formPostData, BlogInterface::class);
-            $this->blogRepsitory->save($postModel);
+            $this->blogRepository->save($postModel);
             return $this->redirectSuccess($postModel->getId());
-        } catch (CouldNotSaveException $e) {
+        } catch (LocalizedException $e) {
             return $this->errorRedirect($e->getMessage(), $postModel->getData());
         }
+    }
+
+    /**
+     * Perform file upload whenever picture is uploaded. Olso, converts array posted by imageUploader ext. to string.
+     *
+     * @param array $pictureData
+     *
+     * @return string
+     * @throws LocalizedException
+     */
+    private function preparePicture(array &$pictureData): string
+    {
+        if (!empty($pictureData[0]['file'])) {
+            $pictureData = $this->imageUploader->moveFileFromTmp($pictureData[0]['file'], true);
+        }
+        if (is_array($pictureData)) {
+            $pictureData =
+                $pictureData[0]['path'] ?? $this->blogMediaConfig->extractRelativePath($pictureData[0]['url']);
+        }
+
+        return $pictureData;
     }
 }

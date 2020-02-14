@@ -35,7 +35,7 @@
             <argument name="imageUploader" xsi:type="object">BlogImageUploader</argument>
         </arguments>
     </type>
-    <type name="Alexx\Blog\Model\ResourceModel\BlogPosts">
+    <type name="Alexx\Blog\Controller\Adminhtml\Index\Save">
         <arguments>
             <argument name="imageUploader" xsi:type="object">BlogImageUploader</argument>
         </arguments>

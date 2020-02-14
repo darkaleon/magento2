@@ -5,7 +5,6 @@ namespace Alexx\Blog\Model\Media;
 
 use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Alexx\Blog\Model\ResourceModel\BlogPosts\CollectionFactory;
-use Magento\Catalog\Model\Category\FileInfo;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Ui\DataProvider\AbstractDataProvider;

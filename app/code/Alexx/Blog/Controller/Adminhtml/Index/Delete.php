@@ -17,17 +17,17 @@ class Delete extends Action implements HttpPostActionInterface
     const ADMIN_RESOURCE = 'Alexx_Blog::manage';
 
     /**@var BlogRepositoryInterface */
-    private $blogRepsitory;
+    private $blogRepository;
 
     /**
      * @param ActionContext $context
-     * @param BlogRepositoryInterface $blogRepsitory
+     * @param BlogRepositoryInterface $blogRepository
      */
     public function __construct(
         ActionContext $context,
-        BlogRepositoryInterface $blogRepsitory
+        BlogRepositoryInterface $blogRepository
     ) {
-        $this->blogRepsitory = $blogRepsitory;
+        $this->blogRepository = $blogRepository;
         parent::__construct($context);
     }
 
@@ -37,10 +37,10 @@ class Delete extends Action implements HttpPostActionInterface
     public function execute()
     {
         if ($this->getRequest()->getPost()) {
-            $postId = (int)$this->getRequest()->getParam('id');
+            $postId = $this->getRequest()->getParam('id');
             if ($postId) {
                 try {
-                    $this->blogRepsitory->deleteById($postId);
+                    $this->blogRepository->deleteById($postId);
                     $this->messageManager->addSuccess(__('The post has been deleted.'));
                 } catch (LocalizedException $exception) {
                     $this->messageManager->addError($exception->getMessage());

@@ -28,13 +28,7 @@
             <item name="save_and_continue" xsi:type="string">
                 Alexx\Blog\Block\Adminhtml\Blog\Edit\SaveAndContinueEditButton
             </item>
-            <item name="save" xsi:type="array">
-                <item name="name" xsi:type="string">save</item>
-                <item name="label" xsi:type="string" translate="true">Save</item>
-                <item name="class" xsi:type="string">primary</item>
-                <item name="url" xsi:type="string">*/*/save</item>
-                <item name="post" xsi:type="boolean">true</item>
-            </item>
+            <item name="save" xsi:type="string">Alexx\Blog\Block\Adminhtml\Blog\Edit\SaveButton</item>
         </item>
     </argument>
     <dataSource name="blog_form_data_source">

@@ -22,7 +22,7 @@ class MassDelete extends Action implements HttpPostActionInterface
     const ADMIN_RESOURCE = 'Alexx_Blog::manage';
 
     /**@var BlogRepositoryInterface */
-    private $blogRepsitory;
+    private $blogRepository;
 
     /**@var BlogCollectionFactory */
     private $collectionFactory;
@@ -37,19 +37,19 @@ class MassDelete extends Action implements HttpPostActionInterface
      * @param ActionContext $context
      * @param Filter $filter
      * @param BlogCollectionFactory $collectionFactory
-     * @param BlogRepositoryInterface $blogRepsitory
+     * @param BlogRepositoryInterface $blogRepository
      * @param LoggerInterface $logger
      */
     public function __construct(
         ActionContext $context,
         Filter $filter,
         BlogCollectionFactory $collectionFactory,
-        BlogRepositoryInterface $blogRepsitory,
+        BlogRepositoryInterface $blogRepository,
         LoggerInterface $logger
     ) {
         $this->filter = $filter;
         $this->collectionFactory = $collectionFactory;
-        $this->blogRepsitory = $blogRepsitory;
+        $this->blogRepository = $blogRepository;
         $this->logger = $logger;
         parent::__construct($context);
     }
@@ -66,7 +66,7 @@ class MassDelete extends Action implements HttpPostActionInterface
         /** @var \Alexx\Blog\Model\BlogPosts $blogPost */
         foreach ($collection->getItems() as $blogPost) {
             try {
-                $this->blogRepsitory->delete($blogPost);
+                $this->blogRepository->delete($blogPost);
                 $postsDeleted++;
             } catch (LocalizedException $exception) {
                 $this->logger->error($exception->getLogMessage());
