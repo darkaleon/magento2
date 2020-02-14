@@ -12,7 +12,7 @@ use Magento\Framework\View\Asset\Repository;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
- * Urls for blog pictures
+ * Manages paths parsing for blog picture
  */
 class Config
 {
