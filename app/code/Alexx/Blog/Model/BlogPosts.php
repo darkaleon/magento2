@@ -62,40 +62,40 @@ class BlogPosts extends AbstractModel implements BlogInterface
     /**
      * @inheritDoc
      */
-    public function setTheme(string $data): void
+    public function setTheme(string $data): BlogInterface
     {
-        $this->setData(BlogInterface::FIELD_THEME, $data);
+        return $this->setData(BlogInterface::FIELD_THEME, $data);
     }
 
     /**
      * @inheritDoc
      */
-    public function setPicture($data): void
+    public function setPicture($data): BlogInterface
     {
-        $this->setData(BlogInterface::FIELD_PICTURE, $data);
+        return $this->setData(BlogInterface::FIELD_PICTURE, $data);
     }
 
     /**
      * @inheritDoc
      */
-    public function setContent(string $data): void
+    public function setContent(string $data): BlogInterface
     {
-        $this->setData(BlogInterface::FIELD_CONTENT, $data);
+        return $this->setData(BlogInterface::FIELD_CONTENT, $data);
     }
 
     /**
      * @inheritDoc
      */
-    public function setCreatedAt(string $data): void
+    public function setCreatedAt(string $data): BlogInterface
     {
-        $this->setData(BlogInterface::FIELD_CREATED_AT, $data);
+        return $this->setData(BlogInterface::FIELD_CREATED_AT, $data);
     }
 
     /**
      * @inheritDoc
      */
-    public function setUpdatedAt(string $data): void
+    public function setUpdatedAt(string $data): BlogInterface
     {
-        $this->setData(BlogInterface::FIELD_UPDATED_AT, $data);
+        return $this->setData(BlogInterface::FIELD_UPDATED_AT, $data);
     }
 }

@@ -57,7 +57,7 @@ interface BlogRepositoryInterface
      *
      * @param integer $blogPostId
      * @return bool
-     * @throws CouldNotDeleteException
+     * @throws CouldNotDeleteException|NoSuchEntityException
      */
     public function deleteById($blogPostId): bool;
 }

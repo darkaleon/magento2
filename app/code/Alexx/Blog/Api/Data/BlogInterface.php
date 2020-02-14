@@ -62,39 +62,39 @@ interface BlogInterface
      * Set theme field
      *
      * @param string $data
-     * @return void
+     * @return BlogInterface
      */
-    public function setTheme(string $data): void;
+    public function setTheme(string $data): BlogInterface;
 
     /**
      * Set picture field
      *
      * @param string|array $data
-     * @return void
+     * @return BlogInterface
      */
-    public function setPicture($data): void;
+    public function setPicture($data): BlogInterface;
 
     /**
      * Set content field
      *
      * @param string $data
-     * @return void
+     * @return BlogInterface
      */
-    public function setContent(string $data): void;
+    public function setContent(string $data): BlogInterface;
 
     /**
      * Set created_at field
      *
      * @param string $data
-     * @return void
+     * @return BlogInterface
      */
-    public function setCreatedAt(string $data): void;
+    public function setCreatedAt(string $data): BlogInterface;
 
     /**
      * Set updated_at field
      *
      * @param string $data
-     * @return void
+     * @return BlogInterface
      */
-    public function setUpdatedAt(string $data): void;
+    public function setUpdatedAt(string $data): BlogInterface;
 }
