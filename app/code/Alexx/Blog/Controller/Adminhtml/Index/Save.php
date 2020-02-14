@@ -8,6 +8,7 @@ use Alexx\Blog\Api\Data\BlogInterface;
 use Alexx\Blog\Api\Data\BlogInterfaceFactory;
 use Alexx\Blog\Model\BlogPostSaver;
 use Alexx\Blog\Model\BlogRepository;
+use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context as ActionContext;
 use Magento\Catalog\Model\ImageUploader;
@@ -40,6 +41,8 @@ class Save extends Action implements HttpPostActionInterface
     /**@var ImageUploader */
     private $imageUploader;
 
+    /**@var BlogMediaConfig */
+    private $blogMediaConfig;
     /**
      * @param ActionContext $context
      * @param BlogRepositoryInterface $blogRepository
@@ -47,6 +50,7 @@ class Save extends Action implements HttpPostActionInterface
      * @param DataObjectHelper $dataObjectHelper
      * @param BlogInterfaceFactory $blogFactory
      * @param ImageUploader $imageUploader
+     * @param BlogMediaConfig $blogMediaConfig
      */
     public function __construct(
         ActionContext $context,
@@ -54,8 +58,10 @@ class Save extends Action implements HttpPostActionInterface
         DataPersistorInterface $dataPersistor,
         DataObjectHelper $dataObjectHelper,
         BlogInterfaceFactory $blogFactory,
-        ImageUploader $imageUploader
+        ImageUploader $imageUploader,
+        BlogMediaConfig $blogMediaConfig
     ) {
+        $this->blogMediaConfig = $blogMediaConfig;
         $this->blogFactory = $blogFactory;
         $this->dataPersistor = $dataPersistor;
         $this->blogRepository = $blogRepository;

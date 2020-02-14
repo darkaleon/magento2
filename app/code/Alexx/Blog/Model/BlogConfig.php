@@ -6,6 +6,7 @@ namespace Alexx\Blog\Model;
 use Magento\Catalog\Model\Locator\RegistryLocator;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class for retreive system configuration
@@ -20,14 +21,22 @@ class BlogConfig
     /**@var RegistryLocator */
     private $scopeConfig;
 
+    /**@var LoggerInterface */
+    private $logger;
+
     /**
      * @param RegistryLocator $productRegistryLocator
      * @param ScopeConfigInterface $scopeConfig
+     * @param LoggerInterface $logger
      */
-    public function __construct(RegistryLocator $productRegistryLocator, ScopeConfigInterface $scopeConfig)
-    {
+    public function __construct(
+        RegistryLocator $productRegistryLocator,
+        ScopeConfigInterface $scopeConfig,
+        LoggerInterface $logger
+    ) {
         $this->productRegistryLocator = $productRegistryLocator;
         $this->scopeConfig = $scopeConfig;
+        $this->logger = $logger;
     }
 
     /**
