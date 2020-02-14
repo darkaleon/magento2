@@ -63,8 +63,7 @@ class BlogList extends Template
         LoggerInterface $logger,
         BlogMediaConfig $blogMediaConfig,
         array $data = []
-    )
-    {
+    ) {
         $this->blogMediaConfig = $blogMediaConfig;
         $this->productRegistryLocator = $productRegistryLocator;
         $this->blogRepsitory = $blogRepsitory;
