@@ -10,6 +10,7 @@ use Alexx\Blog\Model\ResourceModel\BlogPosts as ResourceBlog;
 use Alexx\Blog\Model\ResourceModel\BlogPosts\CollectionFactory as BlogCollectionFactory;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Api\SearchResultsInterface;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
@@ -70,7 +71,7 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function save(BlogInterface $blogPost)
+    public function save(BlogInterface $blogPost): BlogInterface
     {
         try {
             $this->resource->save($blogPost);
@@ -83,7 +84,7 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getById($blogPostId)
+    public function getById($blogPostId): BlogInterface
     {
         $blogPost = $this->blogFactory->create();
         $this->resource->load($blogPost, $blogPostId);
@@ -96,7 +97,7 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getList(SearchCriteriaInterface $searchCriteria)
+    public function getList(SearchCriteriaInterface $searchCriteria): SearchResultsInterface
     {
         $collection = $this->blogCollectionFactory->create();
 
@@ -120,7 +121,7 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function delete(BlogInterface $blogPost)
+    public function delete(BlogInterface $blogPost): bool
     {
         try {
             $this->resource->delete($blogPost);
@@ -133,7 +134,7 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function deleteById($blogPostId)
+    public function deleteById($blogPostId): bool
     {
         return $this->delete($this->getById($blogPostId));
     }

@@ -63,7 +63,8 @@ class BlogList extends Template
         LoggerInterface $logger,
         BlogMediaConfig $blogMediaConfig,
         array $data = []
-    ) {
+    )
+    {
         $this->blogMediaConfig = $blogMediaConfig;
         $this->productRegistryLocator = $productRegistryLocator;
         $this->blogRepsitory = $blogRepsitory;
@@ -79,7 +80,7 @@ class BlogList extends Template
      * @return string
      * @throws NotFoundException
      */
-    public function getCurrentProductTypeId()
+    public function getCurrentProductTypeId(): string
     {
         return $this->productRegistryLocator->getProduct()->getTypeId();
     }
@@ -89,7 +90,7 @@ class BlogList extends Template
      *
      * @return string
      */
-    private function getBlogSettingIsApplied()
+    private function getBlogSettingIsApplied(): string
     {
         return $this->_scopeConfig->getValue(self::XML_PATH_BLOG_VISIBLE);
     }
@@ -99,7 +100,7 @@ class BlogList extends Template
      *
      * @return bool
      */
-    public function isBlogEnabled()
+    public function isBlogEnabled(): bool
     {
         try {
             return in_array($this->getCurrentProductTypeId(), explode(',', $this->getBlogSettingIsApplied()));
@@ -114,7 +115,7 @@ class BlogList extends Template
      *
      * @return array
      */
-    public function getLastPosts()
+    public function getLastPosts(): array
     {
         /**@var SearchCriteriaInterface $searchCriteria */
         $searchCriteria = $this->searchCriteriaFactory->create();
@@ -143,7 +144,7 @@ class BlogList extends Template
      *
      * @return string
      */
-    public function getPictureUrl(BlogInterface $post)
+    public function getPictureUrl(BlogInterface $post): string
     {
         return $this->blogMediaConfig->getBlogImageUrl($post->getPicture());
     }

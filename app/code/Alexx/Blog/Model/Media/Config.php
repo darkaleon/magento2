@@ -65,7 +65,7 @@ class Config
      *
      * @return string
      */
-    public function extractRelativePath(string $givenFileName)
+    public function extractRelativePath(string $givenFileName): string
     {
         $mediaDir = $this->storeManager->getStore()->getBaseMediaDir();
         $arr = explode($mediaDir, $givenFileName);
@@ -80,7 +80,7 @@ class Config
      *
      * @return array
      */
-    public function convertPictureForUploader(string $givenFileName)
+    public function convertPictureForUploader(string $givenFileName): array
     {
         $fileName = $this->extractRelativePath($givenFileName);
         $mediaDir = $this->storeManager->getStore()->getBaseMediaDir();
@@ -107,7 +107,7 @@ class Config
      *
      * @return string
      */
-    public function getBlogImageUrl(string $file)
+    public function getBlogImageUrl(string $file): string
     {
         $filePath = '/' . $this->storeManager->getStore()->getBaseMediaDir() . '/' . $file;
 
@@ -132,7 +132,7 @@ class Config
      *
      * @return string
      */
-    private function getPlaceholderUrl()
+    private function getPlaceholderUrl(): string
     {
         return $this->repository->getUrlWithParams(
             'Alexx_Blog::images/image-placeholder.png',

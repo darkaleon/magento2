@@ -22,7 +22,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
     /**
      * @inheritDoc
      */
-    public function getPicture()
+    public function getPicture(): string
     {
         return ($this->getData(BlogInterface::FIELD_PICTURE) ?? '');
     }
@@ -30,7 +30,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
     /**
      * @inheritDoc
      */
-    public function getTheme()
+    public function getTheme(): string
     {
         return $this->getData(BlogInterface::FIELD_THEME);
     }
@@ -38,7 +38,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
     /**
      * @inheritDoc
      */
-    public function getContent()
+    public function getContent(): string
     {
         return $this->getData(BlogInterface::FIELD_CONTENT);
     }
@@ -46,7 +46,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
     /**
      * @inheritDoc
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): string
     {
         return $this->getData(BlogInterface::FIELD_CREATED_AT);
     }
@@ -54,7 +54,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
     /**
      * @inheritDoc
      */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): string
     {
         return $this->getData(BlogInterface::FIELD_UPDATED_AT);
     }
@@ -62,40 +62,40 @@ class BlogPosts extends AbstractModel implements BlogInterface
     /**
      * @inheritDoc
      */
-    public function setTheme(string $data)
+    public function setTheme(string $data): void
     {
-        return $this->setData(BlogInterface::FIELD_THEME, $data);
+        $this->setData(BlogInterface::FIELD_THEME, $data);
     }
 
     /**
      * @inheritDoc
      */
-    public function setPicture($data)
+    public function setPicture($data): void
     {
-        return $this->setData(BlogInterface::FIELD_PICTURE, $data);
+        $this->setData(BlogInterface::FIELD_PICTURE, $data);
     }
 
     /**
      * @inheritDoc
      */
-    public function setContent(string $data)
+    public function setContent(string $data): void
     {
-        return $this->setData(BlogInterface::FIELD_CONTENT, $data);
+        $this->setData(BlogInterface::FIELD_CONTENT, $data);
     }
 
     /**
      * @inheritDoc
      */
-    public function setCreatedAt(string $data)
+    public function setCreatedAt(string $data): void
     {
-        return $this->setData(BlogInterface::FIELD_CREATED_AT, $data);
+        $this->setData(BlogInterface::FIELD_CREATED_AT, $data);
     }
 
     /**
      * @inheritDoc
      */
-    public function setUpdatedAt(string $data)
+    public function setUpdatedAt(string $data): void
     {
-        return $this->setData(BlogInterface::FIELD_UPDATED_AT, $data);
+        $this->setData(BlogInterface::FIELD_UPDATED_AT, $data);
     }
 }
