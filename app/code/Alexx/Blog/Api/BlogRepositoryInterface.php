@@ -47,17 +47,17 @@ interface BlogRepositoryInterface
      * Delete post from db
      *
      * @param BlogInterface $blogPost
-     * @return bool
+     * @return void
      * @throws CouldNotDeleteException
      */
-    public function delete(BlogInterface $blogPost): bool;
+    public function delete(BlogInterface $blogPost): void;
 
     /**
      * Delete post by ID
      *
      * @param integer $blogPostId
-     * @return bool
+     * @return void
      * @throws CouldNotDeleteException|NoSuchEntityException
      */
-    public function deleteById(string $blogPostId): bool;
+    public function deleteById(string $blogPostId): void;
 }

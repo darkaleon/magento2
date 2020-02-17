@@ -10,6 +10,7 @@ use Magento\Framework\App\Action\HttpPostActionInterface;
 use Alexx\Blog\Api\BlogRepositoryInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Data\Collection\AbstractDb;
+use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Ui\Component\MassAction\Filter;
 use Psr\Log\LoggerInterface;
@@ -68,7 +69,7 @@ class MassDelete extends Action implements HttpPostActionInterface
             try {
                 $this->blogRepository->delete($blogPost);
                 $postsDeleted++;
-            } catch (LocalizedException $exception) {
+            } catch (CouldNotDeleteException $exception) {
                 $this->logger->error($exception->getLogMessage());
                 $postsDeletedError++;
             }

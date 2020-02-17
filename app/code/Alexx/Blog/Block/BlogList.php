@@ -41,6 +41,9 @@ class BlogList extends Template
     /**@var BlogConfig */
     private $blogConfig;
 
+    /**@var array*/
+    private $loadedPosts;
+
     /**
      * @param Context $context
      * @param BlogRepositoryInterface $blogRepository
@@ -85,24 +88,30 @@ class BlogList extends Template
      */
     public function getLastPosts(): array
     {
-        /**@var SearchCriteriaInterface $searchCriteria */
-        $searchCriteria = $this->searchCriteriaFactory->create();
+        $resultPosts = [];
+        if ($this->loadedPosts) {
+            $resultPosts = $this->loadedPosts;
+        } else {
+            /**@var SearchCriteriaInterface $searchCriteria */
+            $searchCriteria = $this->searchCriteriaFactory->create();
 
-        $searchCriteria->setPageSize(5);
+            $searchCriteria->setPageSize(5);
 
-        /**@var  AbstractSimpleObject $defaultSortOrder */
-        $defaultSortOrder = $this->sortOrderBuilder
-            ->setField('created_at')
-            ->setDirection('desc')
-            ->create();
-        $searchCriteria->setSortOrders([$defaultSortOrder]);
+            /**@var  AbstractSimpleObject $defaultSortOrder */
+            $defaultSortOrder = $this->sortOrderBuilder
+                ->setField('created_at')
+                ->setDirection('desc')
+                ->create();
+            $searchCriteria->setSortOrders([$defaultSortOrder]);
 
-        try {
-            return $this->blogRepository->getList($searchCriteria)->getItems();
-        } catch (LocalizedException $exception) {
-            $this->logger->error($exception->getLogMessage());
-            return [];
+            try {
+                $resultPosts = $this->blogRepository->getList($searchCriteria)->getItems();
+            } catch (LocalizedException $exception) {
+                $this->logger->error($exception->getLogMessage());
+            }
+            $this->loadedPosts = $resultPosts;
         }
+        return $resultPosts;
     }
 
     /**

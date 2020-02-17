@@ -7,7 +7,8 @@ use Alexx\Blog\Api\BlogRepositoryInterface;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context as ActionContext;
 use Magento\Framework\App\Action\HttpPostActionInterface;
-use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
  * Admin blog delete Controller that perform deleting data from the database
@@ -42,7 +43,7 @@ class Delete extends Action implements HttpPostActionInterface
                 try {
                     $this->blogRepository->deleteById($postId);
                     $this->messageManager->addSuccess(__('The post has been deleted.'));
-                } catch (LocalizedException $exception) {
+                } catch (CouldNotDeleteException | NoSuchEntityException $exception) {
                     $this->messageManager->addError($exception->getMessage());
                 }
             }

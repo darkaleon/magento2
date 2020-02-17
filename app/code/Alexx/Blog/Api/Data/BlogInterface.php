@@ -9,7 +9,7 @@ namespace Alexx\Blog\Api\Data;
 interface BlogInterface
 {
     const BLOG_TABLE = 'alexx_blog_posts';
-    const BLOG_ID = 'entity_id';
+    const FIELD_ID = 'entity_id';
     const FIELD_PICTURE = 'picture';
     const FIELD_THEME = 'theme';
     const FIELD_CONTENT = 'content';

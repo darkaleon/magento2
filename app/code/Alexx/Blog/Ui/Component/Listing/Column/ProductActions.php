@@ -18,7 +18,6 @@ class ProductActions extends Column
         if (isset($dataSource['data']['items'])) {
             $storeId = $this->context->getFilterParam('store_id');
             foreach ($dataSource['data']['items'] as &$item) {
-
                 $item[$this->getData('name')]['edit'] = [
                     'href' => $this->context->getUrl(
                         'blog/index/edit',

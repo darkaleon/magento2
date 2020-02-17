@@ -1,11 +1,9 @@
 <?php
 /**@var $block \Alexx\Blog\Block\BlogList */
-if ($block->isBlogVisible()):
-    $posts = $block->getLastPosts();
-    if (count($posts) > 0): ?>
+if ($block->isBlogVisible() && $block->getLastPosts()): ?>
         <div class="blogs-applied-to-category">
             <h2><?= $block->escapeHtml(__('Blog posts')) ?></h2>
-            <?php foreach ($posts as $post): ?>
+            <?php foreach ($block->getLastPosts() as $post): ?>
                 <?php /**@var \Alexx\Blog\Api\Data\BlogInterface $post */ ?>
                 <div class="blog-card">
                     <div>
@@ -15,5 +13,4 @@ if ($block->isBlogVisible()):
                 </div>
             <?php endforeach; ?>
         </div>
-    <?php endif; ?>
 <?php endif; ?>

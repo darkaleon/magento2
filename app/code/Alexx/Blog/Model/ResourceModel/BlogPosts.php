@@ -16,6 +16,6 @@ class BlogPosts extends AbstractDb
      */
     protected function _construct()
     {
-        $this->_init(BlogInterface::BLOG_TABLE, BlogInterface::BLOG_ID);
+        $this->_init(BlogInterface::BLOG_TABLE, BlogInterface::FIELD_ID);
     }
 }

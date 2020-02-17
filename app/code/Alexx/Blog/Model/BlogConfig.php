@@ -46,14 +46,15 @@ class BlogConfig
      */
     public function isBlogVisible(): bool
     {
+        $isVisible = false;
         try {
-            return in_array(
+            $isVisible = in_array(
                 $this->productRegistryLocator->getProduct()->getTypeId(),
                 explode(',', $this->scopeConfig->getValue(self::XML_PATH_BLOG_VISIBLE))
             );
         } catch (NotFoundException $exception) {
             $this->logger->error($exception->getLogMessage());
-            return false;
         }
+        return $isVisible;
     }
 }

@@ -18,24 +18,12 @@ class SaveButton implements ButtonProviderInterface
         return [
             'label' => __('Save'),
             'class' => 'save primary',
-            'post' => true,
-            'url' => '*/*/save',
             'data_attribute' => [
                 'mage-init' => [
-                    'buttonAdapter' => [
-                        'actions' => [
-                            [
-                                'targetName' => 'cms_page_form.cms_page_form',
-                                'actionName' => 'save',
-                                'params' => [
-                                    false
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                    'button' => ['event' => 'save']],
+                'form-role' => 'save'
             ],
-            'sort_order' => 90,
+            'sort_order' => 90
         ];
     }
 }

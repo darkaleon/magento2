@@ -5,6 +5,7 @@ namespace Alexx\Blog\Model;
 
 use Alexx\Blog\Api\Data\BlogInterface;
 use Magento\Framework\Model\AbstractModel;
+use Alexx\Blog\Model\ResourceModel\BlogPosts as BlogPostsResource;
 
 /**
  * Simple Model BlogPosts
@@ -16,7 +17,7 @@ class BlogPosts extends AbstractModel implements BlogInterface
      */
     protected function _construct()
     {
-        $this->_init(ResourceModel\BlogPosts::class);
+        $this->_init(BlogPostsResource::class);
     }
 
     /**

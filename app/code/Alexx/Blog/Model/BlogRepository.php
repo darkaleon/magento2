@@ -121,21 +121,20 @@ class BlogRepository implements BlogRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function delete(BlogInterface $blogPost): bool
+    public function delete(BlogInterface $blogPost): void
     {
         try {
             $this->resource->delete($blogPost);
         } catch (\Exception $exception) {
             throw new CouldNotDeleteException(__($exception->getMessage()));
         }
-        return true;
     }
 
     /**
      * @inheritDoc
      */
-    public function deleteById(string $blogPostId): bool
+    public function deleteById(string $blogPostId): void
     {
-        return $this->delete($this->getById($blogPostId));
+        $this->delete($this->getById($blogPostId));
     }
 }
