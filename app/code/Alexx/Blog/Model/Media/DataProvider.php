@@ -76,7 +76,8 @@ class DataProvider extends AbstractDataProvider
                 unset($dataToEdit[BlogInterface::FIELD_CREATED_AT]);
                 unset($dataToEdit[BlogInterface::FIELD_UPDATED_AT]);
                 if ($blogPost->getPicture()) {
-                    $dataToEdit[BlogInterface::FIELD_PICTURE] = $this->blogMediaConfig->convertPictureForUploader($blogPost->getPicture());
+                    $dataToEdit[BlogInterface::FIELD_PICTURE] =
+                        $this->blogMediaConfig->convertPictureForUploader($blogPost->getPicture());
                 }
                 $this->loadedData[$blogPost->getId()] = $dataToEdit;
             }
