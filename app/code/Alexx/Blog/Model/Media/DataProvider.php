@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Model\Media;
 
+use Alexx\Blog\Api\Data\BlogInterface;
 use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Alexx\Blog\Model\ResourceModel\BlogPosts\CollectionFactory;
 use Magento\Framework\App\Request\DataPersistorInterface;
@@ -62,7 +63,7 @@ class DataProvider extends AbstractDataProvider
         $blogPostedForm = $this->dataPersistor->get('BlogPostForm');
 
         if ($blogPostedForm) {
-            $this->loadedData[$blogPostedForm['entity_id']] = $blogPostedForm;
+            $this->loadedData[$blogPostedForm[BlogInterface::FIELD_ID]] = $blogPostedForm;
             $this->dataPersistor->clear('BlogPostForm');
         }
 
@@ -72,10 +73,10 @@ class DataProvider extends AbstractDataProvider
             foreach ($this->collection->getItems() as $blogPost) {
                 $dataToEdit = $blogPost->getData();
 
-                unset($dataToEdit['created_at']);
-                unset($dataToEdit['updated_at']);
+                unset($dataToEdit[BlogInterface::FIELD_CREATED_AT]);
+                unset($dataToEdit[BlogInterface::FIELD_UPDATED_AT]);
                 if ($blogPost->getPicture()) {
-                    $dataToEdit['picture'] = $this->blogMediaConfig->convertPictureForUploader($blogPost->getPicture());
+                    $dataToEdit[BlogInterface::FIELD_PICTURE] = $this->blogMediaConfig->convertPictureForUploader($blogPost->getPicture());
                 }
                 $this->loadedData[$blogPost->getId()] = $dataToEdit;
             }

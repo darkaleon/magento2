@@ -121,8 +121,8 @@ class Save extends Action implements HttpPostActionInterface
 
         if (empty($formData)) {
             return $this->redirectError($message, '*/*/');
-        } elseif (isset($formData['entity_id'])) {
-            return $this->redirectError($message, '*/*/edit', ['id' => $formData['entity_id']]);
+        } elseif (isset($formData[BlogInterface::FIELD_ID])) {
+            return $this->redirectError($message, '*/*/edit', ['id' => $formData[BlogInterface::FIELD_ID]]);
         } else {
             return $this->redirectError($message, '*/*/new');
         }

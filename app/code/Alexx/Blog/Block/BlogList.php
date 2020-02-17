@@ -99,7 +99,7 @@ class BlogList extends Template
 
             /**@var  AbstractSimpleObject $defaultSortOrder */
             $defaultSortOrder = $this->sortOrderBuilder
-                ->setField('created_at')
+                ->setField(BlogInterface::FIELD_CREATED_AT)
                 ->setDirection('desc')
                 ->create();
             $searchCriteria->setSortOrders([$defaultSortOrder]);

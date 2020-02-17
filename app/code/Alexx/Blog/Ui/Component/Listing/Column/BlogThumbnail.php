@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Ui\Component\Listing\Column;
 
+use Alexx\Blog\Api\Data\BlogInterface;
 use Alexx\Blog\Model\Media\Config as BlogMediaConfig;
 use Magento\Framework\DataObject;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
@@ -43,8 +44,8 @@ class BlogThumbnail extends Column
         if (isset($dataSource['data']['items'])) {
             $fieldName = $this->getData('name');
             foreach ($dataSource['data']['items'] as & $item) {
-                $item[$fieldName . '_src'] = $this->blogMediaConfig->getBlogImageUrl($item['picture'] ?? '');
-                $item[$fieldName . '_alt'] = $item['theme'] ?? '';
+                $item[$fieldName . '_src'] = $this->blogMediaConfig->getBlogImageUrl($item[BlogInterface::FIELD_PICTURE] ?? '');
+                $item[$fieldName . '_alt'] = $item[BlogInterface::FIELD_THEME] ?? '';
             }
         }
 
