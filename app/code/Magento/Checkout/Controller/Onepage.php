@@ -145,61 +145,7 @@ abstract class Onepage extends Action
     {
         $this->_request = $request;
         $result = $this->_preDispatchValidateCustomer();
-        if ($result instanceof \Magento\Framework\Controller\ResultInterface) {    {
-        list($file, $plain) = $this->getFileParams();
-
-        /** @var \Magento\Framework\Filesystem $filesystem */
-        $filesystem = $this->_objectManager->get(\Magento\Framework\Filesystem::class);
-        $directory = $filesystem->getDirectoryRead(DirectoryList::MEDIA);
-        $fileName = CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER . '/' . ltrim($file, '/');
-        $path = $directory->getAbsolutePath($fileName);
-        if (mb_strpos($path, '..') !== false || (!$directory->isFile($fileName)
-            && !$this->_objectManager->get(\Magento\MediaStorage\Helper\File\Storage::class)->processStorageFile($path))
-        ) {
-            throw new NotFoundException(__('Page not found.'));
-        }
-
-        if ($plain) {
-            // phpcs:ignore Magento2.Functions.DiscouragedFunction
-            $extension = pathinfo($path, PATHINFO_EXTENSION);
-            switch (strtolower($extension)) {
-                case 'gif':
-                    $contentType = 'image/gif';
-                    break;
-                case 'jpg':
-                    $contentType = 'image/jpeg';
-                    break;
-                case 'png':
-                    $contentType = 'image/png';
-                    break;
-                default:
-                    $contentType = 'application/octet-stream';
-                    break;
-            }
-            $stat = $directory->stat($fileName);
-            $contentLength = $stat['size'];
-            $contentModify = $stat['mtime'];
-
-            /** @var \Magento\Framework\Controller\Result\Raw $resultRaw */
-            $resultRaw = $this->resultRawFactory->create();
-            $resultRaw->setHttpResponseCode(200)
-                ->setHeader('Pragma', 'public', true)
-                ->setHeader('Content-type', $contentType, true)
-                ->setHeader('Content-Length', $contentLength)
-                ->setHeader('Last-Modified', date('r', $contentModify));
-            $resultRaw->setContents($directory->readFile($fileName));
-            return $resultRaw;
-        } else {
-            // phpcs:ignore Magento2.Functions.DiscouragedFunction
-            $name = pathinfo($path, PATHINFO_BASENAME);
-            $this->_fileFactory->create(
-                $name,
-                ['type' => 'filename', 'value' => $fileName],
-                DirectoryList::MEDIA
-            );
-        }
-    }
-
+        if ($result instanceof \Magento\Framework\Controller\ResultInterface) {
             return $result;
         }
 
