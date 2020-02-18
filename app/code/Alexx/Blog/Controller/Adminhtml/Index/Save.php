@@ -85,11 +85,10 @@ class Save extends Action implements HttpPostActionInterface
 
         // Check if 'Save and Continue'
         $backRoute = $this->getRequest()->getParam('back');
-        if ($backRoute) {
-            return $this->_redirect('*/*/' . $backRoute, ['id' => $postId, '_current' => true]);
-        }
-        // Go to grid page
-        return $this->_redirect('*/*/');
+
+        return $backRoute ?
+            $this->_redirect('*/*/' . $backRoute, ['id' => $postId, '_current' => true]) :
+            $this->_redirect('*/*/');
     }
 
     /**
@@ -158,6 +157,7 @@ class Save extends Action implements HttpPostActionInterface
             if (!empty($pictureData[0]['file'])) {
                 $pictureData = $this->imageUploader->moveFileFromTmp($pictureData[0]['file'], true);
             }
+
             if (is_array($pictureData)) {
                 $pictureData =
                     $pictureData[0]['path'] ?? $this->blogMediaConfig->extractRelativePath($pictureData[0]['url']);
@@ -165,6 +165,6 @@ class Save extends Action implements HttpPostActionInterface
         } else {
             $pictureData = '';
         }
-        $formPostData[BlogInterface::FIELD_PICTURE] =  $pictureData;
+        $formPostData[BlogInterface::FIELD_PICTURE] = $pictureData;
     }
 }
