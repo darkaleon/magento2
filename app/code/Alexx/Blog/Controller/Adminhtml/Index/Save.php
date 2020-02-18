@@ -15,6 +15,7 @@ use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 
@@ -137,8 +138,8 @@ class Save extends Action implements HttpPostActionInterface
             $this->dataObjectHelper->populateWithArray($postModel, $formPostData, BlogInterface::class);
             $this->blogRepository->save($postModel);
             return $this->redirectSuccess($postModel->getId());
-        } catch (LocalizedException $e) {
-            return $this->errorRedirect($e->getMessage(), $postModel->getData());
+        } catch (LocalizedException | CouldNotSaveException $e) {
+            return $this->errorRedirect($e->getMessage(), $formPostData);
         }
     }
 
