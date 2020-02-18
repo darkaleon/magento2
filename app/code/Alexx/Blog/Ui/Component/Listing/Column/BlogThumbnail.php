@@ -41,7 +41,7 @@ class BlogThumbnail extends Column
      */
     public function prepareDataSource(array $dataSource)
     {
-        if (isset($dataSource['data']['items'])) {
+        if (!empty($dataSource['data']) && !empty($dataSource['data']['items'])) {
             $fieldName = $this->getData('name');
             foreach ($dataSource['data']['items'] as & $item) {
                 $item[$fieldName . '_src'] =

@@ -16,7 +16,7 @@ class ProductActions extends Column
      */
     public function prepareDataSource(array $dataSource)
     {
-        if (isset($dataSource['data']['items'])) {
+        if (!empty($dataSource['data']['items'])) {
             $storeId = $this->context->getFilterParam('store_id');
             foreach ($dataSource['data']['items'] as &$item) {
                 $item[$this->getData('name')]['edit'] = [

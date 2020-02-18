@@ -95,7 +95,7 @@ class Config
             'name' => $basename,
             'url' => '/' . $filePath,
             'path' => $fileName,
-            'size' => (isset($stat) ? $stat['size'] : 0),
+            'size' => (!empty($stat) ? $stat['size'] : 0),
             'type' => $mime
         ]];
     }

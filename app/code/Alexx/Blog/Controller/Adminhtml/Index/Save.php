@@ -72,21 +72,6 @@ class Save extends Action implements HttpPostActionInterface
     }
 
     /**
-     * Redirect with error message
-     *
-     * @param string $message
-     * @param string $path
-     * @param array $arguments
-     *
-     * @return ResponseInterface
-     */
-    private function redirectError(string $message, string $path, array $arguments = [])
-    {
-        $this->messageManager->addError($message);
-        return $this->_redirect($path, $arguments);
-    }
-
-    /**
      * Redirect with success message
      *
      * @param string $postId
@@ -108,7 +93,7 @@ class Save extends Action implements HttpPostActionInterface
     }
 
     /**
-     * Handling redirect when error
+     * Handling redirect with error message
      *
      * @param string $message
      * @param array $formData
@@ -118,14 +103,17 @@ class Save extends Action implements HttpPostActionInterface
     private function errorRedirect(string $message, array $formData = [])
     {
         $this->dataPersistor->set('BlogPostForm', $formData);
-
+        $redirectArguments = [];
         if (empty($formData)) {
-            return $this->redirectError($message, '*/*/');
-        } elseif (isset($formData[BlogInterface::FIELD_ID])) {
-            return $this->redirectError($message, '*/*/edit', ['id' => $formData[BlogInterface::FIELD_ID]]);
+            $redirectPath = '*/*/';
+        } elseif (!empty($formData[BlogInterface::FIELD_ID])) {
+            $redirectPath = '*/*/edit';
+            $redirectArguments['id'] = $formData[BlogInterface::FIELD_ID];
         } else {
-            return $this->redirectError($message, '*/*/new');
+            $redirectPath = '*/*/edit';
         }
+        $this->messageManager->addError($message);
+        return $this->_redirect($redirectPath, $redirectArguments);
     }
 
     /**
@@ -134,7 +122,7 @@ class Save extends Action implements HttpPostActionInterface
     public function execute()
     {
         $formPostData = $this->getRequest()->getPostValue();
-        $isNewPost = !isset($formPostData[BlogInterface::FIELD_ID]);
+        $isNewPost = empty($formPostData[BlogInterface::FIELD_ID]);
         if (!$isNewPost) {
             try {
                 $postModel = $this->blogRepository->getById($formPostData[BlogInterface::FIELD_ID]);
@@ -146,10 +134,7 @@ class Save extends Action implements HttpPostActionInterface
         }
         /**@var BlogInterface $postModel */
         try {
-            if (isset($formPostData[BlogInterface::FIELD_PICTURE]) &&
-                is_array($formPostData[BlogInterface::FIELD_PICTURE])) {
-                $this->preparePicture($formPostData[BlogInterface::FIELD_PICTURE]);
-            }
+            $this->preparePicture($formPostData);
             $this->dataObjectHelper->populateWithArray($postModel, $formPostData, BlogInterface::class);
             $this->blogRepository->save($postModel);
             return $this->redirectSuccess($postModel->getId());
@@ -161,21 +146,25 @@ class Save extends Action implements HttpPostActionInterface
     /**
      * Perform file upload whenever picture is uploaded. Also, converts array posted by imageUploader ext. to string.
      *
-     * @param array $pictureData
+     * @param array $formPostData
      *
-     * @return string
+     * @return void
      * @throws LocalizedException
      */
-    private function preparePicture(array &$pictureData): string
+    private function preparePicture(array &$formPostData): void
     {
-        if (!empty($pictureData[0]['file'])) {
-            $pictureData = $this->imageUploader->moveFileFromTmp($pictureData[0]['file'], true);
+        if (!empty($formPostData[BlogInterface::FIELD_PICTURE])) {
+            $pictureData = $formPostData[BlogInterface::FIELD_PICTURE];
+            if (!empty($pictureData[0]['file'])) {
+                $pictureData = $this->imageUploader->moveFileFromTmp($pictureData[0]['file'], true);
+            }
+            if (is_array($pictureData)) {
+                $pictureData =
+                    $pictureData[0]['path'] ?? $this->blogMediaConfig->extractRelativePath($pictureData[0]['url']);
+            }
+        } else {
+            $pictureData = '';
         }
-        if (is_array($pictureData)) {
-            $pictureData =
-                $pictureData[0]['path'] ?? $this->blogMediaConfig->extractRelativePath($pictureData[0]['url']);
-        }
-
-        return $pictureData;
+        $formPostData[BlogInterface::FIELD_PICTURE] =  $pictureData;
     }
 }
