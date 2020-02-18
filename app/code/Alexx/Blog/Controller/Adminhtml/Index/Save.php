@@ -80,8 +80,6 @@ class Save extends Action implements HttpPostActionInterface
      */
     private function redirectSuccess(string $postId)
     {
-        $this->dataPersistor->clear('BlogPostForm');
-
         $this->messageManager->addSuccess(__('The post has been saved.'));
 
         // Check if 'Save and Continue'
@@ -110,7 +108,7 @@ class Save extends Action implements HttpPostActionInterface
             $redirectPath = '*/*/edit';
             $redirectArguments['id'] = $formData[BlogInterface::FIELD_ID];
         } else {
-            $redirectPath = '*/*/edit';
+            $redirectPath = '*/*/new';
         }
         $this->messageManager->addError($message);
         return $this->_redirect($redirectPath, $redirectArguments);
@@ -130,6 +128,7 @@ class Save extends Action implements HttpPostActionInterface
                 return $this->errorRedirect($exception->getMessage());
             }
         } else {
+            $formPostData[BlogInterface::FIELD_ID] = null;
             $postModel = $this->blogFactory->create();
         }
         /**@var BlogInterface $postModel */
@@ -139,7 +138,7 @@ class Save extends Action implements HttpPostActionInterface
             $this->blogRepository->save($postModel);
             return $this->redirectSuccess($postModel->getId());
         } catch (LocalizedException | CouldNotSaveException $e) {
-            return $this->errorRedirect($e->getMessage(), $formPostData);
+            return $this->errorRedirect($e->getMessage(), $postModel->getData());
         }
     }
 

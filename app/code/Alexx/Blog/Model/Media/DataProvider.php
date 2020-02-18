@@ -56,30 +56,36 @@ class DataProvider extends AbstractDataProvider
 
     /**
      * Adapt collection data to form data
+     *
+     * @return array|null
      */
     public function getData()
     {
         /**@var array $blogPostedForm */
         $blogPostedForm = $this->dataPersistor->get('BlogPostForm');
+        $this->dataPersistor->clear('BlogPostForm');
 
         if ($blogPostedForm) {
-            $this->loadedData[$blogPostedForm[BlogInterface::FIELD_ID]] = $blogPostedForm;
+            $this->loadedData[$blogPostedForm[BlogInterface::FIELD_ID] ?? ''] = $blogPostedForm;
             $this->dataPersistor->clear('BlogPostForm');
         }
 
         if ($this->loadedData === null) {
-
             /** @var \Alexx\Blog\Model\BlogPosts $blogPost */
             foreach ($this->collection->getItems() as $blogPost) {
                 $dataToEdit = $blogPost->getData();
-
                 unset($dataToEdit[BlogInterface::FIELD_CREATED_AT]);
                 unset($dataToEdit[BlogInterface::FIELD_UPDATED_AT]);
-                if ($blogPost->getPicture()) {
-                    $dataToEdit[BlogInterface::FIELD_PICTURE] =
-                        $this->blogMediaConfig->convertPictureForUploader($blogPost->getPicture());
-                }
                 $this->loadedData[$blogPost->getId()] = $dataToEdit;
+            }
+        }
+
+        if ($this->loadedData) {
+            foreach ($this->loadedData as &$formData) {
+                if (!empty($formData[BlogInterface::FIELD_PICTURE])) {
+                    $formData[BlogInterface::FIELD_PICTURE] =
+                        $this->blogMediaConfig->convertPictureForUploader($formData[BlogInterface::FIELD_PICTURE]);
+                }
             }
         }
 
