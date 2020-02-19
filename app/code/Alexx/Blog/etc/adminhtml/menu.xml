@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Alexx_Blog::manage" title="Blog" translate="title" module="Alexx_Blog" sortOrder="20"
+             dependsOnModule="Alexx_Blog" resource="Alexx_Blog::manage"/>
+        <add id="Alexx_Blog::manage_blogs" title="Posts" translate="title" module="Alexx_Blog" sortOrder="10"
+             parent="Alexx_Blog::manage" action="blog" resource="Alexx_Blog::manage"/>
+    </menu>
+</config>
