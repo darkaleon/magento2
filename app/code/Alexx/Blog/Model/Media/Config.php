@@ -71,7 +71,7 @@ class Config
      *
      * @return string
      */
-    public function extractRelativePath(string $givenFileName): string
+    public function getPathInMediaDir(string $givenFileName): string
     {
         $pathParts = explode($this->fileSystem->getUri(DirectoryList::MEDIA), $givenFileName);
         return ltrim(array_pop($pathParts), '/');
@@ -86,7 +86,7 @@ class Config
      */
     public function convertPictureForUploader(string $givenFileName): array
     {
-        $fileName = $this->extractRelativePath($givenFileName);
+        $fileName = $this->getPathInMediaDir($givenFileName);
         $filePath = $this->fileSystem->getUri(DirectoryList::MEDIA) . '/' . $fileName;
         $stat = $this->mediaDirectory->stat($fileName);
         return [[

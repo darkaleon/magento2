@@ -159,7 +159,7 @@ class Save extends Action implements HttpPostActionInterface
             }
             if (is_array($pictureData)) {
                 $pictureData =
-                    $pictureData[0]['path'] ?? $this->blogMediaConfig->extractRelativePath($pictureData[0]['url']);
+                    $pictureData[0]['path'] ?? $this->blogMediaConfig->getPathInMediaDir($pictureData[0]['url']);
             }
         } else {
             $pictureData = '';
