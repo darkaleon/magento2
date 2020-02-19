@@ -100,22 +100,15 @@ class BlogRepository implements BlogRepositoryInterface
     public function getList(SearchCriteriaInterface $searchCriteria): SearchResultsInterface
     {
         $collection = $this->blogCollectionFactory->create();
-
         try {
             $this->collectionProcessor->process($searchCriteria, $collection);
         } catch (\InvalidArgumentException $exception) {
             throw new LocalizedException(__($exception->getMessage()));
         }
-
         $searchResults = $this->searchResultsFactory->create();
-
         $searchResults->setSearchCriteria($searchCriteria);
-
         $searchResults->setItems($collection->getItems());
-
-        $searchResults->setTotalCount($collection->getSize());
-
-        return $searchResults;
+        return $searchResults->setTotalCount($collection->getSize());
     }
 
     /**

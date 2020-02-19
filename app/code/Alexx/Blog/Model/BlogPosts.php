@@ -23,6 +23,14 @@ class BlogPosts extends AbstractModel implements BlogInterface
     /**
      * @inheritDoc
      */
+    public function getEntityId()
+    {
+        return $this->getData(BlogInterface::FIELD_ID) ?? '';
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getPicture(): string
     {
         return $this->getData(BlogInterface::FIELD_PICTURE) ?? '';
@@ -98,5 +106,13 @@ class BlogPosts extends AbstractModel implements BlogInterface
     public function setUpdatedAt(string $data): BlogInterface
     {
         return $this->setData(BlogInterface::FIELD_UPDATED_AT, $data);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setEntityId($data)
+    {
+        return $this->setData(BlogInterface::FIELD_ID, $data);
     }
 }

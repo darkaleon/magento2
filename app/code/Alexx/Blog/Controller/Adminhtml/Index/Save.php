@@ -157,7 +157,6 @@ class Save extends Action implements HttpPostActionInterface
             if (!empty($pictureData[0]['file'])) {
                 $pictureData = $this->imageUploader->moveFileFromTmp($pictureData[0]['file'], true);
             }
-
             if (is_array($pictureData)) {
                 $pictureData =
                     $pictureData[0]['path'] ?? $this->blogMediaConfig->extractRelativePath($pictureData[0]['url']);

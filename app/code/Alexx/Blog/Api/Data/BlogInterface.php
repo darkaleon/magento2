@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Api\Data;
 
+use Magento\Framework\Model\AbstractModel;
+
 /**
  * Blog storage is used to retrieve posts data.
  */
@@ -22,6 +24,13 @@ interface BlogInterface
      * @return string|null
      */
     public function getId();
+
+    /**
+     * Get entity_id field
+     *
+     * @return string
+     */
+    public function getEntityId();
 
     /**
      * Get theme field
@@ -97,4 +106,12 @@ interface BlogInterface
      * @return BlogInterface
      */
     public function setUpdatedAt(string $data): BlogInterface;
+
+    /**
+     * Set entity_id field
+     *
+     * @param string $entityId
+     * @return $this
+     */
+    public function setEntityId($entityId);
 }

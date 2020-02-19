@@ -3,49 +3,20 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Controller\Adminhtml\Index;
 
-use Magento\Framework\App\Action\HttpPostActionInterface;
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\Controller\ResultFactory;
-use Magento\Catalog\Model\ImageUploader;
-use Magento\Framework\Exception\LocalizedException;
+use Magento\Catalog\Controller\Adminhtml\Category\Image\Upload;
 
 /**
  * Admin Controller that perform uploading image from form and store it in tmp directory
  */
-class ImageUpload extends Action implements HttpPostActionInterface
+class ImageUpload extends Upload
 {
     const ADMIN_RESOURCE = 'Alexx_Blog::manage';
-
-    /**@var ImageUploader */
-    private $imageUploader;
-
-    /**
-     * @param Context $context
-     * @param ImageUploader $imageUploader
-     */
-    public function __construct(
-        Context $context,
-        ImageUploader $imageUploader
-    ) {
-        $this->imageUploader = $imageUploader;
-
-        parent::__construct($context);
-    }
 
     /**
      * @inheritDoc
      */
-    public function execute()
+    protected function _isAllowed()
     {
-        $imageId = $this->_request->getParam('param_name', 'image');
-
-        try {
-            $result = $this->imageUploader->saveFileToTmpDir($imageId);
-        } catch (LocalizedException $e) {
-            $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
-        }
-
-        return $this->resultFactory->create(ResultFactory::TYPE_JSON)->setData($result);
+        return $this->_authorization->isAllowed(self::ADMIN_RESOURCE);
     }
 }

@@ -60,34 +60,36 @@ class MassDelete extends Action implements HttpPostActionInterface
      */
     public function execute()
     {
-        /**@var AbstractDb $collection */
-        $collection = $this->filter->getCollection($this->collectionFactory->create());
-        $postsDeleted = 0;
-        $postsDeletedError = 0;
-        /** @var \Alexx\Blog\Model\BlogPosts $blogPost */
-        foreach ($collection->getItems() as $blogPost) {
-            try {
-                $this->blogRepository->delete($blogPost);
-                $postsDeleted++;
-            } catch (CouldNotDeleteException $exception) {
-                $this->logger->error($exception->getLogMessage());
-                $postsDeletedError++;
+        try {
+            /**@var AbstractDb $collection */
+            $collection = $this->filter->getCollection($this->collectionFactory->create());
+            $postsDeleted = 0;
+            $postsDeletedError = 0;
+            /** @var \Alexx\Blog\Model\BlogPosts $blogPost */
+            foreach ($collection->getItems() as $blogPost) {
+                try {
+                    $this->blogRepository->delete($blogPost);
+                    $postsDeleted++;
+                } catch (CouldNotDeleteException $exception) {
+                    $this->logger->error($exception->getLogMessage());
+                    $postsDeletedError++;
+                }
             }
-        }
-
-        if ($postsDeleted) {
-            $this->messageManager->addSuccessMessage(
-                __('A total of %1 record(s) have been deleted.', $postsDeleted)
-            );
-        }
-
-        if ($postsDeletedError) {
-            $this->messageManager->addErrorMessage(
-                __(
-                    'A total of %1 record(s) haven\'t been deleted. Please see server logs for more details.',
-                    $postsDeletedError
-                )
-            );
+            if ($postsDeleted) {
+                $this->messageManager->addSuccessMessage(
+                    __('A total of %1 record(s) have been deleted.', $postsDeleted)
+                );
+            }
+            if ($postsDeletedError) {
+                $this->messageManager->addErrorMessage(
+                    __(
+                        'A total of %1 record(s) haven\'t been deleted. Please see server logs for more details.',
+                        $postsDeletedError
+                    )
+                );
+            }
+        } catch (LocalizedException $exception) {
+            $this->messageManager->addErrorMessage($exception);
         }
 
         return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('blog/*/index');

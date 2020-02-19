@@ -63,7 +63,6 @@ class DataProvider extends AbstractDataProvider
     {
         /**@var array $blogPostedForm */
         $blogPostedForm = $this->dataPersistor->get('BlogPostForm');
-        $this->dataPersistor->clear('BlogPostForm');
 
         if ($blogPostedForm) {
             $this->loadedData[$blogPostedForm[BlogInterface::FIELD_ID] ?? ''] = $blogPostedForm;

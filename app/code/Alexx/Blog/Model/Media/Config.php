@@ -3,21 +3,23 @@ declare(strict_types=1);
 
 namespace Alexx\Blog\Model\Media;
 
-use Magento\Catalog\Model\Category\FileInfo;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\Exception\ValidatorException;
+use Magento\Framework\Filesystem;
 use Magento\Framework\View\Asset\Repository;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\File\Mime;
+use Magento\Framework\Filesystem\Directory\ReadInterface;
 
 /**
  * Manages paths parsing for blog picture
  */
 class Config
 {
-    /**@var File */
-    private $file;
+    /**@var Filesystem */
+    private $fileSystem;
 
     /**@var RequestInterface */
     private $requestInterface;
@@ -31,35 +33,39 @@ class Config
     /**@var StoreManagerInterface */
     private $storeManager;
 
-    /**@var FileInfo */
-    private $fileInfo;
+    /**@var ReadInterface */
+    private $mediaDirectory;
+
+    /**@var Mime */
+    private $mime;
 
     /**
      * @param RequestInterface $requestInterface
      * @param DirectoryList $dir
      * @param Repository $repository
-     * @param File $file
+     * @param Filesystem $fileSystem
      * @param StoreManagerInterface $storeManager
-     * @param FileInfo $fileInfo
+     * @param Mime $mime
      */
     public function __construct(
         RequestInterface $requestInterface,
         DirectoryList $dir,
         Repository $repository,
-        File $file,
+        Filesystem $fileSystem,
         StoreManagerInterface $storeManager,
-        FileInfo $fileInfo
+        Mime $mime
     ) {
-        $this->fileInfo = $fileInfo;
         $this->storeManager = $storeManager;
-        $this->file = $file;
+        $this->fileSystem = $fileSystem;
         $this->dir = $dir;
         $this->requestInterface = $requestInterface;
         $this->repository = $repository;
+        $this->mime = $mime;
+        $this->mediaDirectory = $fileSystem->getDirectoryRead(DirectoryList::MEDIA);
     }
 
     /**
-     * Convert  picture route or url to relative path
+     * Convert picture route or url to relative path. Accepts all types of file path.
      *
      * @param string $givenFileName
      *
@@ -67,10 +73,8 @@ class Config
      */
     public function extractRelativePath(string $givenFileName): string
     {
-        $mediaDir = $this->storeManager->getStore()->getBaseMediaDir();
-        $arr = explode($mediaDir, $givenFileName);
-        $result = ltrim(array_pop($arr), '/');
-        return $result;
+        $pathParts = explode($this->fileSystem->getUri(DirectoryList::MEDIA), $givenFileName);
+        return ltrim(array_pop($pathParts), '/');
     }
 
     /**
@@ -83,20 +87,14 @@ class Config
     public function convertPictureForUploader(string $givenFileName): array
     {
         $fileName = $this->extractRelativePath($givenFileName);
-        $mediaDir = $this->storeManager->getStore()->getBaseMediaDir();
-        $filePath = $mediaDir . "/" . $fileName;
-
-        $stat = $this->fileInfo->getStat($filePath);
-        $mime = $this->fileInfo->getMimeType($filePath);
-
-        // The use of function basename() is discouraged
-        $basename = preg_replace('|.*?([^/]+)$|', '\1', $fileName, 1);
+        $filePath = $this->fileSystem->getUri(DirectoryList::MEDIA) . '/' . $fileName;
+        $stat = $this->mediaDirectory->stat($fileName);
         return [[
-            'name' => $basename,
+            'name' => preg_replace('|.*?([^/]+)$|', '\1', $fileName, 1),
             'url' => '/' . $filePath,
             'path' => $fileName,
             'size' => (!empty($stat) ? $stat['size'] : 0),
-            'type' => $mime
+            'type' => $this->mime->getMimeType($filePath)
         ]];
     }
 
@@ -109,15 +107,16 @@ class Config
      */
     public function getBlogImageUrl(string $file): string
     {
-        $filePath = '/' . $this->storeManager->getStore()->getBaseMediaDir() . '/' . $file;
-
+        $filePath = '/' . $this->fileSystem->getUri(DirectoryList::MEDIA) . '/' . $file;
         $fullPath = $this->dir->getRoot() . $filePath;
+
         if (empty($file)) {
             $result = $this->getPlaceholderUrl();
         } else {
             try {
-                $result = ($this->file->isExists($fullPath) ? $filePath : $this->getPlaceholderUrl());
-            } catch (FileSystemException $exception) {
+
+                $result = ($this->mediaDirectory->isExist($fullPath) ? $filePath : $this->getPlaceholderUrl());
+            } catch (FileSystemException | ValidatorException $exception) {
                 $result = $this->getPlaceholderUrl();
             }
         }
