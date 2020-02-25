@@ -1,0 +1,22 @@
+<?php
+if ($block->isDescriptionAddAllowed()):
+    $data= $block->getClientDescription();
+//    print_r($data);
+?>
+<div id="responsemessage"></div>
+<a id="show_form_trigger"><?= __('Show form') ?></a>
+<a id="delete_trigger"><?= __('Delete description') ?></a>
+
+<form id="testform">
+    <input type="hidden" name="product_entity_id" value="<?= $data->getData('product_entity_id');?>">
+    <textarea name="description" id="ajaxcallvalue"><?=$data->getData('description');?></textarea>
+    <input type="submit" id="ajaxcall">
+</form>
+<script>
+require(['AlexxHello'],function (AlexxHello) {
+AlexxHello(<?= strlen($data->getData('description'));?>);
+
+});
+</script>
+<?php
+endif;
