@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<sections xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="urn:magento:mftf:Page/etc/SectionObject.xsd">
+    <section name="PageHeaderPanel">
+        <element name="helloOut" type="block" selector='//*[@id="helloOut"]' timeout="30"/>
+        <element name="helloOutH1" type="text" selector='//*[@id="helloOut"]/h1' timeout="30"/>
+    </section>
+</sections>

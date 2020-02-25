@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd">
+    <entity name="MainData">
+        <data key="returnData">prefix_Hello world_suffix</data>
+        <data key="returnDataTest">&lt;h1&gt; prefix_Hello world_suffix &lt;/h1&gt;</data>
+        <data key="page">/</data>
+    </entity>
+    <entity name="GetHello" type="main">
+        <data key="response">&lt;span&gt; prefix_Hello world_suffix &lt;/span&gt;</data>
+    </entity>
+</entities>
