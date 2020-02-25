@@ -1,40 +1,50 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Alexx\Description\Plugin;
 
-use Alexx\Description\Model\Search\SearchDescription;
+use Alexx\Description\Api\DescriptionRepositoryInterface;
+use Alexx\Description\Api\Data\DescriptionInterfaceFactory;
+use Alexx\Description\Model\Config\ConfigForCustomer;
+use Magento\Catalog\Api\Data\ProductExtensionFactory;
 use Magento\Catalog\Api\Data\ProductExtensionInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Api\Data\ProductExtensionFactory;
-use Magento\Customer\Model\Session;
-use  Alexx\Description\Model\Config\ConfigForCustomer;
+use Magento\Framework\Exception\NoSuchEntityException;
 
+/**
+ * Plugin for Catalog/Model/Product.php
+ *
+ * Injects extension attribute data for additional_description field
+ */
 class ProductPlugin
 {
-
-    /**
-     * @var ProductExtensionFactory
-     */
+    /**@var ProductExtensionFactory */
     private $extensionFactory;
-    protected $customerSession;
-    private $searchDescription;
+
+    /**@var DescriptionRepositoryInterface */
+    private $descriptionRepository;
+
+    /**@var ConfigForCustomer*/
     private $configForCustomer;
 
+    /**@var DescriptionInterfaceFactory */
+    private $descriptionFactory;
+
     /**
+     * @param DescriptionRepositoryInterface $descriptionRepository
      * @param ProductExtensionFactory $extensionFactory
+     * @param ConfigForCustomer $configForCustomer
+     * @param DescriptionInterfaceFactory $descriptionFactory
      */
     public function __construct(
-        SearchDescription $searchDescription,
+        DescriptionRepositoryInterface $descriptionRepository,
         ProductExtensionFactory $extensionFactory,
-        Session $customerSession,
-        ConfigForCustomer $configForCustomer
-    )
-    {
+        ConfigForCustomer $configForCustomer,
+        DescriptionInterfaceFactory $descriptionFactory
+    ) {
+        $this->descriptionFactory = $descriptionFactory;
         $this->configForCustomer = $configForCustomer;
-        $this->customerSession = $customerSession;
-        $this->searchDescription = $searchDescription;
-
+        $this->descriptionRepository = $descriptionRepository;
         $this->extensionFactory = $extensionFactory;
     }
 
@@ -43,70 +53,31 @@ class ProductPlugin
      *
      * @param ProductInterface $entity
      * @param ProductExtensionInterface|null $extension
+     *
      * @return ProductExtensionInterface
      */
-    public function afterGetExtensionAttributes(
-        ProductInterface $entity,
-        ProductExtensionInterface $extension = null
-    )
+    public function afterGetExtensionAttributes(ProductInterface $entity, ProductExtensionInterface $extension = null)
     {
         if ($extension === null) {
             $extension = $this->extensionFactory->create();
         }
-
-
         if ($extension->getAdditionalDescription() === null) {
             if ($this->configForCustomer->isFront()) {
-                $extension->setAdditionalDescription($this->loadData($entity));
+                $productId = (string)$entity->getId();
+                $customerId = $this->configForCustomer->getCustomerId();
+                if ($customerId != null) {
+                    try {
+                        $descriptionEntity = $this->descriptionRepository
+                            ->getByProductAndCustomer($productId, $customerId);
+                    } catch (NoSuchEntityException $exception) {
+                        $descriptionEntity = $this->descriptionFactory->create();
+                        $descriptionEntity->setProductEntityId($productId);
+                        $descriptionEntity->setCustomerEntityId($customerId);
+                    }
+                    $extension->setAdditionalDescription($descriptionEntity);
+                }
             }
         }
-
         return $extension;
     }
-
-
-    public function loadData($entity)
-    {
-
-        $product_id = $entity->getId();
-        $customer_id = $this->configForCustomer->getCustomerId();
-
-
-        if ($customer_id != null) {
-            try {
-                $model = $this->searchDescription->searchOne($product_id, $customer_id);
-                if($model){
-                    $ourCustomData = new \Magento\Framework\DataObject($this->searchDescription->searchOne($product_id, $customer_id)->getData());
-                }else{
-                    $ourCustomData = null;
-                }
-
-            } catch (\Exception $e) {
-
-                var_dump('Exception message 2 =');
-
-                var_dump($e->getMessage());
-            }
-
-            return $ourCustomData;
-
-
-        }
-    }
-    /*
-    public function loadAdminData($entity)
-    {
-        $product_id = $entity->getId();
-        try {
-            foreach ($this->searchDescription->searchAllList($product_id) as $d) {
-                $ourCustomData [] = new \Magento\Framework\DataObject($d->getData());
-            }
-        } catch (\Exception $e) {
-            var_dump('Exception message 1 =');
-            var_dump($e->getMessage());
-        }
-
-        return $ourCustomData;
-    }*/
-
 }

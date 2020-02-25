@@ -1,25 +1,12 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-
-    <preference	for="Alexx\Description\Api\Data\DescriptionInterface"	type="Alexx\Description\Model\Description"/>
-    <preference	for="Alexx\Description\Api\DescriptionRepositoryInterface"	type="Alexx\Description\Model\DescriptionRepository"/>
-    <preference	for="Alexx\Description\Api\DescriptionEditInterface"	type="Alexx\Description\Model\Edit\DescriptionEdit"/>
-
-
-
+    <preference for="Alexx\Description\Api\Data\DescriptionInterface" type="Alexx\Description\Model\Description"/>
+    <preference for="Alexx\Description\Api\DescriptionRepositoryInterface"
+                type="Alexx\Description\Model\DescriptionRepository"/>
+    <preference for="Alexx\Description\Api\DescriptionEditInterface"
+                type="Alexx\Description\Model\Edit\DescriptionEdit"/>
     <type name="Magento\Catalog\Api\Data\ProductInterface">
         <plugin name="ProductExtensionAttributeOperations" type="Alexx\Description\Plugin\ProductPlugin"/>
     </type>
-
-<!--
-    <type name="Magento\Catalog\Api\ProductRepositoryInterface">
-        <plugin name="ProductExtensionAttributeOperations" type="Alexx\Description\Plugin\ProductRepositoryPlugin"/>
-    </type>
--->
-
-
-<!--    <type name="Magento\Customer\Api\Data\CustomerInterface">
-        <plugin name="CustomerExtensionAttributeOperations" type="Alexx\Description\Plugin\CustomerAttributesLoad"/>
-    </type>-->
 </config>

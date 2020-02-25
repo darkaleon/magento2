@@ -1,44 +1,46 @@
 <?php
+declare(strict_types=1);
 
 namespace Alexx\Description\Controller\Adminhtml\Grid;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Cms\Api\Data\PageInterface;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Controller\Result\Json;
 use Alexx\Description\Api\DescriptionRepositoryInterface;
 use Alexx\Description\Api\Data\DescriptionInterface;
+use Magento\Framework\Exception\CouldNotSaveException;
 
+/**
+ * Customer description listing inline edit action
+ */
 class InlineEdit extends Action implements HttpPostActionInterface
 {
+    /**@var DescriptionRepositoryInterface */
+    private $descriptionRepository;
 
+    /**@var JsonFactory */
+    private $jsonFactory;
 
-
-    /**
-     * @var \Magento\Cms\Api\PageRepositoryInterface
-     */
-    protected $pageRepository;
-
-    /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
-     */
-    protected $jsonFactory;
+    /**@var DataObjectHelper */
     private $dataObjectHelper;
 
     /**
      * @param Context $context
+     * @param DescriptionRepositoryInterface $descriptionRepository
+     * @param DataObjectHelper $dataObjectHelper
      * @param JsonFactory $jsonFactory
      */
     public function __construct(
         Context $context,
-        DescriptionRepositoryInterface $pageRepository,
+        DescriptionRepositoryInterface $descriptionRepository,
         DataObjectHelper $dataObjectHelper,
         JsonFactory $jsonFactory
     ) {
         $this->dataObjectHelper = $dataObjectHelper;
-        $this->pageRepository = $pageRepository;
+        $this->descriptionRepository = $descriptionRepository;
         $this->jsonFactory = $jsonFactory;
         parent::__construct($context);
     }
@@ -49,7 +51,7 @@ class InlineEdit extends Action implements HttpPostActionInterface
     public function execute()
     {
 
-        /** @var \Magento\Framework\Controller\Result\Json $resultJson */
+        /** @var Json $resultJson */
         $resultJson = $this->jsonFactory->create();
         $error = false;
         $messages = [];
@@ -63,28 +65,15 @@ class InlineEdit extends Action implements HttpPostActionInterface
                 ]
             );
         }
-
-        foreach (array_keys($postItems) as $pageId) {
-            /** @var \Magento\Cms\Model\Page $page */
-            $postModel = $this->pageRepository->getById($pageId);
+        foreach (array_keys($postItems) as $descriptionId) {
+            $descriptionModel = $this->descriptionRepository->getById($descriptionId);
             try {
-                $formPostData = $postItems[$pageId];
-
-
-                $this->dataObjectHelper->populateWithArray($postModel, $formPostData, DescriptionInterface::class);
-
-                $this->pageRepository->save($postModel);
-            } catch (\Magento\Framework\Exception\LocalizedException $e) {
-                $messages[] = $this->getErrorWithPageId($page, $e->getMessage());
-                $error = true;
-            } catch (\RuntimeException $e) {
-                $messages[] = $this->getErrorWithPageId($page, $e->getMessage());
-                $error = true;
-            } catch (\Exception $e) {
-                $messages[] = $this->getErrorWithPageId(
-                    $page,
-                    __('Something went wrong while saving the page.')
-                );
+                $formPostData = $postItems[$descriptionId];
+                $this->dataObjectHelper
+                    ->populateWithArray($descriptionModel, $formPostData, DescriptionInterface::class);
+                $this->descriptionRepository->save($descriptionModel);
+            } catch (CouldNotSaveException $exception) {
+                $messages[] = $exception->getMessage();
                 $error = true;
             }
         }
@@ -96,9 +85,4 @@ class InlineEdit extends Action implements HttpPostActionInterface
             ]
         );
     }
-    protected function getErrorWithPageId(PageInterface $page, $errorText)
-    {
-        return '[Page ID: ' . $page->getId() . '] ' . $errorText;
-    }
 }
-

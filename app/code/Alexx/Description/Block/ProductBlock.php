@@ -1,30 +1,54 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Alexx\Description\Block;
 
-
+use Alexx\Description\Model\Config\ConfigForCustomer;
 use Magento\Catalog\Model\Locator\RegistryLocator;
 use Magento\Framework\View\Element\Template;
-use Alexx\Description\Model\Config\ConfigForCustomer;
+use Magento\Framework\View\Element\Template\Context;
 
-class ProductBlock  extends Template
+/**
+ * Block which is injected to catalog_product_view layout
+ */
+class ProductBlock extends Template
 {
-    /**@var RegistryLocator */
+    /** @var RegistryLocator */
     private $productRegistryLocator;
+
+    /** @var ConfigForCustomer */
     private $configForCustomer;
 
-    public function __construct(Template\Context $context,  RegistryLocator $productRegistryLocator, ConfigForCustomer $configForCustomer,array $data = [])
-    {
+    /**
+     * @param Context $context
+     * @param RegistryLocator $productRegistryLocator
+     * @param ConfigForCustomer $configForCustomer
+     * @param array $data
+     */
+    public function __construct(
+        Context $context,
+        RegistryLocator $productRegistryLocator,
+        ConfigForCustomer $configForCustomer,
+        array $data = []
+    ) {
         $this->configForCustomer = $configForCustomer;
         $this->productRegistryLocator = $productRegistryLocator;
         parent::__construct($context, $data);
     }
 
-    public function getClientDescription(){
-      return  $this->productRegistryLocator->getProduct()->getExtensionAttributes()->getAdditionalDescription();
+    /**
+     * Retreive extension attribute AdditionalDescription
+     */
+    public function getClientDescription()
+    {
+        return $this->productRegistryLocator->getProduct()->getExtensionAttributes()->getAdditionalDescription();
     }
-    public function isDescriptionAddAllowed(){
-        return  $this->configForCustomer->isDescriptionAddAllowed();
+
+    /**
+     * Check if current costomer allowed to add description to products
+     */
+    public function isDescriptionAddAllowed()
+    {
+        return $this->configForCustomer->isDescriptionAddAllowed();
     }
 }

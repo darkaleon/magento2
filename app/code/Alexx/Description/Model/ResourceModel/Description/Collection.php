@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-
 namespace Alexx\Description\Model\ResourceModel\Description;
-
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Alexx\Description\Model\Description;
 use Alexx\Description\Model\ResourceModel\Description as DescriptionResourceModel;
 
-
+/**
+ * Collection model fo DescriptionInterface::DESCRIPTIONS_DATA_TABLE table
+ */
 class Collection extends AbstractCollection
 {
-    /**@var string*/
+    /**@var string */
     protected $_idFieldName = 'entity_id';
 
     /**

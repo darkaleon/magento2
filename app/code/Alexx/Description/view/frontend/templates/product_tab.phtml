@@ -1,22 +1,26 @@
 <?php
+/**@var $block \Alexx\Description\Block\ProductBlock */
 if ($block->isDescriptionAddAllowed()):
-    $data= $block->getClientDescription();
-//    print_r($data);
-?>
-<div id="responsemessage"></div>
-<a id="show_form_trigger"><?= __('Show form') ?></a>
-<a id="delete_trigger"><?= __('Delete description') ?></a>
+    /**@var \Alexx\Description\Api\Data\DescriptionInterface */
+    $descriptionData = $block->getClientDescription();
+    ?>
+    <div id="responsemessage"></div>
+    <a id="show-form-trigger"><?= $block->escapeHtml(__('Show form')) ?></a>
+    <a id="delete-trigger"><?= $block->escapeHtml(__('Delete description')) ?></a>
 
-<form id="testform">
-    <input type="hidden" name="product_entity_id" value="<?= $data->getData('product_entity_id');?>">
-    <textarea name="description" id="ajaxcallvalue"><?=$data->getData('description');?></textarea>
-    <input type="submit" id="ajaxcall">
-</form>
-<script>
-require(['AlexxHello'],function (AlexxHello) {
-AlexxHello(<?= strlen($data->getData('description'));?>);
-
-});
-</script>
-<?php
+    <form id="customer-description-form">
+        <input type="hidden"
+               name="product_entity_id"
+               value="<?= $block->escapeHtml($descriptionData->getProductEntityId()); ?>"
+        >
+        <textarea name="description" id="ajaxcallvalue"><?= $block->escapeHtml($descriptionData->getDescription()); ?>
+        </textarea>
+        <input type="submit" id="ajaxcall">
+    </form>
+    <script>
+        require(['AlexxDescription'], function (AlexxDescription) {
+            AlexxDescription(<?= $block->escapeHtml(strlen($descriptionData->getDescription())) ?>);
+        });
+    </script>
+    <?php
 endif;

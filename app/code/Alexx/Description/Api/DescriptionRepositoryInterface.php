@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Alexx\Description\Api;
@@ -7,27 +6,38 @@ namespace Alexx\Description\Api;
 use Alexx\Description\Api\Data\DescriptionInterface;
 use Magento\Framework\Api\SearchResultsInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 
+/**
+ * Customer descrition CRUD interface.
+ */
 interface DescriptionRepositoryInterface
 {
-
-    public function getByProductAndCustomer($product_id,$customer_id);
-
-        /**
-     * Save post to db
+    /**
+     * Retrieve post params
      *
-     * @param DescriptionInterface $customerNote
+     * @param string $productId
+     * @param string $customerId
      * @return DescriptionInterface
+     * @throws NoSuchEntityException
      */
-    public function save(DescriptionInterface $customerNote): DescriptionInterface;
+    public function getByProductAndCustomer(string $productId, string $customerId): DescriptionInterface;
 
     /**
-     * Retrieve post
+     * Save post to db
      *
-     * @param string $customerNoteId
+     * @param DescriptionInterface $customerDescription
      * @return DescriptionInterface
      */
-    public function getById(string $customerNoteId): DescriptionInterface;
+    public function save(DescriptionInterface $customerDescription): DescriptionInterface;
+
+    /**
+     * Retrieve post by id
+     *
+     * @param string $customerDescriptionId
+     * @return DescriptionInterface
+     */
+    public function getById(string $customerDescriptionId): DescriptionInterface;
 
     /**
      * Retrieve posts matching the specified criteria.
@@ -40,16 +50,16 @@ interface DescriptionRepositoryInterface
     /**
      * Delete post from db
      *
-     * @param DescriptionInterface $customerNote
+     * @param DescriptionInterface $customerDescription
      * @return void
      */
-    public function delete(DescriptionInterface $customerNote): void;
+    public function delete(DescriptionInterface $customerDescription): void;
 
     /**
      * Delete post by ID
      *
-     * @param integer $customerNoteId
+     * @param integer $customerDescriptionId
      * @return void
      */
-    public function deleteById(string $customerNoteId): void;
+    public function deleteById(string $customerDescriptionId): void;
 }

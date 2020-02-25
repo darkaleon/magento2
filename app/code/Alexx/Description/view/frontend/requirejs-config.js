@@ -1,7 +1,7 @@
 var config = {
     "map": {
         "*": {
-            "AlexxHello": "Alexx_Description/js/AlexxDescriptionComponent",
+            "AlexxDescription": "Alexx_Description/js/alexx-description-component",
         }
     }
 };

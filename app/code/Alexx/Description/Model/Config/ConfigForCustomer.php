@@ -1,45 +1,67 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Alexx\Description\Model\Config;
 
 use Magento\Customer\Model\Session;
+use Magento\Framework\App\State as ApplicationState;
+use Magento\Framework\Exception\LocalizedException;
 
+/**
+ * Retreive data from session
+ */
 class ConfigForCustomer
 {
-    protected $customerSession;
+    /**@var Session */
+    private $customerSession;
 
-    public function __construct( Session $customerSession){
+    /**@var ApplicationState */
+    private $applicationState;
+
+    /**
+     * @param Session $customerSession
+     * @param ApplicationState $applicationState
+     */
+    public function __construct(Session $customerSession, ApplicationState $applicationState)
+    {
         $this->customerSession = $customerSession;
+        $this->applicationState = $applicationState;
     }
 
-    public function isDescriptionAddAllowed(){
-      return   boolval($this->customerSession->getCustomer()->getAllowAddDescription());
+    /**
+     * Check if current costomer allowed to add description to products
+     */
+    public function isDescriptionAddAllowed()
+    {
+        return boolval($this->customerSession->getCustomer()->getAllowAddDescription());
     }
 
-    public function getCustomerId(){
+    /**
+     * Retreive cuurent customer entity_id
+     */
+    public function getCustomerId()
+    {
         return $this->customerSession->getCustomer()->getId();
     }
-    public function isCustomerLoggedIn(){
 
-        return $this->getCustomerId()!==null;
+    /**
+     * Check current session for customer is logged in
+     */
+    public function isCustomerLoggedIn()
+    {
+        return $this->getCustomerId() !== null;
     }
 
-    public function isFront(){
-        return $this->getCurrentArea()=='frontend';
-
-    }
-
-
-    public function isAdmin(){
-
-        return $this->getCurrentArea()=='adminhtml';
-
-    }
-
-    public function getCurrentArea(){
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $state =  $objectManager->get('Magento\Framework\App\State');
-        return $state->getAreaCode(); //frontend or adminhtml or webapi_rest
+    /**
+     * Current area locator
+     */
+    public function isFront()
+    {
+        try {
+            $result = $this->applicationState->getAreaCode() == 'frontend';
+        } catch (LocalizedException $exception) {
+            $result = false;
+        }
+        return $result;
     }
 }
