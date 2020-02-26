@@ -56,8 +56,10 @@ class ProductPlugin
      *
      * @return ProductExtensionInterface
      */
-    public function afterGetExtensionAttributes(ProductInterface $entity, ProductExtensionInterface $extension = null)
-    {
+    public function afterGetExtensionAttributes(
+        ProductInterface $entity,
+        ProductExtensionInterface $extension = null
+    ): ProductExtensionInterface {
         if ($extension === null) {
             $extension = $this->extensionFactory->create();
         }

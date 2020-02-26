@@ -58,7 +58,7 @@ class ClientDescriptionTab extends AbstractModifier
     /**
      * Adding custom tab on adminhtml edit product page. Also, configures content of this tab
      */
-    private function addCustomTab()
+    private function addCustomTab(): void
     {
         $this->meta = array_merge_recursive(
             $this->meta,

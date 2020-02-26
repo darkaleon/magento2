@@ -4,18 +4,25 @@ if ($block->isDescriptionAddAllowed()):
     /**@var \Alexx\Description\Api\Data\DescriptionInterface */
     $descriptionData = $block->getClientDescription();
     ?>
-    <div id="responsemessage"></div>
-    <a id="show-form-trigger"><?= $block->escapeHtml(__('Show form')) ?></a>
-    <a id="delete-trigger"><?= $block->escapeHtml(__('Delete description')) ?></a>
-
+    <span>
+        <a id="show-form-trigger"><?= $block->escapeHtml(__('Show form')) ?></a>
+        <a id="delete-trigger"><?= $block->escapeHtml(__('Delete description')) ?></a>
+    </span>
     <form id="customer-description-form">
         <input type="hidden"
                name="product_entity_id"
                value="<?= $block->escapeHtml($descriptionData->getProductEntityId()); ?>"
         >
-        <textarea name="description" id="ajaxcallvalue"><?= $block->escapeHtml($descriptionData->getDescription()); ?>
-        </textarea>
-        <input type="submit" id="ajaxcall">
+        <input
+            name="description"
+            id="ajax_description"
+            value="<?= $block->escapeHtml($descriptionData->getDescription()); ?>"
+        >
+        <button
+            type="button"
+            class="action-primary action-accept"
+            id="save-trigger"
+        ><?= $block->escapeHtml(__('Save description')) ?></button>
     </form>
     <script>
         require(['AlexxDescription'], function (AlexxDescription) {

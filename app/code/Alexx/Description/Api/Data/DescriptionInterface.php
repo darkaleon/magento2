@@ -6,7 +6,7 @@ namespace Alexx\Description\Api\Data;
 /**
  * Storage is used to retrieve customer descrition data.
  */
-interface DescriptionInterface //extends \Magento\Framework\Api\ExtensibleDataInterface
+interface DescriptionInterface
 {
     const DESCRIPTIONS_DATA_TABLE = 'alexx_customer_descriptions';
     const FIELD_ID = 'entity_id';

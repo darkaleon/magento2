@@ -13,6 +13,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\Webapi\Rest\Request as RestRequest;
 use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\Phrase;
 
 /**
  * Processing storefront Rest api Post requests
@@ -69,8 +70,10 @@ class DescriptionEdit implements DescriptionEditInterface
 
     /**
      * Converts json posted serialized array to associative array
+     *
+     * @return array
      */
-    public function parsePostData()
+    public function parsePostData(): array
     {
         $ret = [];
         foreach ($this->request->getBodyParams() as $serializedParam) {
@@ -82,23 +85,13 @@ class DescriptionEdit implements DescriptionEditInterface
     /**
      * @inheritDoc
      */
-    public function editDescription()
+    public function editDescription(): string
     {
         if (!$this->configForCustomer->isCustomerLoggedIn()) {
-            return $this->serializer->serialize(
-                [
-                    'message' => __('You are not logged in. Refresh page and login again'),
-                    'error' => true
-                ]
-            );
+            return $this->prepareResponse(true, __('You are not logged in. Refresh page and login again'));
         }
         if (!$this->configForCustomer->isDescriptionAddAllowed()) {
-            return $this->serializer->serialize(
-                [
-                    'message' => __('You are not allowed to add or edit description'),
-                    'error' => true
-                ]
-            );
+            return $this->prepareResponse(true, __('You are not allowed to add or edit description'));
         }
         $data = $this->parsePostData();
         $productId = $data['product_entity_id'];
@@ -111,18 +104,13 @@ class DescriptionEdit implements DescriptionEditInterface
         $data['customer_entity_id'] = $customerId;
         $this->dataObjectHelper->populateWithArray($description, $data, DescriptionInterface::class);
         $this->repository->save($description);
-        return $this->serializer->serialize([
-            'message' => __('save ok'),
-            'form_data' => $data,
-            'error' => false,
-            'entity' => $description->getData()
-        ]);
+        return $this->prepareResponse(false);
     }
 
     /**
      * @inheritDoc
      */
-    public function deleteDescription()
+    public function deleteDescription(): string
     {
         $data = $this->parsePostData();
         $productId = $data['product_entity_id'];
@@ -130,34 +118,30 @@ class DescriptionEdit implements DescriptionEditInterface
         try {
             $description = $this->descriptionRepository->getByProductAndCustomer($productId, $customerId);
         } catch (NoSuchEntityException $exception) {
-            return $this->serializer->serialize(
-                [
-                    'message' => __('Already deleted'),
-                    'error' => true,
-                    'deleted' => true,
-                    'form_data' => $data
-                ]
-            );
+            return $this->prepareResponse(true, __('Description is already deleted'));
         }
         try {
             $this->repository->delete($description);
         } catch (CouldNotDeleteException $exception) {
-            return $this->serializer->serialize(
-                [
-                    'message' => $exception->getMessage(),
-                    'error' => true,
-                    'deleted' => false,
-                    'form_data' => $data
-                ]
-            );
+            return $this->prepareResponse(true, $exception->getMessage());
         }
-        return $this->serializer->serialize(
-            [
-                'message' => __('delete ok'),
-                'error' => false,
-                'deleted' => true,
-                'form_data' => $data
-            ]
-        );
+        return $this->prepareResponse(false);
+    }
+
+    /**
+     * Combine response values to array and converts it to json
+     *
+     * @param bool $error
+     * @param Phrase|null $message
+     *
+     * @return string
+     */
+    public function prepareResponse(bool $error, Phrase $message = null): string
+    {
+        $result = ['error' => $error];
+        if ($message) {
+            $result['message'] = $message;
+        }
+        return $this->serializer->serialize($result);
     }
 }

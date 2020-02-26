@@ -6,6 +6,7 @@ namespace Alexx\Description\Model\ResourceModel;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Alexx\Description\Api\Data\DescriptionInterface;
 use Magento\Framework\Model\AbstractModel;
+use Magento\Framework\DB\Select;
 
 /**
  * Resource model fo DescriptionInterface::DESCRIPTIONS_DATA_TABLE table
@@ -49,10 +50,10 @@ class Description extends AbstractDb
      * Retrieve select object for load object data
      *
      * @param array $params
-     * @return \Magento\Framework\DB\Select
+     * @return Select
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function _getParamsSelect($params)
+    private function _getParamsSelect($params): Select
     {
         $select = $this->getConnection()->select()->from($this->getMainTable());
         foreach ($params as $k => $param) {

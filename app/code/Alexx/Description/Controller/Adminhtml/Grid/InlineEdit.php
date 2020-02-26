@@ -50,7 +50,6 @@ class InlineEdit extends Action implements HttpPostActionInterface
      */
     public function execute()
     {
-
         /** @var Json $resultJson */
         $resultJson = $this->jsonFactory->create();
         $error = false;
@@ -66,7 +65,7 @@ class InlineEdit extends Action implements HttpPostActionInterface
             );
         }
         foreach (array_keys($postItems) as $descriptionId) {
-            $descriptionModel = $this->descriptionRepository->getById($descriptionId);
+            $descriptionModel = $this->descriptionRepository->getById((string)$descriptionId);
             try {
                 $formPostData = $postItems[$descriptionId];
                 $this->dataObjectHelper

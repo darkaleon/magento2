@@ -18,7 +18,7 @@
                 Alexx\Description\Ui\DataProvider\Product\ClientDescriptionDataProvider
             </argument>
             <argument name="name" xsi:type="string">customer_descriptions_grid_listing_data_source</argument>
-            <argument name="primaryFieldName" xsi:type="string">id</argument>
+            <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
             <argument name="requestFieldName" xsi:type="string">entity_id</argument>
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">

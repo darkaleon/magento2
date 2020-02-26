@@ -30,32 +30,40 @@ class ConfigForCustomer
 
     /**
      * Check if current costomer allowed to add description to products
+     *
+     * @return bool
      */
-    public function isDescriptionAddAllowed()
+    public function isDescriptionAddAllowed(): bool
     {
         return boolval($this->customerSession->getCustomer()->getAllowAddDescription());
     }
 
     /**
      * Retreive cuurent customer entity_id
+     *
+     * @return string
      */
-    public function getCustomerId()
+    public function getCustomerId(): string
     {
-        return $this->customerSession->getCustomer()->getId();
+        return (string)$this->customerSession->getCustomer()->getId();
     }
 
     /**
      * Check current session for customer is logged in
+     *
+     * @return bool
      */
-    public function isCustomerLoggedIn()
+    public function isCustomerLoggedIn(): bool
     {
         return $this->getCustomerId() !== null;
     }
 
     /**
      * Current area locator
+     *
+     * @return bool
      */
-    public function isFront()
+    public function isFront(): bool
     {
         try {
             $result = $this->applicationState->getAreaCode() == 'frontend';

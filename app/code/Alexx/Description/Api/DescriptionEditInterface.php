@@ -13,12 +13,12 @@ interface DescriptionEditInterface
      *
      * @return string
      */
-    public function editDescription();
+    public function editDescription(): string;
 
     /**
      * Manages delete request
      *
      * @return string
      */
-    public function deleteDescription();
+    public function deleteDescription(): string;
 }

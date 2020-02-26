@@ -7,6 +7,7 @@ use Alexx\Description\Model\Config\ConfigForCustomer;
 use Magento\Catalog\Model\Locator\RegistryLocator;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Alexx\Description\Model\Description;
 
 /**
  * Block which is injected to catalog_product_view layout
@@ -38,16 +39,21 @@ class ProductBlock extends Template
 
     /**
      * Retreive extension attribute AdditionalDescription
+     *
+     * @return Description|null
+     * @throws \Magento\Framework\Exception\NotFoundException
      */
-    public function getClientDescription()
+    public function getClientDescription(): Description
     {
         return $this->productRegistryLocator->getProduct()->getExtensionAttributes()->getAdditionalDescription();
     }
 
     /**
      * Check if current costomer allowed to add description to products
+     *
+     * @return bool
      */
-    public function isDescriptionAddAllowed()
+    public function isDescriptionAddAllowed(): bool
     {
         return $this->configForCustomer->isDescriptionAddAllowed();
     }

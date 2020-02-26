@@ -3,7 +3,8 @@ define([
     'mage/translate',
     'mage/storage',
     'uiComponent',
-    'ko'
+    'ko',
+    'Magento_Ui/js/modal/alert'
 ], function (
     $,
     $t,
@@ -13,63 +14,55 @@ define([
     alert
 ) {
     'use strict';
+
+    function hideForm() {
+        $('#show-form-trigger').show();
+        $('#customer-description-form').hide();
+        $('#delete-trigger').hide();
+    }
+    function showForm() {
+        $('#show-form-trigger').hide();
+        $('#customer-description-form').show();
+        $('#delete-trigger').show();
+    }
+    function parseSaveResponce(response) {
+        var ret = JSON.parse(response);
+        alert({content: ret.message, title: ret.error ? $t('Fail to save description') : $t('Success saving')});
+    }
+    function parseDeleteResponce(response) {
+        var ret = JSON.parse(response);
+        if (!ret.error) {
+            $('#ajax_description').val('');
+            hideForm();
+        }
+        alert({content: ret.message, title: ret.error ? $t('Fail to delete description') : $t('Success deleting')});
+    }
+
     return Component.extend({
-
-        showForm: function () {
-            $('#show-form-trigger').hide();
-            $('#customer-description-form').show();
-            $('#delete-trigger').show();
-        },
-        hideForm: function () {
-            $('#show-form-trigger').show();
-            $('#customer-description-form').hide();
-            $('#delete-trigger').hide();
-        },
         initialize: function (current_description_length) {
-            $('#show-form-trigger').click({component:this},function (event) {
+            $('#show-form-trigger').click(function (event) {
                 event.preventDefault();
-                event.data.component.showForm();
+                showForm();
             });
-
             if (current_description_length > 0) {
-                this.showForm();
+                showForm();
             } else {
-                this.hideForm();
+                hideForm();
             }
-
-            $('#delete-trigger').click({component:this}, function (event) {
+            $('#delete-trigger').click(function (event) {
                 event.preventDefault();
-
                 storage.post(
                     'rest/V1/deleteCustomerDescription',
                     JSON.stringify($("#customer-description-form").serializeArray())
-                ).done(function (response) {
-                    var ret = JSON.parse(response);
-                    $('#responsemessage').text(ret.message);
-                    $('#ajaxcallvalue').val('');
-                    event.data.component.hideForm();
-                }).fail(function (response) {
-                    var ret = JSON.parse(response);
-                    $('#responsemessage').text(ret.message);
-
-                });
+                ).done(parseDeleteResponce).fail(parseDeleteResponce);
             });
-
-            //#ajaxcall button id selector
-            $('#ajaxcall').click({component:this}, function (event) {
+            $('#save-trigger').click(function (event) {
                 event.preventDefault();
-                if ($('#ajaxcallvalue').val()) {
+                if ($('#ajax_description').val()) {
                     storage.post(
                         'rest/V1/editCustomerDescription',
                         JSON.stringify($("#customer-description-form").serializeArray())
-                    ).done(function (response) {
-                        var ret = JSON.parse(response);
-                        $('#responsemessage').text(ret.message);
-                        $('#ajaxcallvalue').val(ret.data.description);
-                    }).fail(function (response) {
-                        var ret = JSON.parse(response);
-                        $('#responsemessage').text(ret.message);
-                    });
+                    ).done(parseSaveResponce).fail(parseSaveResponce);
                 }
             });
         }
