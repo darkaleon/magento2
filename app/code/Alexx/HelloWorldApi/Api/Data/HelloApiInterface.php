@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Alexx\HelloWorldApi\Api\Data;
 
 /**
- *
+ * Interface to create greetings
  */
 interface HelloApiInterface
 {
@@ -12,6 +13,5 @@ interface HelloApiInterface
      *
      * @return string
      */
-    public function getHello(): string ;
-
+    public function getHello(): string;
 }

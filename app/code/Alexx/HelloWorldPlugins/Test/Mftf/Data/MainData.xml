@@ -7,6 +7,6 @@
         <data key="page">/</data>
     </entity>
     <entity name="GetHello" type="main">
-        <data key="response">&lt;span&gt; prefix_Hello world_suffix &lt;/span&gt;</data>
+        <data key="response">&lt;h1&gt; prefix_Hello world_suffix &lt;/h1&gt;</data>
     </entity>
 </entities>

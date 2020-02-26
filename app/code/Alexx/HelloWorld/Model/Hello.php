@@ -6,16 +6,15 @@ namespace Alexx\HelloWorld\Model;
 use Alexx\HelloWorldApi\Api\Data\HelloApiInterface;
 
 /**
- *
+ * Main source of greetings
  */
 class Hello implements HelloApiInterface
 {
-
-    /**@inheritDoc */
+    /**
+     * @inheritDoc
+     */
     public function getHello(): string
     {
         return  __('Hello world')->__toString();
     }
-
-
 }

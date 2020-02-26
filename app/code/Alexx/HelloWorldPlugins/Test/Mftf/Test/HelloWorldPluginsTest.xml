@@ -1,26 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/testSchema.xsd">
     <test name="HelloWorldPlugins" >
-
         <before>
             <getData entity="GetHello" stepKey="ajaxRequest"/>
-
         </before>
         <amOnPage url="{{MainData.page}}" stepKey="amOnMainPage"/>
         <waitForPageLoad stepKey="waitForPageLoad"/>
         <see selector="{{PageHeaderPanel.helloOutH1}}" userInput="{{MainData.returnData}}" stepKey="see1"/>
         <see selector="{{PageHeaderPanel.helloOut}}" userInput="{{MainData.returnData}}" stepKey="see3"/>
-
-
-
-        <assertEquals message="This is an optional human readable hint that will be shown in the logs if this assert fails." stepKey="assertEquals1">
-            <expectedResult type="string">&lt;span&gt; prefix_Hello world_suffix &lt;/span&gt;</expectedResult>
+        <assertEquals stepKey="assertEquals1">
+            <expectedResult type="string">&lt;h1&gt; prefix_Hello world_suffix &lt;/h1&gt;</expectedResult>
             <actualResult type="string">$ajaxRequest.response$</actualResult>
         </assertEquals>
-
-     <!--   <see selector="{{PageHeaderPanel.helloOut}}" userInput="$ajaxRequest.response$" stepKey="see2"/>-->
-
     </test>
 </tests>

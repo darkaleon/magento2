@@ -3,14 +3,23 @@ declare(strict_types=1);
 
 namespace Alexx\HelloWorldPlugins\Plugin;
 
+use Alexx\HelloWorldApi\Api\Data\HelloApiInterface;
 
+/**
+ * Plugin that inserts prefix
+ */
 class PluginBefore
 {
-
-
-    public function afterGetHello($subject, $result)
+    /**
+     * Get hello method interception
+     *
+     * @param HelloApiInterface $subject
+     * @param string $result
+     *
+     * @return string
+     */
+    public function afterGetHello(HelloApiInterface $subject, string $result): string
     {
-        return 'prefix_'. $result ;
+        return 'prefix_' . $result;
     }
-
 }

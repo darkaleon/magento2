@@ -3,7 +3,8 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="header.panel">
-            <block class="Alexx\HelloWorldStorefrontUi\Block\Hello" name="header.hello"  template="Alexx_HelloWorldStorefrontUi::hello.phtml"/>
+            <block class="Magento\Framework\View\Element\Template" name="header.hello"
+                   template="Alexx_HelloWorldStorefrontUi::hello.phtml"/>
         </referenceContainer>
     </body>
 </page>
