@@ -1,0 +1,8 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Alexx\HelloWorld\Model\Hello">
+        <plugin name="aroundMethodGetHello" type="Alexx\HelloWorldPlugins\Plugin\AddTagsAroundHelloMessage" sortOrder="10"/>
+        <plugin name="afterMethodGetHello" type="Alexx\HelloWorldPlugins\Plugin\AddHelloMessageSuffix" sortOrder="20"/>
+        <plugin name="beforeMethodGetHello" type="Alexx\HelloWorldPlugins\Plugin\AddHelloMessagePrefix" sortOrder="30"/>
+    </type>
+</config>
