@@ -9,21 +9,25 @@ use Magento\TestFramework\TestCase\WebapiAbstract;
 /**
  * Api-functional test class
  */
-class CoreRoutingTest extends WebapiAbstract
+class HelloWebApiTest extends WebapiAbstract
 {
     /**
      * Test api response from /rest/V1/hello/
      */
-    public function testBasicRoutingExplicitPath()
+    public function testGetHelloWebApi()
     {
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => '/V1/hello/',
                 'httpMethod' => Request::HTTP_METHOD_GET,
             ],
+            'soap' => [
+                'service' => 'testHelloWebApiSoapV1',
+                'operation' => 'testHelloWebApiSoapV1Item',
+            ],
         ];
-        $item = $this->_webApiCall($serviceInfo, []);
-        $expected = '<h1>prefix_Hello world_suffix</h1>';
-        $this->assertEquals($expected, $item, "Item was retrieved unsuccessfully");
+        $webApiCallResult = $this->_webApiCall($serviceInfo, []);
+        $expectedResult = '<h1>prefix_Hello world_suffix</h1>';
+        $this->assertEquals($expectedResult, $webApiCallResult, "Item was retrieved unsuccessfully");
     }
 }

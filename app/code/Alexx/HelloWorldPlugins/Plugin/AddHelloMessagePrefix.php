@@ -6,9 +6,9 @@ namespace Alexx\HelloWorldPlugins\Plugin;
 use Alexx\HelloWorldApi\Api\Data\HelloApiInterface;
 
 /**
- * Plugin that inserts suffix
+ * Plugin that inserts prefix
  */
-class PluginAfter
+class AddHelloMessagePrefix
 {
     /**
      * Get hello method interception
@@ -18,8 +18,8 @@ class PluginAfter
      *
      * @return string
      */
-    public function afterGetHello($subject, $result)
+    public function afterGetHello(HelloApiInterface $subject, string $result): string
     {
-        return $result . '_suffix';
+        return 'prefix_' . $result;
     }
 }

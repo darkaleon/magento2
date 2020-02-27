@@ -13,14 +13,14 @@ use PHPUnit\Framework\TestCase;
 class HelloModelTest extends TestCase
 {
     /**@var Hello */
-    private $object;
+    private $helloModel;
 
     /**
      * @inheritDoc
      */
     protected function setUp()
     {
-        $this->object = new Hello();
+        $this->helloModel = new Hello();
     }
 
     /**
@@ -28,15 +28,15 @@ class HelloModelTest extends TestCase
      */
     public function testImplementsHelloApiInterface()
     {
-        $this->assertInstanceOf(HelloApiInterface::class, $this->object);
+        $this->assertInstanceOf(HelloApiInterface::class, $this->helloModel);
     }
 
     /**
      * Testing model getHello result
      */
-    public function testModel()
+    public function testGetHello()
     {
-        $inStr = __('Hello world')->__toString();
-        $this->assertEquals($inStr, $this->object->getHello());
+        $expectedResult = __('Hello world')->__toString();
+        $this->assertEquals($expectedResult, $this->helloModel->getHello());
     }
 }

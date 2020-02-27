@@ -6,20 +6,20 @@ namespace Alexx\HelloWorldPlugins\Plugin;
 use Alexx\HelloWorldApi\Api\Data\HelloApiInterface;
 
 /**
- * Plugin that inserts prefix
+ * Plugin that closes in tags
  */
-class PluginBefore
+class AddTagsAroundHelloMessage
 {
     /**
      * Get hello method interception
      *
      * @param HelloApiInterface $subject
-     * @param string $result
+     * @param callable $proceed
      *
      * @return string
      */
-    public function afterGetHello(HelloApiInterface $subject, string $result): string
+    public function aroundGetHello(HelloApiInterface $subject, callable $proceed): string
     {
-        return 'prefix_' . $result;
+        return "<h1>" . $proceed() . "</h1>";
     }
 }

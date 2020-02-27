@@ -1,7 +1,7 @@
 var config = {
     map: {
         "*": {
-            AlexxHello: "Alexx_HelloWorldStorefrontUi/js/hello",
+            alexxHello: "Alexx_HelloWorldStorefrontUi/js/hello",
         }
     }
 };

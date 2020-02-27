@@ -6,20 +6,20 @@ namespace Alexx\HelloWorldPlugins\Plugin;
 use Alexx\HelloWorldApi\Api\Data\HelloApiInterface;
 
 /**
- * Plugin that closes in tags
+ * Plugin that inserts suffix
  */
-class PluginAround
+class AddHelloMessageSuffix
 {
     /**
      * Get hello method interception
      *
      * @param HelloApiInterface $subject
-     * @param callable $proceed
+     * @param string $result
      *
      * @return string
      */
-    public function aroundGetHello($subject, callable $proceed)
+    public function afterGetHello(HelloApiInterface $subject, string $result): string
     {
-        return "<h1>" . $proceed() . "</h1>";
+        return $result . '_suffix';
     }
 }
