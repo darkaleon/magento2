@@ -16,7 +16,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
  *
  * Injects extension attribute data for additional_description field
  */
-class ProductPlugin
+class LoadAdditionalDescriptionExtensionAttributeProductPlugin
 {
     /**@var ProductExtensionFactory */
     private $extensionFactory;

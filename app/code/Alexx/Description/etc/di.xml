@@ -7,6 +7,6 @@
     <preference for="Alexx\Description\Api\DescriptionEditInterface"
                 type="Alexx\Description\Model\Edit\DescriptionEdit"/>
     <type name="Magento\Catalog\Api\Data\ProductInterface">
-        <plugin name="ProductExtensionAttributeOperations" type="Alexx\Description\Plugin\ProductPlugin"/>
+        <plugin name="ProductExtensionAttributeOperations" type="Alexx\Description\Plugin\LoadAdditionalDescriptionExtensionAttributeProductPlugin"/>
     </type>
 </config>

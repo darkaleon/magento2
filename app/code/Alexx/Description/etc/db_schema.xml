@@ -7,7 +7,6 @@
         <column xsi:type="int" name="product_entity_id"/>
         <column xsi:type="int" name="customer_entity_id"/>
         <column xsi:type="text" name="description" comment="Description"/>
-        <column xsi:type="varchar" name="customer_email" comment="Customer email address"/>
         <column xsi:type="timestamp" name="created_at" default="CURRENT_TIMESTAMP" comment="Created At"/>
         <column xsi:type="timestamp" name="updated_at" default="CURRENT_TIMESTAMP" on_update="true"
                 comment="Updated At"/>
