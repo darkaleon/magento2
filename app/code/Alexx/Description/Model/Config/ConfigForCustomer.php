@@ -63,7 +63,7 @@ class ConfigForCustomer
      *
      * @return bool
      */
-    public function isFront(): bool
+    public function isStorefront(): bool
     {
         try {
             $result = $this->applicationState->getAreaCode() == 'frontend';

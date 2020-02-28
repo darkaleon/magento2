@@ -42,10 +42,10 @@ class ProductPlugin
         ConfigForCustomer $configForCustomer,
         DescriptionInterfaceFactory $descriptionFactory
     ) {
-        $this->descriptionFactory = $descriptionFactory;
-        $this->configForCustomer = $configForCustomer;
         $this->descriptionRepository = $descriptionRepository;
         $this->extensionFactory = $extensionFactory;
+        $this->configForCustomer = $configForCustomer;
+        $this->descriptionFactory = $descriptionFactory;
     }
 
     /**
@@ -64,7 +64,7 @@ class ProductPlugin
             $extension = $this->extensionFactory->create();
         }
         if ($extension->getAdditionalDescription() === null) {
-            if ($this->configForCustomer->isFront()) {
+            if ($this->configForCustomer->isStorefront()) {
                 $productId = (string)$entity->getId();
                 $customerId = $this->configForCustomer->getCustomerId();
                 if ($customerId != null) {

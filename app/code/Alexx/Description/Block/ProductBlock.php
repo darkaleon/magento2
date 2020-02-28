@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace Alexx\Description\Block;
 
+use Alexx\Description\Api\Data\DescriptionInterface;
 use Alexx\Description\Model\Config\ConfigForCustomer;
 use Magento\Catalog\Model\Locator\RegistryLocator;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Alexx\Description\Model\Description;
+use Magento\Framework\Exception\NotFoundException;
 
 /**
  * Block which is injected to catalog_product_view layout
@@ -41,9 +43,9 @@ class ProductBlock extends Template
      * Retreive extension attribute AdditionalDescription
      *
      * @return Description|null
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @throws NotFoundException
      */
-    public function getClientDescription(): Description
+    public function getClientDescription(): DescriptionInterface
     {
         return $this->productRegistryLocator->getProduct()->getExtensionAttributes()->getAdditionalDescription();
     }
