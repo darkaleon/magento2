@@ -5,7 +5,7 @@ if ($block->isDescriptionAddAllowed()):
     $descriptionData = $block->getClientDescription();
     ?>
     <span>
-        <a id="show-form-trigger"><?= $block->escapeHtml(__('Show form')) ?></a>
+        <a id="show-description-form-trigger"><?= $block->escapeHtml(__('Show form')) ?></a>
         <a id="delete-trigger"><?= $block->escapeHtml(__('Delete description')) ?></a>
     </span>
     <form id="customer-description-form">
@@ -15,13 +15,13 @@ if ($block->isDescriptionAddAllowed()):
         >
         <input
             name="description"
-            id="ajax_description"
+            id="customer-description-input"
             value="<?= $block->escapeHtml($descriptionData->getDescription()); ?>"
         >
         <button
             type="button"
             class="action-primary action-accept"
-            id="save-trigger"
+            id="save-description-trigger"
         ><?= $block->escapeHtml(__('Save description')) ?></button>
     </form>
     <script>

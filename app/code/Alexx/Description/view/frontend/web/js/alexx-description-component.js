@@ -16,12 +16,12 @@ define([
     'use strict';
 
     function hideForm() {
-        $('#show-form-trigger').show();
+        $('#show-description-form-trigger').show();
         $('#customer-description-form').hide();
         $('#delete-trigger').hide();
     }
     function showForm() {
-        $('#show-form-trigger').hide();
+        $('#show-description-form-trigger').hide();
         $('#customer-description-form').show();
         $('#delete-trigger').show();
     }
@@ -32,7 +32,7 @@ define([
     function parseDeleteResponce(response) {
         var ret = JSON.parse(response);
         if (!ret.error) {
-            $('#ajax_description').val('');
+            $('#customer-description-input').val('');
             hideForm();
         }
         alert({content: ret.message, title: ret.error ? $t('Fail to delete description') : $t('Success deleting')});
@@ -40,7 +40,7 @@ define([
 
     return Component.extend({
         initialize: function (current_description_length) {
-            $('#show-form-trigger').click(function (event) {
+            $('#show-description-form-trigger').click(function (event) {
                 event.preventDefault();
                 showForm();
             });
@@ -56,9 +56,9 @@ define([
                     JSON.stringify($("#customer-description-form").serializeArray())
                 ).done(parseDeleteResponce).fail(parseDeleteResponce);
             });
-            $('#save-trigger').click(function (event) {
+            $('#save-description-trigger').click(function (event) {
                 event.preventDefault();
-                if ($('#ajax_description').val()) {
+                if ($('#customer-description-input').val()) {
                     storage.post(
                         'rest/V1/editCustomerDescription',
                         JSON.stringify($("#customer-description-form").serializeArray())

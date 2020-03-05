@@ -55,7 +55,7 @@ class CustomerFormAllowAddDescriptionGrid extends Extended
         $this->setDefaultSort('id');
         $this->setDefaultDir('desc');
         $this->setUseAjax(true);
-        $this->setEmptyText(__('No Newsletter Found'));
+        $this->setEmptyText(__('No Records Found'));
     }
 
     /**

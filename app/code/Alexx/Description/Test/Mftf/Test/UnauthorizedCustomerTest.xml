@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/testSchema.xsd">
+    <test name="UnauthorizedCustomerTest">
+        <before>
+            <createData entity="SimpleProduct2" stepKey="createProduct"/>
+            <createData entity="Simple_US_Customer" stepKey="createCustomer"/>
+        </before>
+        <amOnPage url="{{SimpleProduct.name}}.html" stepKey="navigateToProductPage"/>
+        <waitForPageLoad stepKey="waitForPageToLoad"/>
+        <actionGroup ref="LoginAsAdmin" stepKey="LoginAsAdmin"/>
+
+    </test>
+</tests>
