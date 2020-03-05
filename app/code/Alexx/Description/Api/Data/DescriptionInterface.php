@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Alexx\Description\Api\Data;
 
 /**
- * Storage is used to retrieve customer descrition data.
+ * Storage is used to retrieve customer additional descrition data.
  */
 interface DescriptionInterface
 {

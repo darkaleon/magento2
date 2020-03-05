@@ -34,6 +34,8 @@ class Product extends AbstractRenderer
     {
         $product = $this->productRepository->getById($row->getProductEntityId());
 
-        return '<a href="' . $this->getUrl('catalog/product/edit', ['id' => $product->getId()]) . '" target="_blank">' . $product->getName() . '</a>';
+        return '<a href="'
+            . $this->getUrl('catalog/product/edit', ['id' => $product->getId()])
+            . '" target="_blank">' . $product->getName() . '</a>';
     }
 }

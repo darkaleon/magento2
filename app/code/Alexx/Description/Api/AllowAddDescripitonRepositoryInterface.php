@@ -6,6 +6,9 @@ namespace Alexx\Description\Api;
 use Alexx\Description\Api\Data\AllowAddDescripitonInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 
+/**
+ * Customer extension attribute CRUD interface
+ */
 interface AllowAddDescripitonRepositoryInterface
 {
     /**
@@ -39,5 +42,4 @@ interface AllowAddDescripitonRepositoryInterface
      * @return void
      */
     public function delete(AllowAddDescripitonInterface $customerAllowAddDescription): void;
-
 }

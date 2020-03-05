@@ -68,7 +68,8 @@ class CustomerRepositoryPlugin
      */
     public function afterGetById(CustomerRepositoryInterface $subject, CustomerInterface $customer)
     {
-        $customer->getExtensionAttributes()->setAllowAddDescription($this->allowAddDescriptionRepository->getByCustomer($customer));
+        $customer->getExtensionAttributes()
+            ->setAllowAddDescription($this->allowAddDescriptionRepository->getByCustomer($customer));
         return $customer;
     }
 
@@ -93,6 +94,7 @@ class CustomerRepositoryPlugin
             try {
                 $this->allowAddDescriptionRepository->save($loadedExtensionAttribute);
             } catch (CouldNotSaveException $exception) {
+                $error = true;
             }
             $result->getExtensionAttributes()->setAllowAddDescription($loadedExtensionAttribute);
         }
@@ -111,8 +113,11 @@ class CustomerRepositoryPlugin
      *
      * @return CustomerInterface
      */
-    public function afterDelete(CustomerRepositoryInterface $subject, CustomerInterface $result, CustomerInterface $customer)
-    {
+    public function afterDelete(
+        CustomerRepositoryInterface $subject,
+        $result,
+        CustomerInterface $customer
+    ) {
         $this->deleteModuleData($customer);
         return $result;
     }

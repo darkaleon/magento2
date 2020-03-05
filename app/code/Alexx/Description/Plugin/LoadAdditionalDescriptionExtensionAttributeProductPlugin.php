@@ -33,7 +33,7 @@ class LoadAdditionalDescriptionExtensionAttributeProductPlugin
     /**
      * @param DescriptionRepositoryInterface $descriptionRepository
      * @param ProductExtensionFactory $extensionFactory
-     * @param CustomerAccessManagerToDescription $configForCustomer
+     * @param CustomerAccessManagerToDescription $customerAccessManagerToDescription
      * @param DescriptionInterfaceFactory $descriptionFactory
      */
     public function __construct(

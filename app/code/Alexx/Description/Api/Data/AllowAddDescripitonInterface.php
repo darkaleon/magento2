@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Alexx\Description\Api\Data;
 
-
+/**
+ * Retreive data for customer extension attribute
+ */
 interface AllowAddDescripitonInterface
 {
     const ALLOW_ADD_DESCRIPTIONS_DATA_TABLE = 'alexx_customer_allow_descriptions';
@@ -33,27 +35,26 @@ interface AllowAddDescripitonInterface
      */
     public function setEntityId($entityId);
 
-
     /**
      * Get static::FIELD_CUSTOMER_ID field
      *
      * @return string
      */
     public function getCustomerEntityId(): string;
+
     /**
      * Get static::FIELD_EMAIL field
      *
      * @return string
      */
     public function getCustomerEmail(): string;
+
     /**
      * Get static::FIELD_ALLOW_ADD_DESCRIPTION field
      *
      * @return string
      */
     public function getCustomerAllowAddDescription(): string;
-
-
 
     /**
      * Set static::FIELD_CUSTOMER_ID field
@@ -62,6 +63,7 @@ interface AllowAddDescripitonInterface
      * @return AllowAddDescripitonInterface
      */
     public function setCustomerEntityId(string $data): AllowAddDescripitonInterface;
+
     /**
      * Set static::FIELD_EMAIL field
      *
@@ -69,6 +71,7 @@ interface AllowAddDescripitonInterface
      * @return AllowAddDescripitonInterface
      */
     public function setCustomerEmail(string $data): AllowAddDescripitonInterface;
+
     /**
      * Set static::FIELD_ALLOW_ADD_DESCRIPTION field
      *
@@ -76,10 +79,4 @@ interface AllowAddDescripitonInterface
      * @return AllowAddDescripitonInterface
      */
     public function setCustomerAllowAddDescription(string $data): AllowAddDescripitonInterface;
-
-
-
-
-
-
 }

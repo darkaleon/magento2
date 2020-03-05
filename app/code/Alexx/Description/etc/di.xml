@@ -6,7 +6,7 @@
                 type="Alexx\Description\Model\AllowAddDescription"/>
     <preference for="Alexx\Description\Api\DescriptionRepositoryInterface"
                 type="Alexx\Description\Model\DescriptionRepository"/>
-    <preference for="Alexx\Description\Api\AllowAddDescriptionInterface"
+    <preference for="Alexx\Description\Api\AllowAddDescripitonRepositoryInterface"
                 type="Alexx\Description\Model\AllowAddDescripitonRepository"/>
     <preference for="Alexx\Description\Api\DescriptionEditInterface"
                 type="Alexx\Description\Model\Edit\DescriptionEdit"/>

@@ -17,16 +17,22 @@ use Magento\Framework\Registry;
 class CustomerFormAllowAddDescriptionGrid extends Extended
 {
     /**
-     * Core registry
-     *
-     * @var Registry|null
+     * @var Registry
      */
-    protected $_coreRegistry = null;
-    protected $_filterVisibility = false;
+    private $coreRegistry;
 
-    /** @var CollectionFactory */
-    protected $_collectionFactory;
+    /**
+     * @var CollectionFactory
+     */
+    private $collectionFactory;
 
+    /**
+     * @param Context $context
+     * @param Data $backendHelper
+     * @param CollectionFactory $collectionFactory
+     * @param Registry $coreRegistry
+     * @param array $data
+     */
     public function __construct(
         Context $context,
         Data $backendHelper,
@@ -34,8 +40,8 @@ class CustomerFormAllowAddDescriptionGrid extends Extended
         Registry $coreRegistry,
         array $data = []
     ) {
-        $this->_coreRegistry = $coreRegistry;
-        $this->_collectionFactory = $collectionFactory;
+        $this->coreRegistry = $coreRegistry;
+        $this->collectionFactory = $collectionFactory;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -58,7 +64,7 @@ class CustomerFormAllowAddDescriptionGrid extends Extended
     protected function _prepareCollection()
     {
         $customerId = $this->getCurrentCustomerId();
-        $collection = $this->_collectionFactory->create()->addCustomerFilter($customerId);
+        $collection = $this->collectionFactory->create()->addCustomerFilter($customerId);
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -129,6 +135,6 @@ class CustomerFormAllowAddDescriptionGrid extends Extended
      */
     private function getCurrentCustomerId(): int
     {
-        return (int)$this->_coreRegistry->registry(RegistryConstants::CURRENT_CUSTOMER_ID);
+        return (int)$this->coreRegistry->registry(RegistryConstants::CURRENT_CUSTOMER_ID);
     }
 }

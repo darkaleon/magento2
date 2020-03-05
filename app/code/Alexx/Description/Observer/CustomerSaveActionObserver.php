@@ -7,16 +7,27 @@ use Alexx\Description\Model\AllowAddDescripitonRepository;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 
+/**
+ * Customer save event observer
+ */
 class CustomerSaveActionObserver implements ObserverInterface
 {
+    /**
+     * @var AllowAddDescripitonRepository
+     */
     private $customerAdditionalDescriptionRepository;
 
-
+    /**
+     * @param AllowAddDescripitonRepository $customerAdditionalDescriptionRepository
+     */
     public function __construct(AllowAddDescripitonRepository $customerAdditionalDescriptionRepository)
     {
         $this->customerAdditionalDescriptionRepository = $customerAdditionalDescriptionRepository;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function execute(Observer $observer)
     {
         $customer = $observer->getCustomer();

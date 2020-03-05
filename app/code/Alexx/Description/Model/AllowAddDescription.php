@@ -8,11 +8,14 @@ use Alexx\Description\Api\Data\DescriptionInterface;
 use Alexx\Description\Model\ResourceModel\AllowAddDescription as AllowAddDescriptionResource;
 use Magento\Framework\Model\AbstractModel;
 
+/**
+ * Abstract model for alexx_customer_allow_descriptions table
+ */
 class AllowAddDescription extends AbstractModel implements AllowAddDescripitonInterface
 {
-
     /**@var string */
     protected $_idFieldName = 'entity_id';
+
     /**
      * @inheritDoc
      */
@@ -20,6 +23,7 @@ class AllowAddDescription extends AbstractModel implements AllowAddDescripitonIn
     {
         $this->_init(AllowAddDescriptionResource::class);
     }
+
     /**
      * @inheritDoc
      */
@@ -39,46 +43,48 @@ class AllowAddDescription extends AbstractModel implements AllowAddDescripitonIn
     /**
      * @inheritDoc
      */
-    public function getCustomerEntityId(): string{
+    public function getCustomerEntityId(): string
+    {
         return $this->getData(AllowAddDescripitonInterface::FIELD_CUSTOMER_ID) ?? '';
-
     }
+
     /**
      * @inheritDoc
      */
-    public function getCustomerEmail(): string{
+    public function getCustomerEmail(): string
+    {
         return $this->getData(AllowAddDescripitonInterface::FIELD_EMAIL) ?? '';
-
     }
+
     /**
      * @inheritDoc
      */
-    public function getCustomerAllowAddDescription(): string{
+    public function getCustomerAllowAddDescription(): string
+    {
         return $this->getData(AllowAddDescripitonInterface::FIELD_ALLOW_ADD_DESCRIPTION) ?? '';
     }
 
     /**
      * @inheritDoc
      */
-    public function setCustomerEntityId(string $data): AllowAddDescripitonInterface{
+    public function setCustomerEntityId(string $data): AllowAddDescripitonInterface
+    {
         return $this->setData(AllowAddDescripitonInterface::FIELD_CUSTOMER_ID, $data);
-
     }
+
     /**
      * @inheritDoc
      */
-    public function setCustomerEmail(string $data): AllowAddDescripitonInterface{
+    public function setCustomerEmail(string $data): AllowAddDescripitonInterface
+    {
         return $this->setData(AllowAddDescripitonInterface::FIELD_EMAIL, $data);
-
     }
+
     /**
      * @inheritDoc
      */
-    public function setCustomerAllowAddDescription(string $data): AllowAddDescripitonInterface{
+    public function setCustomerAllowAddDescription(string $data): AllowAddDescripitonInterface
+    {
         return $this->setData(AllowAddDescripitonInterface::FIELD_ALLOW_ADD_DESCRIPTION, $data);
-
     }
-
-
-
 }

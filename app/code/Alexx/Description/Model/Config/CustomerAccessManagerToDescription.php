@@ -36,10 +36,17 @@ class CustomerAccessManagerToDescription
      */
     public function isDescriptionAddAllowed(): bool
     {
-        try {
-            $result = boolval($this->customerSession->getCustomerData()->getExtensionAttributes()->getAllowAddDescription()->getCustomerAllowAddDescription());
-        } catch (NoSuchEntityException | LocalizedException $exception) {
+        if (!$this->isCustomerLoggedIn()) {
             $result = false;
+        } else {
+            try {
+                $customer = $this->customerSession->getCustomerData();
+                $result = boolval(
+                    $customer->getExtensionAttributes()->getAllowAddDescription()->getCustomerAllowAddDescription()
+                );
+            } catch (NoSuchEntityException | LocalizedException $exception) {
+                $result = false;
+            }
         }
         return $result;
     }

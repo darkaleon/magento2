@@ -35,7 +35,7 @@ class Collection extends AbstractCollection
     public function addCustomerFilter(int $customerId): Collection
     {
         $this->getSelect()
-           ->where(
+            ->where(
                 'customer_entity_id = ?',
                 $customerId
             );

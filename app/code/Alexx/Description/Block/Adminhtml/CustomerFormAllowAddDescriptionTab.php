@@ -136,10 +136,11 @@ class CustomerFormAllowAddDescriptionTab extends \Magento\Backend\Block\Widget\F
             ]
         );
         $customer = $this->getCurrentCustomer();
-        $checkboxElement->setIsChecked($customer->getExtensionAttributes()->getAllowAddDescription()->getCustomerAllowAddDescription());
+        $checkboxElement->setIsChecked(
+            $customer->getExtensionAttributes()->getAllowAddDescription()->getCustomerAllowAddDescription()
+        );
         return $this;
     }
-
 
     /**
      * Get current customer id

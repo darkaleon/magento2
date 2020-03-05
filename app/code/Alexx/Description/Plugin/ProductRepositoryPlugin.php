@@ -87,12 +87,15 @@ class ProductRepositoryPlugin
      *
      * @param ProductRepositoryInterface $subject
      * @param ProductInterface $result
-     * @param ProductInterface $customer
+     * @param ProductInterface $product
      *
      * @return ProductInterface
      */
-    public function afterDelete(ProductRepositoryInterface $subject, ProductInterface $result, ProductInterface $product)
-    {
+    public function afterDelete(
+        ProductRepositoryInterface $subject,
+        $result,
+        ProductInterface $product
+    ) {
         $this->deleteModuleData($product);
         return $result;
     }
@@ -100,7 +103,7 @@ class ProductRepositoryPlugin
     /**
      * Deletes product extension attribute entities for description module
      *
-     * @param CustomerInterface $customer
+     * @param ProductInterface $product
      */
     private function deleteModuleData(ProductInterface $product)
     {
@@ -114,7 +117,7 @@ class ProductRepositoryPlugin
     /**
      * Searches list of additional product descriptions of given product
      *
-     * @param CustomerInterface $customer
+     * @param ProductInterface $product
      *
      * @return ExtensibleDataInterface[]
      */

@@ -7,6 +7,9 @@ use Alexx\Description\Api\Data\AllowAddDescripitonInterface;
 use Alexx\Description\Api\Data\DescriptionInterface;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
+/**
+ * Resource model for alexx_customer_allow_descriptions table
+ */
 class AllowAddDescription extends AbstractDb
 {
     /**
@@ -14,6 +17,9 @@ class AllowAddDescription extends AbstractDb
      */
     protected function _construct()
     {
-        $this->_init(AllowAddDescripitonInterface::ALLOW_ADD_DESCRIPTIONS_DATA_TABLE, AllowAddDescripitonInterface::FIELD_ID);
+        $this->_init(
+            AllowAddDescripitonInterface::ALLOW_ADD_DESCRIPTIONS_DATA_TABLE,
+            AllowAddDescripitonInterface::FIELD_ID
+        );
     }
 }

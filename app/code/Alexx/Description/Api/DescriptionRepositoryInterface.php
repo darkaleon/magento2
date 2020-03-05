@@ -9,7 +9,7 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
- * Customer descrition CRUD interface.
+ * Customer product descrition CRUD interface.
  */
 interface DescriptionRepositoryInterface
 {

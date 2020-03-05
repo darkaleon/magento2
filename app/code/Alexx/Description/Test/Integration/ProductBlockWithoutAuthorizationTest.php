@@ -1,13 +1,14 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Alexx\Description\Test\Integration;
 
+use Alexx\Description\Block\ProductBlock;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\Registry;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Framework\Registry;
-use Alexx\Description\Block\ProductBlock;
 
 /**
  * @magentoAppArea frontend
@@ -15,12 +16,18 @@ use Alexx\Description\Block\ProductBlock;
  */
 class ProductBlockWithoutAuthorizationTest extends TestCase
 {
+    /**@var ProductInterface*/
     private static $fakeProduct;
+
+    /**@var ObjectManagerInterface*/
     private $objectManager;
+
+    /**@var ProductBlock*/
     private $testedBlock;
-    private $productRepository;
 
-
+    /**
+     * @inheritDoc
+     */
     public function setUp()
     {
         $this->objectManager = Bootstrap::getObjectManager();
@@ -32,18 +39,29 @@ class ProductBlockWithoutAuthorizationTest extends TestCase
         $templateForBlock = 'Alexx_Description::product_tab.phtml';
         $this->testedBlock->setTemplate($templateForBlock);
     }
+
+    /**
+     * @inheritDoc
+     */
     public function tearDown()
     {
         $this->objectManager->get(Registry::class)->unregister('current_product');
     }
-    public function testProductBlockReturningEmptyHtml(){
-        $this->assertEmpty( $this->testedBlock->toHtml());
+
+    /**
+     * Test adding description limitation
+     */
+    public function testProductBlockReturningEmptyHtml()
+    {
+        $this->assertEmpty($this->testedBlock->toHtml());
     }
 
+    /**
+     * Creates fixtures for tests
+     */
     public static function loadFixture()
     {
         include __DIR__ . '/_files/product.php';
-        self::$fakeProduct=$product;
-
+        self::$fakeProduct = $product;
     }
 }
