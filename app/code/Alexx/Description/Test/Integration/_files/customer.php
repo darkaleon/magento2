@@ -1,5 +1,6 @@
 <?php
-$integrationTestSuitePath = __DIR__ . '/../../../../../../../../dev/tests/integration/testsuite';
+
+$integrationTestSuitePath = __DIR__ . '/../../../../../../../dev/tests/integration/testsuite';
 
 require $integrationTestSuitePath . '/Magento/Sales/_files/default_rollback.php';
 require $integrationTestSuitePath . '/Magento/Customer/_files/customer_rollback.php';
@@ -8,7 +9,3 @@ require $integrationTestSuitePath . '/Magento/Customer/_files/customer_sample.ph
 
 $customer->setAllowAddDescription(true);
 $customer->save();
-
-require $integrationTestSuitePath . '/Magento/Catalog/_files/product_simple.php';
-/** @var $product \Magento\Catalog\Model\Product */
-

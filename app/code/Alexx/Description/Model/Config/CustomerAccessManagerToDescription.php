@@ -6,11 +6,12 @@ namespace Alexx\Description\Model\Config;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\State as ApplicationState;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
  * Retreive data from session
  */
-class ConfigForCustomer
+class CustomerAccessManagerToDescription
 {
     /**@var Session */
     private $customerSession;
@@ -35,11 +36,16 @@ class ConfigForCustomer
      */
     public function isDescriptionAddAllowed(): bool
     {
-        return boolval($this->customerSession->getCustomer()->getAllowAddDescription());
+        try {
+            $result = boolval($this->customerSession->getCustomerData()->getExtensionAttributes()->getAllowAddDescription()->getCustomerAllowAddDescription());
+        } catch (NoSuchEntityException | LocalizedException $exception) {
+            $result = false;
+        }
+        return $result;
     }
 
     /**
-     * Retreive cuurent customer entity_id
+     * Retreive current customer entity_id
      *
      * @return string
      */
@@ -55,7 +61,7 @@ class ConfigForCustomer
      */
     public function isCustomerLoggedIn(): bool
     {
-        return $this->getCustomerId() !== null;
+        return !empty($this->getCustomerId());
     }
 
     /**

@@ -4,4 +4,7 @@
     <extension_attributes for="Magento\Catalog\Api\Data\ProductInterface">
         <attribute code="additional_description" type="Alexx\Description\Model\Description"/>
     </extension_attributes>
+    <extension_attributes for="Magento\Customer\Api\Data\CustomerInterface">
+        <attribute code="allow_add_description" type="Alexx\Description\Api\Data\AllowAddDescripitonInterface"/>
+    </extension_attributes>
 </config>

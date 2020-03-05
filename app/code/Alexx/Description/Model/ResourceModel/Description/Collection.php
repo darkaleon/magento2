@@ -25,4 +25,21 @@ class Collection extends AbstractCollection
             DescriptionResourceModel::class
         );
     }
+
+    /**
+     * Set filter for queue by customer
+     *
+     * @param int $customerId
+     * @return \Magento\Newsletter\Model\ResourceModel\Queue\Collection
+     */
+    public function addCustomerFilter(int $customerId): Collection
+    {
+        $this->getSelect()
+           ->where(
+                'customer_entity_id = ?',
+                $customerId
+            );
+
+        return $this;
+    }
 }

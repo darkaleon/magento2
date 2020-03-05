@@ -61,20 +61,6 @@ class DescriptionRepository implements DescriptionRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getByProductAndCustomer(string $productId, string $customerId): DescriptionInterface
-    {
-        $customerDescription = $this->descriptionFactory->create();
-        $params = ['product_entity_id' => $productId, 'customer_entity_id' => $customerId];
-        $this->resourceModel->loadByArrayOfParams($customerDescription, $params);
-        if (!$customerDescription->getId()) {
-            throw new NoSuchEntityException(__('The customer note doesn\'t exist.'));
-        }
-        return $customerDescription;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function save(DescriptionInterface $customerDescription): DescriptionInterface
     {
         try {
@@ -135,5 +121,19 @@ class DescriptionRepository implements DescriptionRepositoryInterface
     public function deleteById(string $customerDescriptionId): void
     {
         $this->delete($this->getById($customerDescriptionId));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getByProductAndCustomer(string $productId, string $customerId): DescriptionInterface
+    {
+        $customerDescription = $this->descriptionFactory->create();
+        $params = ['product_entity_id' => $productId, 'customer_entity_id' => $customerId];
+        $this->resourceModel->loadByArrayOfParams($customerDescription, $params);
+        if (!$customerDescription->getId()) {
+            throw new NoSuchEntityException(__('The customer note doesn\'t exist.'));
+        }
+        return $customerDescription;
     }
 }

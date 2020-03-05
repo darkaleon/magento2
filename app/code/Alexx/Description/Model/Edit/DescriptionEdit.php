@@ -7,13 +7,13 @@ use Alexx\Description\Api\Data\DescriptionInterface;
 use Alexx\Description\Api\Data\DescriptionInterfaceFactory;
 use Alexx\Description\Api\DescriptionEditInterface;
 use Alexx\Description\Api\DescriptionRepositoryInterface;
-use Alexx\Description\Model\Config\ConfigForCustomer;
+use Alexx\Description\Model\Config\CustomerAccessManagerToDescription;
+use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Phrase;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\Webapi\Rest\Request as RestRequest;
-use Magento\Framework\Api\DataObjectHelper;
-use Magento\Framework\Phrase;
 
 /**
  * Processing storefront Rest api Post requests
@@ -29,8 +29,8 @@ class DescriptionEdit implements DescriptionEditInterface
     /**@var DescriptionRepositoryInterface */
     private $repository;
 
-    /**@var ConfigForCustomer */
-    private $configForCustomer;
+    /**@var CustomerAccessManagerToDescription */
+    private $customerAccessManagerToDescription;
 
     /**@var DescriptionRepositoryInterface */
     private $descriptionRepository;
@@ -45,7 +45,7 @@ class DescriptionEdit implements DescriptionEditInterface
      * @param RestRequest $request
      * @param Json $serializer
      * @param DescriptionRepositoryInterface $repository
-     * @param ConfigForCustomer $configForCustomer
+     * @param CustomerAccessManagerToDescription $customerAccessManagerToDescription
      * @param DescriptionRepositoryInterface $descriptionRepository
      * @param DescriptionInterfaceFactory $descriptionFactory
      * @param DataObjectHelper $dataObjectHelper
@@ -54,7 +54,7 @@ class DescriptionEdit implements DescriptionEditInterface
         RestRequest $request,
         Json $serializer,
         DescriptionRepositoryInterface $repository,
-        ConfigForCustomer $configForCustomer,
+        CustomerAccessManagerToDescription $customerAccessManagerToDescription,
         DescriptionRepositoryInterface $descriptionRepository,
         DescriptionInterfaceFactory $descriptionFactory,
         DataObjectHelper $dataObjectHelper
@@ -62,7 +62,7 @@ class DescriptionEdit implements DescriptionEditInterface
         $this->dataObjectHelper = $dataObjectHelper;
         $this->descriptionFactory = $descriptionFactory;
         $this->descriptionRepository = $descriptionRepository;
-        $this->configForCustomer = $configForCustomer;
+        $this->customerAccessManagerToDescription = $customerAccessManagerToDescription;
         $this->repository = $repository;
         $this->request = $request;
         $this->serializer = $serializer;
@@ -87,15 +87,15 @@ class DescriptionEdit implements DescriptionEditInterface
      */
     public function editDescription(): string
     {
-        if (!$this->configForCustomer->isCustomerLoggedIn()) {
+        if (!$this->customerAccessManagerToDescription->isCustomerLoggedIn()) {
             return $this->prepareResponse(true, __('You are not logged in. Refresh page and login again'));
         }
-        if (!$this->configForCustomer->isDescriptionAddAllowed()) {
+        if (!$this->customerAccessManagerToDescription->isDescriptionAddAllowed()) {
             return $this->prepareResponse(true, __('You are not allowed to add or edit description'));
         }
         $data = $this->parsePostData();
         $productId = $data['product_entity_id'];
-        $customerId = $this->configForCustomer->getCustomerId();
+        $customerId = $this->customerAccessManagerToDescription->getCustomerId();
         try {
             $description = $this->descriptionRepository->getByProductAndCustomer($productId, $customerId);
         } catch (NoSuchEntityException $exception) {
@@ -114,7 +114,7 @@ class DescriptionEdit implements DescriptionEditInterface
     {
         $data = $this->parsePostData();
         $productId = $data['product_entity_id'];
-        $customerId = $this->configForCustomer->getCustomerId();
+        $customerId = $this->customerAccessManagerToDescription->getCustomerId();
         try {
             $description = $this->descriptionRepository->getByProductAndCustomer($productId, $customerId);
         } catch (NoSuchEntityException $exception) {
@@ -136,7 +136,7 @@ class DescriptionEdit implements DescriptionEditInterface
      *
      * @return string
      */
-    public function prepareResponse(bool $error, Phrase $message = null): string
+    public function prepareResponse(bool $error, $message = null): string
     {
         $result = ['error' => $error];
         if ($message) {

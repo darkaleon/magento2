@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Alexx\Description\Block;
 
 use Alexx\Description\Api\Data\DescriptionInterface;
-use Alexx\Description\Model\Config\ConfigForCustomer;
+use Alexx\Description\Model\Config\CustomerAccessManagerToDescription;
 use Magento\Catalog\Model\Locator\RegistryLocator;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
@@ -19,22 +19,22 @@ class ProductBlock extends Template
     /** @var RegistryLocator */
     private $productRegistryLocator;
 
-    /** @var ConfigForCustomer */
-    private $configForCustomer;
+    /** @var CustomerAccessManagerToDescription */
+    private $customerAccessManagerToDescription;
 
     /**
      * @param Context $context
      * @param RegistryLocator $productRegistryLocator
-     * @param ConfigForCustomer $configForCustomer
+     * @param CustomerAccessManagerToDescription $customerAccessManagerToDescription
      * @param array $data
      */
     public function __construct(
         Context $context,
         RegistryLocator $productRegistryLocator,
-        ConfigForCustomer $configForCustomer,
+        CustomerAccessManagerToDescription $customerAccessManagerToDescription,
         array $data = []
     ) {
-        $this->configForCustomer = $configForCustomer;
+        $this->customerAccessManagerToDescription = $customerAccessManagerToDescription;
         $this->productRegistryLocator = $productRegistryLocator;
         parent::__construct($context, $data);
     }
@@ -57,6 +57,6 @@ class ProductBlock extends Template
      */
     public function isDescriptionAddAllowed(): bool
     {
-        return $this->configForCustomer->isDescriptionAddAllowed();
+        return $this->customerAccessManagerToDescription->isDescriptionAddAllowed();
     }
 }

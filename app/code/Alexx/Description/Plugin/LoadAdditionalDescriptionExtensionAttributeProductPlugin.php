@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace Alexx\Description\Plugin;
 
-use Alexx\Description\Api\DescriptionRepositoryInterface;
 use Alexx\Description\Api\Data\DescriptionInterfaceFactory;
-use Alexx\Description\Model\Config\ConfigForCustomer;
+use Alexx\Description\Api\DescriptionRepositoryInterface;
+use Alexx\Description\Model\Config\CustomerAccessManagerToDescription;
 use Magento\Catalog\Api\Data\ProductExtensionFactory;
 use Magento\Catalog\Api\Data\ProductExtensionInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
- * Plugin for Catalog/Model/Product.php
+ * Plugin for Magento\Catalog/Model/Product.php
  *
  * Injects extension attribute data for additional_description field
  */
@@ -24,8 +24,8 @@ class LoadAdditionalDescriptionExtensionAttributeProductPlugin
     /**@var DescriptionRepositoryInterface */
     private $descriptionRepository;
 
-    /**@var ConfigForCustomer*/
-    private $configForCustomer;
+    /**@var CustomerAccessManagerToDescription */
+    private $customerAccessManagerToDescription;
 
     /**@var DescriptionInterfaceFactory */
     private $descriptionFactory;
@@ -33,18 +33,18 @@ class LoadAdditionalDescriptionExtensionAttributeProductPlugin
     /**
      * @param DescriptionRepositoryInterface $descriptionRepository
      * @param ProductExtensionFactory $extensionFactory
-     * @param ConfigForCustomer $configForCustomer
+     * @param CustomerAccessManagerToDescription $configForCustomer
      * @param DescriptionInterfaceFactory $descriptionFactory
      */
     public function __construct(
         DescriptionRepositoryInterface $descriptionRepository,
         ProductExtensionFactory $extensionFactory,
-        ConfigForCustomer $configForCustomer,
+        CustomerAccessManagerToDescription $customerAccessManagerToDescription,
         DescriptionInterfaceFactory $descriptionFactory
     ) {
         $this->descriptionRepository = $descriptionRepository;
         $this->extensionFactory = $extensionFactory;
-        $this->configForCustomer = $configForCustomer;
+        $this->customerAccessManagerToDescription = $customerAccessManagerToDescription;
         $this->descriptionFactory = $descriptionFactory;
     }
 
@@ -64,10 +64,10 @@ class LoadAdditionalDescriptionExtensionAttributeProductPlugin
             $extension = $this->extensionFactory->create();
         }
         if ($extension->getAdditionalDescription() === null) {
-            if ($this->configForCustomer->isStorefront()) {
-                $productId = (string)$entity->getId();
-                $customerId = $this->configForCustomer->getCustomerId();
+            if ($this->customerAccessManagerToDescription->isStorefront()) {
+                $customerId = $this->customerAccessManagerToDescription->getCustomerId();
                 if ($customerId != null) {
+                    $productId = (string)$entity->getId();
                     try {
                         $descriptionEntity = $this->descriptionRepository
                             ->getByProductAndCustomer($productId, $customerId);
