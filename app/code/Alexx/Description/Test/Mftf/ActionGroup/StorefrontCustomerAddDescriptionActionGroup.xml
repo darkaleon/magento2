@@ -1,0 +1,18 @@
+<actionGroups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
+    <actionGroup name="StorefrontCustomerAddDescriptionActionGroup">
+        <click selector="{{StorefrontProductTabsPanelSection.desctiptionTabLabel}}" stepKey="clickOnTabLabel"/>
+        <see userInput="Show form" selector="{{StorefrontProductTabsPanelSection.desctiptionFormShowButton}}" stepKey="checkShowFormTriggerPresent"/>
+        <click selector="{{StorefrontProductTabsPanelSection.desctiptionFormShowButton}}" stepKey="clickOnCreateDescriptionLink"/>
+        <fillField userInput="test description" selector="{{StorefrontProductTabsPanelSection.desctiptionInput}}" stepKey="fillDescription"/>
+        <click selector="{{StorefrontProductTabsPanelSection.desctiptionFormSubmitButton}}" stepKey="clickSendButton"/>
+        <waitForPageLoad stepKey="waitRequestReturnCreationResult"/>
+        <see selector="{{StorefrontPopupWindowSection.title}}" userInput="Success saving" stepKey="checkPopupForSuccessSaveMessage"/>
+        <click selector="{{StorefrontPopupWindowSection.ok}}" stepKey="clickModalWindowOkButton"/>
+        <see userInput="Delete description" selector="{{StorefrontProductTabsPanelSection.desctiptionFormDeleteButton}}" stepKey="checkDeleteTriggerIsVisible"/>
+        <click selector="{{StorefrontProductTabsPanelSection.desctiptionFormDeleteButton}}" stepKey="clickDeleteTrigger"/>
+        <waitForPageLoad stepKey="waitRequestReturnDeletionResult"/>
+        <see selector="{{StorefrontPopupWindowSection.title}}" userInput="Success deleting" stepKey="checkPopupForSuccessDeleteMessage"/>
+        <click selector="{{StorefrontPopupWindowSection.ok}}" stepKey="clickModalWindowOkButton2"/>
+    </actionGroup>
+</actionGroups>

@@ -1,0 +1,27 @@
+
+<actionGroups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
+    <actionGroup name="AdminAllowCustomerToAddDescriptionActionGroup">
+        <arguments>
+            <argument name="email" type="string"/>
+        </arguments>
+        <amOnPage url="{{AdminCustomerPage.url}}" stepKey="navigateToCustomers"/>
+        <click selector="{{AdminCustomerFiltersSection.filtersButton}}" stepKey="clickFilterButton"/>
+        <conditionalClick selector="{{AdminDataGridHeaderSection.clearFilters}}" dependentSelector="{{AdminDataGridHeaderSection.clearFilters}}" visible="true" stepKey="clearExistingCustomerFilters"/>
+
+        <fillField selector="{{AdminCustomerFiltersSection.emailInput}}" userInput="{{email}}" stepKey="filterEmail"/>
+        <click selector="{{AdminCustomerFiltersSection.apply}}" stepKey="applyFilter"/>
+        <waitForPageLoad stepKey="waitForPageToLoad"/>
+        <click selector="{{AdminCustomerGridSection.customerEditLinkByEmail(email)}}" stepKey="openCustomerPage"/>
+        <waitForPageLoad stepKey="waitForCustomerPage"/>
+        <click selector="#tab_allow_add_description_content" stepKey="clickProductDescriptionTab"/>
+
+        <waitForPageLoad stepKey="waitForCustomerPage2"/>
+
+<click selector="#customer-allow-add-description" stepKey="clickAllowAddDescriptionCheckbox"/>
+
+        <click selector="{{AdminCustomerMainActionsSection.saveButton}}" stepKey="saveCustomer"/>
+        <see userInput="You saved the customer" selector="{{AdminCustomerMessagesSection.successMessage}}" stepKey="seeMessage"/>
+
+    </actionGroup>
+</actionGroups>

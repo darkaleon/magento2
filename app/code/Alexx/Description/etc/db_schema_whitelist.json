@@ -1,0 +1,17 @@
+{
+    "alexx_customer_descriptions": {
+        "column": {
+            "entity_id": true,
+            "product_entity_id": true,
+            "customer_entity_id": true,
+            "description": true,
+            "created_at": true,
+            "updated_at": true,
+            "customerEmail": true,
+            "customer_email": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}

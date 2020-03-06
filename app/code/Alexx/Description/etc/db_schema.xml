@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="alexx_customer_descriptions" resource="default" comment="Customer descriptions table">
+        <column xsi:type="int" name="entity_id" identity="true" unsigned="true" nullable="false"
+                comment="Entity ID Auto Increment"/>
+        <column xsi:type="int" name="product_entity_id"/>
+        <column xsi:type="int" name="customer_entity_id"/>
+        <column xsi:type="text" name="description" comment="Description"/>
+        <column xsi:type="timestamp" name="created_at" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" default="CURRENT_TIMESTAMP" on_update="true"
+                comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+    </table>
+
+    <table name="alexx_customer_allow_descriptions" resource="default" comment="Customer allow add description">
+        <column xsi:type="int" name="entity_id" identity="true" unsigned="true" nullable="false"
+                comment="Entity ID Auto Increment"/>
+        <column xsi:type="int" name="customer_entity_id"/>
+        <column xsi:type="text" name="customer_email" comment="Customer email"/>
+        <column xsi:type="boolean" name="customer_allow_add_description" comment="Customer allow add description"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+
+    </table>
+
+</schema>

@@ -1,0 +1,31 @@
+<?php
+/**@var $block \Alexx\Description\Block\ProductBlock */
+if ($block->isDescriptionAddAllowed()):
+    /**@var \Alexx\Description\Api\Data\DescriptionInterface */
+    $descriptionData = $block->getClientDescription();
+    ?>
+    <span>
+        <a id="show-description-form-trigger"><?= $block->escapeHtml(__('Show form')) ?></a>
+        <a id="delete-trigger"><?= $block->escapeHtml(__('Delete description')) ?></a>
+    </span>
+    <form id="customer-description-form">
+        <input type="hidden"
+               name="product_entity_id"
+               value="<?= $block->escapeHtml($descriptionData->getProductEntityId()); ?>"
+        >
+        <input
+            name="description"
+            id="customer-description-input"
+            value="<?= $block->escapeHtml($descriptionData->getDescription()); ?>"
+        >
+        <button
+            type="button"
+            class="action-primary action-accept"
+            id="save-description-trigger"
+        ><?= $block->escapeHtml(__('Save description')) ?></button>
+    </form>
+    <script type="text/x-magento-init">
+        {"*":{"alexxDescription":"<?= $block->escapeHtml(strlen($descriptionData->getDescription())) ?>"}}
+    </script>
+    <?php
+endif;

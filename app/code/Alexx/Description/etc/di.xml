@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Alexx\Description\Api\Data\DescriptionInterface" type="Alexx\Description\Model\Description"/>
+    <preference for="Alexx\Description\Api\Data\AllowAddDescripitonInterface"
+                type="Alexx\Description\Model\AllowAddDescription"/>
+    <preference for="Alexx\Description\Api\DescriptionRepositoryInterface"
+                type="Alexx\Description\Model\DescriptionRepository"/>
+    <preference for="Alexx\Description\Api\AllowAddDescripitonRepositoryInterface"
+                type="Alexx\Description\Model\AllowAddDescripitonRepository"/>
+    <preference for="Alexx\Description\Api\DescriptionEditInterface"
+                type="Alexx\Description\Model\Edit\DescriptionEdit"/>
+    <type name="Magento\Catalog\Api\Data\ProductInterface">
+        <plugin name="ProductExtensionAttributeOperations"
+                type="Alexx\Description\Plugin\LoadAdditionalDescriptionExtensionAttributeProductPlugin"/>
+    </type>
+    <type name="Magento\Customer\Api\CustomerRepositoryInterface">
+        <plugin name="CustomerRepositoryExtensionAttributeOperations"
+                type="Alexx\Description\Plugin\CustomerRepositoryPlugin"/>
+    </type>
+    <type name="Magento\Catalog\Api\ProductRepositoryInterface">
+        <plugin name="ProductRepositoryExtensionAttributeOperations"
+                type="Alexx\Description\Plugin\ProductRepositoryPlugin"/>
+    </type>
+</config>

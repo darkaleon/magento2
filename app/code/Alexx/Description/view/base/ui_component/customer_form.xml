@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <htmlContent name="allow_add_description_content">
+        <block acl="Alexx_Description::customer_allow_add_description_manage" class="Alexx\Description\Block\Adminhtml\CustomerFormAllowAddDescriptionTab" name="allow_add_description">
+            <block class="Alexx\Description\Block\Adminhtml\Grid\CustomerFormAllowAddDescriptionGrid" name="allow_add_description.grid" as="grid"/>
+        </block>
+    </htmlContent>
+</form>

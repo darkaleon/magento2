@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sections xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="urn:magento:mftf:Page/etc/SectionObject.xsd">
+    <section name="StorefrontProductTabsPanelSection">
+        <element name="desctiptionTabLabel" type="text" selector='#tab-label-description-tab-title'/>
+        <element name="desctiptionTabContent" type="text" selector='#description-tab'/>
+        <element name="desctiptionForm" type="text" selector='#customer-description-form'/>
+        <element name="desctiptionInput" type="text" selector='#customer-description-input'/>
+        <element name="desctiptionFormSubmitButton" type="text" selector='#save-description-trigger'/>
+        <element name="desctiptionFormShowButton" type="text" selector='#show-description-form-trigger'/>
+        <element name="desctiptionFormDeleteButton" type="text" selector='#delete-trigger'/>
+    </section>
+</sections>
