@@ -16,6 +16,8 @@ use PHPUnit\Framework\TestCase;
 use Alexx\Description\Api\DescriptionRepositoryInterface;
 
 /**
+ * Test methods that controls creation an deletion module extension attributes
+ *
  * @magentoAppArea adminhtml
  * @magentoDataFixture loadFixture
  */

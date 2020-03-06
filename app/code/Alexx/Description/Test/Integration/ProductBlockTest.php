@@ -19,6 +19,8 @@ use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * Test Product extension attribute is loads for frontend block when customer can add descriptions
+ *
  * @magentoAppArea frontend
  * @magentoDataFixture loadFixture
  */
@@ -31,7 +33,7 @@ class ProductBlockTest extends TestCase
     private static $fakeProduct;
 
     /**@var ProductBlock*/
-    private $testedBlock;
+    private $productPageBlock;
 
     /**@var Session*/
     private $customerSession;
@@ -59,9 +61,9 @@ class ProductBlockTest extends TestCase
         $this->customerSession = $this->objectManager->get(Session::class);
         $this->customerSession->loginById(self::$fakeCustomer->getId());
 
-        $this->testedBlock = $this->objectManager->get(ProductBlock::class);
+        $this->productPageBlock = $this->objectManager->get(ProductBlock::class);
         $templateForBlock = 'Alexx_Description::product_tab.phtml';
-        $this->testedBlock->setTemplate($templateForBlock);
+        $this->productPageBlock->setTemplate($templateForBlock);
     }
 
     /**
@@ -88,7 +90,7 @@ class ProductBlockTest extends TestCase
      */
     public function testFrontendBlockDisplaysForm()
     {
-        $this->assertContains('customer-description-form', $this->testedBlock->toHtml());
+        $this->assertContains('customer-description-form', $this->productPageBlock->toHtml());
     }
 
     /**
@@ -96,7 +98,7 @@ class ProductBlockTest extends TestCase
      */
     public function testFrontentBlockDisplaysSavedDescriptionData()
     {
-        $this->assertContains('Fake description', $this->testedBlock->toHtml());
+        $this->assertContains('Fake description', $this->productPageBlock->toHtml());
     }
 
     /**

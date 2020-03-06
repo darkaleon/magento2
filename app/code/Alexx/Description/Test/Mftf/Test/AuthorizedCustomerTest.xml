@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/testSchema.xsd">
-    <test name="UnauthorizedCustomerTest">
+    <test name="AuthorizedCustomerTest">
         <before>
+            <actionGroup ref="SignUpNewCustomerStorefrontActionGroup" stepKey="fillCreateAccountForm">
+                <argument name="customer" value="CustomerEntityOne"/>
+            </actionGroup>
             <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin1"/>
             <amOnPage url="{{AdminCategoryPage.url}}" stepKey="navigateToCategoryPage"/>
             <waitForPageLoad stepKey="waitForCategoryPageLoad"/>
@@ -13,6 +16,9 @@
             </actionGroup>
         </before>
         <after>
+            <actionGroup ref="DeleteCustomerByEmailActionGroup" stepKey="deleteNewUser">
+                <argument name="email" value="{{CustomerEntityOne.email}}"/>
+            </actionGroup>
             <actionGroup ref="DeleteProductUsingProductGridActionGroup" stepKey="deleteSimpleProduct">
                 <argument name="product" value="_defaultProduct"/>
             </actionGroup>
@@ -21,10 +27,11 @@
             </actionGroup>
             <actionGroup ref="logout" stepKey="logout"/>
         </after>
+        <actionGroup ref="AdminAllowCustomerToAddDescriptionActionGroup" stepKey="editCustomer">
+            <argument name="email" value="{{CustomerEntityOne.email}}"/>
+        </actionGroup>
         <amOnPage url="{{_defaultProduct.urlKey}}.html" stepKey="navigateToProductPage"/>
         <waitForPageLoad stepKey="waitForPageToLoad"/>
-        <dontSeeElement selector="{{StorefrontProductTabsPanelSection.desctiptionTabContent}}" stepKey="checkTabNotPresent"/>
-        <dontSeeElement selector="{{StorefrontProductTabsPanelSection.desctiptionForm}}" stepKey="checkFormNotPresent"/>
-        <dontSeeElement selector="{{StorefrontProductTabsPanelSection.desctiptionFormShowButton}}" stepKey="checkShowFormTriggerNotPresent"/>
+        <actionGroup ref="StorefrontCustomerAddDescriptionActionGroup" stepKey="addCustomerDescription"/>
     </test>
 </tests>

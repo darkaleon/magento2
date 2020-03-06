@@ -1,9 +1,12 @@
 define([
+    'ko',
     'underscore',
-    'mageUtils',
-], function (_, utils) {
+    'Magento_Ui/js/grid/massactions',
+    'mageUtils'
+], function (ko, _, Massactions,utils) {
     'use strict';
-    var mixin = {
+
+    return Massactions.extend({
         defaultCallback: function (action, data) {
             var itemsType = 'selected',
                 selections = {};
@@ -20,8 +23,5 @@ define([
                 data: selections
             });
         }
-    }
-    return function (target) {
-        return target.extend(mixin);
-    };
+    });
 });

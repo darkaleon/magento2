@@ -11,6 +11,8 @@ use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * Test Product extension attribute isn't loads for frontend block when customer can't add descriptions
+ *
  * @magentoAppArea frontend
  * @magentoDataFixture loadFixture
  */
@@ -23,7 +25,7 @@ class ProductBlockWithoutAuthorizationTest extends TestCase
     private $objectManager;
 
     /**@var ProductBlock*/
-    private $testedBlock;
+    private $productPageBlock;
 
     /**
      * @inheritDoc
@@ -35,9 +37,9 @@ class ProductBlockWithoutAuthorizationTest extends TestCase
         $this->objectManager->get(Registry::class)->unregister('current_product');
         $this->objectManager->get(Registry::class)->register('current_product', self::$fakeProduct);
 
-        $this->testedBlock = $this->objectManager->get(ProductBlock::class);
+        $this->productPageBlock = $this->objectManager->get(ProductBlock::class);
         $templateForBlock = 'Alexx_Description::product_tab.phtml';
-        $this->testedBlock->setTemplate($templateForBlock);
+        $this->productPageBlock->setTemplate($templateForBlock);
     }
 
     /**
@@ -53,7 +55,7 @@ class ProductBlockWithoutAuthorizationTest extends TestCase
      */
     public function testProductBlockReturningEmptyHtml()
     {
-        $this->assertEmpty($this->testedBlock->toHtml());
+        $this->assertEmpty($this->productPageBlock->toHtml());
     }
 
     /**

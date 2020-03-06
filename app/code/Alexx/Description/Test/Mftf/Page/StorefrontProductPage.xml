@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="urn:magento:mftf:Page/etc/PageObject.xsd">
-    <page name="StorefrontProductPage" url="/" module="Alexx_HelloWorldPlugins" area="storefront">
-        <section name="ProductTabsPanelSection"/>
+    <page name="StorefrontProductPage" url="/" module="Alexx_Description" area="storefront">
+        <section name="StorefrontProductTabsPanelSection"/>
+        <section name="StorefrontPopupWindowSection"/>
     </page>
 </pages>

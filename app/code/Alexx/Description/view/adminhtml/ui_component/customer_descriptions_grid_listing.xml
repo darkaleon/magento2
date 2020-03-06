@@ -46,7 +46,7 @@
         </filters>
         <paging name="listing_paging"/>
     </listingToolbar>
-    <massaction name="listing_massaction">
+    <massaction name="listing_massaction" component="Alexx_Description/js/massactions">
         <action name="delete">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">

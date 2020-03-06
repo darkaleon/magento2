@@ -24,10 +24,8 @@ if ($block->isDescriptionAddAllowed()):
             id="save-description-trigger"
         ><?= $block->escapeHtml(__('Save description')) ?></button>
     </form>
-    <script>
-        require(['AlexxDescription'], function (AlexxDescription) {
-            AlexxDescription(<?= $block->escapeHtml(strlen($descriptionData->getDescription())) ?>);
-        });
+    <script type="text/x-magento-init">
+        {"*":{"alexxDescription":"<?= $block->escapeHtml(strlen($descriptionData->getDescription())) ?>"}}
     </script>
     <?php
 endif;
